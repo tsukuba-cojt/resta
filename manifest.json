@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "ReDesign",
+  "version": "1.0.0",
+  "description": "CSSを変更する",
+  "content_scripts": [
+    {
+      "matches": ["https://www.mast.tsukuba.ac.jp/*"],
+      "js": ["scripts/content.js"]
+    }
+  ]
+}

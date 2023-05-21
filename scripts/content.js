@@ -2,25 +2,29 @@ let overlapMarker = undefined;
 let overlapElement = undefined;
 let clickedElement = undefined;
 let currentUrl = undefined;
+let edittdUrl = undefined;
 const clickedColor = "rgba(255,0,0,0.4)";
 const mouseoverColor = "rgba(0,0,255,0.4)";
-
-const format = {
-  format: [
+let formatsAry = [];
+/*
+let formats = {
+  formats: [
     {
-      xpath: 'id("top-box-wrapper")/div[4]/p[1]',
-      styles: [{ background: "rgba(255,0,0,0.4)" }],
+      url: "https://www.mast.tsukuba.ac.jp/index.html",
+      formats: [
+        {
+          xpath: 'id("top-box-wrapper")/div[4]/p[1]',
+          styles: [{ background: "rgba(255,0,0,0.4)" }],
+        },
+      ],
     },
   ],
 };
+*/
 
 window.addEventListener("load", () => {
-  currentUrl = window.location.href;
-  loadFormat();
-  // const xpath = "/HTML/BODY[2]/DIV[1]/DIV[3]/DIV[2]/DIV[1]/DIV[2]/DL[1]/DD[16]";
-  const xpath = 'id("top-box-wrapper")/div[4]/p[1]';
-  var xpathResult = getElementByXpath(xpath);
-  xpathResult.style.background = "rgba(255,0,0,0.4)";
+  currentUrl = edittdUrl = window.location.href;
+  initStyle();
 
   const idDisplay = document.createElement("div");
   idDisplay.id = "ReDesignIdDisplay";
@@ -48,9 +52,9 @@ window.addEventListener("load", () => {
   italicButton.onclick = async () => {
     if (clickedElement) {
       if (clickedElement.style.fontStyle === "italic") {
-        clickedElement.style.fontStyle = "normal";
+        setFormatAndPushToAry(xpath, "fontStyle", "normal");
       } else {
-        clickedElement.style.fontStyle = "italic";
+        setFormatAndPushToAry(xpath, "fontStyle", "italic");
       }
     }
   };
@@ -69,7 +73,7 @@ window.addEventListener("load", () => {
 
   const saveButton = document.createElement("button");
   setButtonDesign(saveButton);
-  saveButton.textContent = "Save";
+  saveButton.textContent = "💾";
   saveButton.onclick = async () => {
     const xpath = createXPathFromElement(clickedElement);
     console.log("xpath:" + xpath);
@@ -79,6 +83,16 @@ window.addEventListener("load", () => {
 
   document.body.appendChild(idDisplay);
 });
+
+const initStyle = async () => {
+  // localからjson形式のデータを取得しparseしたものを代入
+  await loadFormat();
+  // このページに対応するフォーマットがあれば適用
+  applyFormat();
+
+  const xpath = 'id("top-box-wrapper")/div[3]/p[1]';
+  setFormatAndPushToAry(xpath, "background", "rgba(0,255,0,0.4)");
+};
 
 document.addEventListener("mouseover", () => {
   const hovers = document.querySelectorAll(":hover");
@@ -143,6 +157,45 @@ document.addEventListener("mouseover", () => {
   }
 });
 
+// スタイルに変更を加えてformatsListに変更内容を追加
+const setFormatAndPushToAry = (xpath, key, value) => {
+  const elem = getElementByXpath(xpath);
+  if (!elem || !key || !value) return;
+  // スタイルの変更
+  elem.style[key] = value;
+  // 配列に追加
+  if (!formatsAry || !formatsAry.find((e) => e.url === edittdUrl)) {
+    formatsAry.push({ url: edittdUrl, formats: [] });
+  }
+  if (
+    !formatsAry
+      .find((e) => e.url === edittdUrl)
+      .formats.find((e) => e.xpath === xpath)
+  ) {
+    formatsAry
+      .find((e) => e.url === edittdUrl)
+      .formats.push({ xpath: xpath, styles: [] });
+  }
+  if (
+    formatsAry
+      .find((e) => e.url === edittdUrl)
+      .formats.find((e) => e.xpath === xpath)
+      .styles.find((e) => e.key === key)
+  ) {
+    formatsAry
+      .find((e) => e.url === edittdUrl)
+      .formats.find((e) => e.xpath === xpath)
+      .styles.find((e) => e.key === key).value = value;
+  } else {
+    formatsAry
+      .find((e) => e.url === edittdUrl)
+      .formats.find((e) => e.xpath === xpath)
+      .styles.push({ key: key, value: value });
+  }
+  console.log(formatsAry);
+};
+
+// TODO:もともとのStyleに戻す (今はすべて空文字列に変えている) @K-Kazuyuki
 let beforeStyle = undefined;
 const exchangeOverlapElement = (prevElement, nextElement) => {
   if (nextElement) {
@@ -153,47 +206,47 @@ const exchangeOverlapElement = (prevElement, nextElement) => {
   }
 };
 
-const setButtonDesign = (button) => {
-  button.style.width = "30px";
-  button.style.height = "30px";
-  button.style.borderRadius = "5px";
-  button.style.background = "#fff";
-  button.style.boxShadow = "0 2px 4px rgba(0,0,0,0.4)";
-  button.style.margin = "5px";
-};
-
-const setIdDisplayDesign = (idDisplay) => {
-  idDisplay.style.width = "300px";
-  idDisplay.style.height = "100%";
-  idDisplay.style.position = "fixed";
-  idDisplay.style.bottom = 0;
-  idDisplay.style.right = 0;
-  idDisplay.style.boxShadow = "0 2px 4px rgba(0,0,0,0.4)";
-  idDisplay.style.background = "#fff";
-  idDisplay.style.zIndex = 100000;
-};
-
-const loadFormat = () => {
-  chrome.storage.local.get([currentUrl]).then((result) => {
-    console.log(result.key);
-    if (!result[currentUrl]) {
+const loadFormat = async () => {
+  await chrome.storage.local.get(["formats"]).then((result) => {
+    if (!result.formats) {
       console.log("load:no format", currentUrl);
       return;
+    } else {
+      console.log("load", currentUrl, JSON.parse(result.formats).formats);
+      if (JSON.parse(result.formats).formats)
+        formatsAry = JSON.parse(result.formats).formats;
+      return;
     }
-    format = JSON.parse(result[currentUrl]);
-    console.log("load", currentUrl, format);
   });
 };
 
 const saveFormat = () => {
-  chrome.storage.local.set({ currentUrl: format }).then(() => {
-    console.log("save", currentUrl, format);
+  if (formatsAry.length == 0) return;
+  chrome.storage.local.set({ formats: JSON.stringify(formatsAry) }).then(() => {
+    console.log("save", currentUrl, formatsAry);
   });
-  // chrome.storage.local.set({ currentUrl: JSON.stringify(format) });
+};
+
+const applyFormat = () => {
+  const formats = formatsAry.filter((e) => currentUrl.match(e.url));
+  for (const f of formats) {
+    console.log(f);
+    for (const format of f.formats) {
+      const xpath = format.xpath;
+      const styles = format.styles;
+      const elem = getElementByXpath(xpath);
+      if (!elem) continue;
+      for (const style of styles) {
+        console.log(style);
+        elem.style[style.key] = style.value;
+      }
+      console.log(elem.style);
+    }
+  }
 };
 
 // Copy from https://stackoverflow.com/questions/2661818/javascript-get-xpath-of-a-node
-function createXPathFromElement(elm) {
+const createXPathFromElement = (elm) => {
   var allNodes = document.getElementsByTagName("*");
   for (var segs = []; elm && elm.nodeType == 1; elm = elm.parentNode) {
     if (elm.hasAttribute("id")) {
@@ -226,7 +279,7 @@ function createXPathFromElement(elm) {
     }
   }
   return segs.length ? "/" + segs.join("/") : null;
-}
+};
 
 function getElementByXpath(path) {
   return document.evaluate(
@@ -237,3 +290,23 @@ function getElementByXpath(path) {
     null
   ).singleNodeValue;
 }
+
+const setButtonDesign = (button) => {
+  button.style.width = "30px";
+  button.style.height = "30px";
+  button.style.borderRadius = "5px";
+  button.style.background = "#fff";
+  button.style.boxShadow = "0 2px 4px rgba(0,0,0,0.4)";
+  button.style.margin = "5px";
+};
+
+const setIdDisplayDesign = (idDisplay) => {
+  idDisplay.style.width = "300px";
+  idDisplay.style.height = "100%";
+  idDisplay.style.position = "fixed";
+  idDisplay.style.bottom = 0;
+  idDisplay.style.right = 0;
+  idDisplay.style.boxShadow = "0 2px 4px rgba(0,0,0,0.4)";
+  idDisplay.style.background = "#fff";
+  idDisplay.style.zIndex = 100000;
+};

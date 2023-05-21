@@ -1,52 +1,30 @@
 let overlapMarker = undefined;
 let overlapElement = undefined;
 let clickedElement = undefined;
+let currentUrl = undefined;
+const clickedColor = "rgba(255,0,0,0.4)";
+const mouseoverColor = "rgba(0,0,255,0.4)";
+
+const format = {
+  format: [
+    {
+      xpath: 'id("top-box-wrapper")/div[4]/p[1]',
+      styles: [{ background: "rgba(255,0,0,0.4)" }],
+    },
+  ],
+};
 
 window.addEventListener("load", () => {
+  currentUrl = window.location.href;
+  loadFormat();
+  // const xpath = "/HTML/BODY[2]/DIV[1]/DIV[3]/DIV[2]/DIV[1]/DIV[2]/DL[1]/DD[16]";
+  const xpath = 'id("top-box-wrapper")/div[4]/p[1]';
+  var xpathResult = getElementByXpath(xpath);
+  xpathResult.style.background = "rgba(255,0,0,0.4)";
+
   const idDisplay = document.createElement("div");
   idDisplay.id = "ReDesignIdDisplay";
-  idDisplay.style.width = "300px";
-  idDisplay.style.height = "100%";
-  idDisplay.style.position = "fixed";
-  idDisplay.style.bottom = 0;
-  idDisplay.style.right = 0;
-  idDisplay.style.boxShadow = "0 2px 4px rgba(0,0,0,0.4)";
-  idDisplay.style.background = "#fff";
-  idDisplay.style.zIndex = 100000;
-
-  const idDisplayMoveButtonToR = document.createElement("button");
-  // divタグの中央左に配置
-  idDisplayMoveButtonToR.style.position = "absolute";
-  idDisplayMoveButtonToR.style.top = "50%";
-  idDisplayMoveButtonToR.style.left = 0;
-  idDisplayMoveButtonToR.style.transform = "translate(0, -50%)";
-  idDisplayMoveButtonToR.textContent = ">";
-  idDisplayMoveButtonToR.onclick = () => {
-    idDisplay.style.right = "";
-    idDisplay.style.left = "0";
-    idDisplayMoveButtonToR.style.left = "";
-    idDisplayMoveButtonToL.style.left = "0";
-    idDisplayMoveButtonToL.style.right = "";
-    idDisplayMoveButtonToR.style.right = "0";
-  };
-  setButtonDesign(idDisplayMoveButtonToR);
-
-  const idDisplayMoveButtonToL = document.createElement("button");
-  // divタグの中央右に配置
-  idDisplayMoveButtonToL.style.position = "absolute";
-  idDisplayMoveButtonToL.style.top = "50%";
-  idDisplayMoveButtonToL.style.right = 0;
-  idDisplayMoveButtonToL.style.transform = "translate(0, -50%)";
-  idDisplayMoveButtonToL.textContent = "<";
-  idDisplayMoveButtonToL.onclick = () => {
-    idDisplay.style.left = "";
-    idDisplay.style.right = "0";
-    idDisplayMoveButtonToL.style.right = "";
-    idDisplayMoveButtonToR.style.right = "";
-    idDisplayMoveButtonToR.style.left = "0";
-    idDisplayMoveButtonToL.style.left = "";
-  };
-  setButtonDesign(idDisplayMoveButtonToL);
+  setIdDisplayDesign(idDisplay);
 
   const boldButton = document.createElement("button");
   setButtonDesign(boldButton);
@@ -88,6 +66,17 @@ window.addEventListener("load", () => {
     }
   };
   idDisplay.appendChild(textarea);
+
+  const saveButton = document.createElement("button");
+  setButtonDesign(saveButton);
+  saveButton.textContent = "Save";
+  saveButton.onclick = async () => {
+    const xpath = createXPathFromElement(clickedElement);
+    console.log("xpath:" + xpath);
+    saveFormat();
+  };
+  idDisplay.appendChild(saveButton);
+
   document.body.appendChild(idDisplay);
 });
 
@@ -95,7 +84,7 @@ document.addEventListener("mouseover", () => {
   const hovers = document.querySelectorAll(":hover");
   let minSize = 100000;
   let minElement = undefined;
-  console.log(Array.from(hovers).filter((e) => e.tagName !== "TEXTAREA"));
+  // console.log(Array.from(hovers).filter((e) => e.tagName !== "TEXTAREA"));
   for (const hover of Array.from(hovers).filter(
     (e) => e.tagName !== "textarea"
   )) {
@@ -112,31 +101,57 @@ document.addEventListener("mouseover", () => {
     return;
   }
 
-  /*if (minElement.tagName === 'textarea') {
-    return;
-  }*/
-
   if (
     minElement !== overlapElement &&
     !minElement.closest("#ReDesignIdDisplay")
   ) {
     if (overlapElement && overlapElement !== clickedElement) {
-      overlapElement.style.background = "";
+      if (overlapElement.tagName === "IMG") {
+        overlapElement.style.border = "";
+      } else {
+        overlapElement.style.background = "";
+      }
     }
+
     if (minElement) {
-      minElement.style.background = "rgba(255,255,0,0.4)";
+      if (minElement.tagName === "IMG") {
+        minElement.style.border = "2px solid " + mouseoverColor;
+      } else {
+        minElement.style.background = mouseoverColor;
+      }
     }
     overlapElement = minElement;
 
     overlapElement.addEventListener("mousedown", () => {
-      overlapElement.style.background = "rgba(255,0,0,0.4)";
+      if (overlapElement.tagName === "IMG") {
+        overlapElement.style.border = "2px solid " + clickedColor;
+      } else {
+        overlapElement.style.background = clickedColor;
+      }
+
       if (clickedElement && clickedElement !== overlapElement) {
-        clickedElement.style.background = "";
+        if (clickedElement.tagName === "IMG") {
+          clickedElement.style.border = "";
+        } else {
+          clickedElement.style.background = "";
+        }
       }
       clickedElement = overlapElement;
+      const xpath = createXPathFromElement(clickedElement);
+      console.log("xpath:" + xpath);
     });
   }
 });
+
+let beforeStyle = undefined;
+const exchangeOverlapElement = (prevElement, nextElement) => {
+  if (nextElement) {
+    if (prevElement) {
+      prevElement.style = beforeStyle;
+    }
+    beforeStyle = nextElement.style;
+  }
+};
 
 const setButtonDesign = (button) => {
   button.style.width = "30px";
@@ -146,3 +161,79 @@ const setButtonDesign = (button) => {
   button.style.boxShadow = "0 2px 4px rgba(0,0,0,0.4)";
   button.style.margin = "5px";
 };
+
+const setIdDisplayDesign = (idDisplay) => {
+  idDisplay.style.width = "300px";
+  idDisplay.style.height = "100%";
+  idDisplay.style.position = "fixed";
+  idDisplay.style.bottom = 0;
+  idDisplay.style.right = 0;
+  idDisplay.style.boxShadow = "0 2px 4px rgba(0,0,0,0.4)";
+  idDisplay.style.background = "#fff";
+  idDisplay.style.zIndex = 100000;
+};
+
+const loadFormat = () => {
+  chrome.storage.local.get([currentUrl]).then((result) => {
+    console.log(result.key);
+    if (!result[currentUrl]) {
+      console.log("load:no format", currentUrl);
+      return;
+    }
+    format = JSON.parse(result[currentUrl]);
+    console.log("load", currentUrl, format);
+  });
+};
+
+const saveFormat = () => {
+  chrome.storage.local.set({ currentUrl: format }).then(() => {
+    console.log("save", currentUrl, format);
+  });
+  // chrome.storage.local.set({ currentUrl: JSON.stringify(format) });
+};
+
+// Copy from https://stackoverflow.com/questions/2661818/javascript-get-xpath-of-a-node
+function createXPathFromElement(elm) {
+  var allNodes = document.getElementsByTagName("*");
+  for (var segs = []; elm && elm.nodeType == 1; elm = elm.parentNode) {
+    if (elm.hasAttribute("id")) {
+      var uniqueIdCount = 0;
+      for (var n = 0; n < allNodes.length; n++) {
+        if (allNodes[n].hasAttribute("id") && allNodes[n].id == elm.id)
+          uniqueIdCount++;
+        if (uniqueIdCount > 1) break;
+      }
+      if (uniqueIdCount == 1) {
+        segs.unshift('id("' + elm.getAttribute("id") + '")');
+        return segs.join("/");
+      } else {
+        segs.unshift(
+          elm.localName.toLowerCase() + '[@id="' + elm.getAttribute("id") + '"]'
+        );
+      }
+    } else if (elm.hasAttribute("class")) {
+      segs.unshift(
+        elm.localName.toLowerCase() +
+          '[@class="' +
+          elm.getAttribute("class") +
+          '"]'
+      );
+    } else {
+      for (i = 1, sib = elm.previousSibling; sib; sib = sib.previousSibling) {
+        if (sib.localName == elm.localName) i++;
+      }
+      segs.unshift(elm.localName.toLowerCase() + "[" + i + "]");
+    }
+  }
+  return segs.length ? "/" + segs.join("/") : null;
+}
+
+function getElementByXpath(path) {
+  return document.evaluate(
+    path,
+    document,
+    null,
+    XPathResult.FIRST_ORDERED_NODE_TYPE,
+    null
+  ).singleNodeValue;
+}

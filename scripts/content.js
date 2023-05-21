@@ -36,10 +36,11 @@ window.addEventListener("load", () => {
   boldButton.style.fontWeight = "bold";
   boldButton.onclick = async () => {
     if (clickedElement) {
+      const xpath = createXPathFromElement(clickedElement);
       if (clickedElement.style.fontWeight === "bold") {
-        clickedElement.style.fontWeight = "normal";
+        setFormatAndPushToAry(xpath, "fontWeight", "normal");
       } else {
-        clickedElement.style.fontWeight = "bold";
+        setFormatAndPushToAry(xpath, "fontWeight", "bold");
       }
     }
   };
@@ -51,6 +52,7 @@ window.addEventListener("load", () => {
   italicButton.style.fontStyle = "italic";
   italicButton.onclick = async () => {
     if (clickedElement) {
+      const xpath = createXPathFromElement(clickedElement);
       if (clickedElement.style.fontStyle === "italic") {
         setFormatAndPushToAry(xpath, "fontStyle", "normal");
       } else {
@@ -89,9 +91,6 @@ const initStyle = async () => {
   await loadFormat();
   // このページに対応するフォーマットがあれば適用
   applyFormat();
-
-  const xpath = 'id("top-box-wrapper")/div[3]/p[1]';
-  setFormatAndPushToAry(xpath, "background", "rgba(0,255,0,0.4)");
 };
 
 document.addEventListener("mouseover", () => {
@@ -160,7 +159,10 @@ document.addEventListener("mouseover", () => {
 // スタイルに変更を加えてformatsListに変更内容を追加
 const setFormatAndPushToAry = (xpath, key, value) => {
   const elem = getElementByXpath(xpath);
-  if (!elem || !key || !value) return;
+  if (!elem || !key || !value) {
+    console.log("setFormatAndPushToAry:invalid args:", xpath, key, value);
+    return;
+  }
   // スタイルの変更
   elem.style[key] = value;
   // 配列に追加
@@ -195,7 +197,7 @@ const setFormatAndPushToAry = (xpath, key, value) => {
   console.log(formatsAry);
 };
 
-// TODO:もともとのStyleに戻す (今はすべて空文字列に変えている) @K-Kazuyuki
+// TODO: mouseoverが取れたらもともとのStyleに戻す (今はすべて空文字列に変えている) @K-Kazuyuki
 let beforeStyle = undefined;
 const exchangeOverlapElement = (prevElement, nextElement) => {
   if (nextElement) {
@@ -212,9 +214,8 @@ const loadFormat = async () => {
       console.log("load:no format", currentUrl);
       return;
     } else {
-      console.log("load", currentUrl, JSON.parse(result.formats).formats);
-      if (JSON.parse(result.formats).formats)
-        formatsAry = JSON.parse(result.formats).formats;
+      console.log("load", currentUrl, JSON.parse(result.formats));
+      if (JSON.parse(result.formats)) formatsAry = JSON.parse(result.formats);
       return;
     }
   });

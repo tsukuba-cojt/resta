@@ -6,27 +6,13 @@ let edittdUrl = undefined;
 const clickedColor = "rgba(255,0,0,0.4)";
 const mouseoverColor = "rgba(0,0,255,0.4)";
 let formatsAry = [];
-/*
-let formats = {
-  formats: [
-    {
-      url: "https://www.mast.tsukuba.ac.jp/index.html",
-      formats: [
-        {
-          xpath: 'id("top-box-wrapper")/div[4]/p[1]',
-          styles: [{ background: "rgba(255,0,0,0.4)" }],
-        },
-      ],
-    },
-  ],
-};
-*/
+let idDisplay = undefined;
 
 window.addEventListener("load", () => {
   currentUrl = edittdUrl = window.location.href;
   initStyle();
 
-  const idDisplay = document.createElement("div");
+  idDisplay = document.createElement("div");
   idDisplay.id = "ReDesignIdDisplay";
   setIdDisplayDesign(idDisplay);
 
@@ -87,10 +73,10 @@ window.addEventListener("load", () => {
 });
 
 const initStyle = async () => {
-  // localからjson形式のデータを取得しparseしたものを代入
+  // localからjson形式のデータを取得しparseしたものをformatsAryへ代入
   await loadFormat();
   // このページに対応するフォーマットがあれば適用
-  applyFormat();
+  applyFormats();
 };
 
 document.addEventListener("mouseover", () => {
@@ -165,7 +151,9 @@ const setFormatAndPushToAry = (xpath, key, value) => {
   }
   // スタイルの変更
   elem.style[key] = value;
-  // 配列に追加
+  // 配列への追加処理
+  // 以下のif文は、各配列が存在しない場合に配列を作成する処理
+  // すでに該当箇所への変更がある場合は書き換えている
   if (!formatsAry || !formatsAry.find((e) => e.url === edittdUrl)) {
     formatsAry.push({ url: edittdUrl, formats: [] });
   }
@@ -199,7 +187,7 @@ const setFormatAndPushToAry = (xpath, key, value) => {
 
 // TODO: mouseoverが取れたらもともとのStyleに戻す (今はすべて空文字列に変えている) @K-Kazuyuki
 let beforeStyle = undefined;
-const exchangeOverlapElement = (prevElement, nextElement) => {
+const exchangeOverlapElementStyle = (prevElement, nextElement) => {
   if (nextElement) {
     if (prevElement) {
       prevElement.style = beforeStyle;
@@ -228,7 +216,7 @@ const saveFormat = () => {
   });
 };
 
-const applyFormat = () => {
+const applyFormats = () => {
   const formats = formatsAry.filter((e) => currentUrl.match(e.url));
   for (const f of formats) {
     console.log(f);
@@ -241,7 +229,6 @@ const applyFormat = () => {
         console.log(style);
         elem.style[style.key] = style.value;
       }
-      console.log(elem.style);
     }
   }
 };

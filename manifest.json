@@ -3,7 +3,9 @@
   "name": "ReSta",
   "version": "1.0.0",
   "description": "CSSを変更する",
-  "permissions": ["activeTab", "tabs", "storage", "scripting"],
+  "icons": {},
+  "action": {},
+  "permissions": ["activeTab", "tabs", "storage", "scripting", "background"],
   "content_scripts": [
     {
       "matches": ["https://www.mast.tsukuba.ac.jp/*"],

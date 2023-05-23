@@ -8,7 +8,7 @@ const mouseoverColor = "rgba(0,0,255,0.4)";
 let formatsAry = [];
 let idDisplay = undefined;
 
-window.addEventListener("load", () => {
+export const OnLoad = () => {
   currentUrl = edittdUrl = window.location.href;
   initStyle();
 
@@ -70,7 +70,7 @@ window.addEventListener("load", () => {
   idDisplay.appendChild(saveButton);
 
   document.body.appendChild(idDisplay);
-});
+};
 
 const initStyle = async () => {
   // localからjson形式のデータを取得しparseしたものをformatsAryへ代入
@@ -260,7 +260,11 @@ const createXPathFromElement = (elm) => {
           '"]'
       );
     } else {
-      for (i = 1, sib = elm.previousSibling; sib; sib = sib.previousSibling) {
+      for (
+        var i = 1, sib = elm.previousSibling;
+        sib;
+        sib = sib.previousSibling
+      ) {
         if (sib.localName == elm.localName) i++;
       }
       segs.unshift(elm.localName.toLowerCase() + "[" + i + "]");

@@ -5,11 +5,17 @@
   "description": "CSSを変更する",
   "icons": {},
   "action": {},
-  "permissions": ["activeTab", "tabs", "storage", "scripting", "background"],
+  "permissions": ["activeTab", "tabs", "storage", "scripting"],
   "content_scripts": [
     {
       "matches": ["https://www.mast.tsukuba.ac.jp/*"],
-      "js": ["scripts/content.js"]
+      "js": ["scripts/loader.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["scripts/*"],
+      "matches": ["https://www.mast.tsukuba.ac.jp/*"]
     }
   ]
 }

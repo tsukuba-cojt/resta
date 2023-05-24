@@ -15,7 +15,7 @@ export const setFormatAndPushToAry = (xpath: string|null, key:string|null, value
     return;
   }
   // スタイルの変更
-  elem.style.setProperty(key, value);
+  elem.style[key as any] = value;
   // 配列への追加処理
   // 以下のif文は、各配列が存在しない場合に配列を作成する処理
   // すでに該当箇所への変更がある場合は書き換えている

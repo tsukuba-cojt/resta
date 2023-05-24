@@ -26,6 +26,7 @@
     "webpack-cli": "^5.1.1"
   },
   "dependencies": {
-    "@types/chrome": "^0.0.236"
+    "@types/chrome": "^0.0.236",
+    "axios": "^1.4.0"
   }
 }

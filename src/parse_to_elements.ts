@@ -1,3 +1,5 @@
+import { createToggleStyleButton } from './create_ui';
+
 /*
 value::=element | element ":" value
 element::=select | input | rawtext
@@ -14,17 +16,31 @@ export enum ElementType {
   RAWTEXT,
 }
 
-export const parseToElements = (value: string) => {
+export const parseToElements = (style: any) => {
+  const value: string = Object.values(style.css[0])[0] as string;
   const result: Array<HTMLElement> = [];
   for (const styleObject of parser(value)) {
+    console.log('parsed ', styleObject);
     if (styleObject.type === ElementType.SELECT) {
-      const select = document.createElement('select');
-      for (const item of styleObject.values) {
-        const option = document.createElement('option');
-        option.textContent = item;
-        select.appendChild(option);
+      console.log(styleObject.values.length, styleObject.values);
+      if (styleObject.values.length === 2) {
+        result.push(
+          createToggleStyleButton(
+            Object.keys(style.css[0])[0] as string,
+            styleObject.values[0],
+            styleObject.values[1],
+            style.iconchar
+          )
+        );
+      } else {
+        const select = document.createElement('select');
+        for (const item of styleObject.values) {
+          const option = document.createElement('option');
+          option.textContent = item;
+          select.appendChild(option);
+        }
+        result.push(select);
       }
-      result.push(select);
     } else if (styleObject.type === ElementType.INPUT) {
       const input = document.createElement('input');
       input.type = styleObject.values[0];
@@ -84,6 +100,5 @@ const parser = (value: string) => {
     }
     result.push({ type: type, values: values });
   }
-  console.log(result);
   return result;
 };

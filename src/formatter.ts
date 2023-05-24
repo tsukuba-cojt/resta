@@ -1,5 +1,5 @@
-import { getElementByXpath } from "./xpath_control";
-import * as prop from "./prop";
+import { getElementByXpath } from './xpath_control';
+import * as prop from './prop';
 
 export const initStyle = async () => {
   // localからjson形式のデータを取得しparseしたものをformatsAryへ代入
@@ -8,10 +8,14 @@ export const initStyle = async () => {
   applyFormats();
 };
 // スタイルに変更を加えてformatsListに変更内容を追加
-export const setFormatAndPushToAry = (xpath: string|null, key:string|null, value:string|null) => {
+export const setFormatAndPushToAry = (
+  xpath: string | null,
+  key: string | null,
+  value: string | null
+) => {
   const elem = getElementByXpath(xpath);
   if (!elem || !key || !value) {
-    console.log("setFormatAndPushToAry:invalid args:", xpath, key, value);
+    console.log('setFormatAndPushToAry:invalid args:', xpath, key, value);
     return;
   }
   // スタイルの変更
@@ -28,7 +32,7 @@ export const setFormatAndPushToAry = (xpath: string|null, key:string|null, value
   if (
     !prop.formatsAry
       .find((e) => e.url === prop.edittedUrl)
-      .formats.find((e:any) => e.xpath === xpath)
+      .formats.find((e: any) => e.xpath === xpath)
   ) {
     prop.formatsAry
       .find((e) => e.url === prop.edittedUrl)
@@ -37,29 +41,29 @@ export const setFormatAndPushToAry = (xpath: string|null, key:string|null, value
   if (
     prop.formatsAry
       .find((e) => e.url === prop.edittedUrl)
-      .formats.find((e:any) => e.xpath === xpath)
-      .styles.find((e:any) => e.key === key)
+      .formats.find((e: any) => e.xpath === xpath)
+      .styles.find((e: any) => e.key === key)
   ) {
     prop.formatsAry
       .find((e) => e.url === prop.edittedUrl)
-      .formats.find((e:any) => e.xpath === xpath)
-      .styles.find((e:any) => e.key === key).value = value;
+      .formats.find((e: any) => e.xpath === xpath)
+      .styles.find((e: any) => e.key === key).value = value;
   } else {
     prop.formatsAry
       .find((e) => e.url === prop.edittedUrl)
-      .formats.find((e:any) => e.xpath === xpath)
+      .formats.find((e: any) => e.xpath === xpath)
       .styles.push({ key: key, value: value });
   }
-  console.log(prop.formatsAry);
+  console.log('format changed', xpath, key, value);
 };
 
 export const loadFormat = async () => {
-  await chrome.storage.local.get(["formats"]).then((result) => {
+  await chrome.storage.local.get(['formats']).then((result) => {
     if (!result.formats) {
-      console.log("load:no format", prop.currentUrl);
+      console.log('load:no format', prop.currentUrl);
       return;
     } else {
-      console.log("load", prop.currentUrl, JSON.parse(result.formats));
+      console.log('load', prop.currentUrl, JSON.parse(result.formats));
       if (JSON.parse(result.formats))
         prop.setFormatsAry(JSON.parse(result.formats));
       return;
@@ -72,7 +76,7 @@ export const saveFormat = () => {
   chrome.storage.local
     .set({ formats: JSON.stringify(prop.formatsAry) })
     .then(() => {
-      console.log("save", prop.currentUrl, prop.formatsAry);
+      console.log('save', prop.currentUrl, prop.formatsAry);
     });
 };
 

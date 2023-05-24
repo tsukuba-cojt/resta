@@ -9,13 +9,10 @@ module.exports = () => {
 
   return {
     mode: process.env.NODE_ENV || 'development',
-    entry: {
-      'content-script': path.join(__dirname, 'src/content-script.ts'),
-      background: path.join(__dirname, 'src/background.ts'),
-    },
+    entry: './src/content-script.ts',
     output: {
       path: path.join(__dirname, 'dist'),
-      filename: '[name].js',
+      filename: 'index.js',
     },
     module: {
       rules: [

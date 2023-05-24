@@ -1,3 +1,4 @@
+// BoldやItaricなどのボタンのデザインを設定する関数
 export const setButtonDesign = (button) => {
   button.style.width = "30px";
   button.style.height = "30px";
@@ -7,6 +8,7 @@ export const setButtonDesign = (button) => {
   button.style.margin = "5px";
 };
 
+// idDisplayのデザインを設定する関数
 export const setIdDisplayDesign = (idDisplay) => {
   idDisplay.style.width = "300px";
   idDisplay.style.height = "100%";

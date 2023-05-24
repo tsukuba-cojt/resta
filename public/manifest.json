@@ -9,12 +9,12 @@
   "content_scripts": [
     {
       "matches": ["https://www.mast.tsukuba.ac.jp/*"],
-      "js": ["scripts/loader.js"]
+      "js": ["index.js"]
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["scripts/*"],
+      "resources": ["index.js"],
       "matches": ["https://www.mast.tsukuba.ac.jp/*"]
     }
   ]

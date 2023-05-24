@@ -1,7 +1,7 @@
-import { setIdDisplayDesign, setButtonDesign } from "./ui_design.js";
-import { createXPathFromElement } from "./xpath_control.js";
-import { setFormatAndPushToAry, saveFormat } from "./formatter.js";
-import * as prop from "./prop.js";
+import { setIdDisplayDesign, setButtonDesign } from "./ui_design";
+import { createXPathFromElement } from "./xpath_control";
+import { setFormatAndPushToAry, saveFormat } from "./formatter";
+import * as prop from "./prop";
 export const setidDisplay = () => {
   prop.setIdDisplay(document.createElement("div"));
   prop.idDisplay.id = "ReDesignIdDisplay";
@@ -45,7 +45,7 @@ export const setidDisplay = () => {
     const property = textarea.value.split(":")[0];
     const value = textarea.value.split(":")[1];
     if (prop.clickedElement) {
-      prop.clickedElement.style[property] = value;
+      prop.clickedElement.style.setProperty(property, value);
     }
   };
   prop.idDisplay.appendChild(textarea);

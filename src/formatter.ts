@@ -1,5 +1,5 @@
-import { getElementByXpath } from "./xpath_control.js";
-import * as prop from "./prop.js";
+import { getElementByXpath } from "./xpath_control";
+import * as prop from "./prop";
 
 export const initStyle = async () => {
   // localからjson形式のデータを取得しparseしたものをformatsAryへ代入
@@ -8,14 +8,14 @@ export const initStyle = async () => {
   applyFormats();
 };
 // スタイルに変更を加えてformatsListに変更内容を追加
-export const setFormatAndPushToAry = (xpath, key, value) => {
+export const setFormatAndPushToAry = (xpath: string|null, key:string|null, value:string|null) => {
   const elem = getElementByXpath(xpath);
   if (!elem || !key || !value) {
     console.log("setFormatAndPushToAry:invalid args:", xpath, key, value);
     return;
   }
   // スタイルの変更
-  elem.style[key] = value;
+  elem.style[key as any] = value;
   // 配列への追加処理
   // 以下のif文は、各配列が存在しない場合に配列を作成する処理
   // すでに該当箇所への変更がある場合は書き換えている
@@ -28,7 +28,7 @@ export const setFormatAndPushToAry = (xpath, key, value) => {
   if (
     !prop.formatsAry
       .find((e) => e.url === prop.edittedUrl)
-      .formats.find((e) => e.xpath === xpath)
+      .formats.find((e:any) => e.xpath === xpath)
   ) {
     prop.formatsAry
       .find((e) => e.url === prop.edittedUrl)
@@ -37,17 +37,17 @@ export const setFormatAndPushToAry = (xpath, key, value) => {
   if (
     prop.formatsAry
       .find((e) => e.url === prop.edittedUrl)
-      .formats.find((e) => e.xpath === xpath)
-      .styles.find((e) => e.key === key)
+      .formats.find((e:any) => e.xpath === xpath)
+      .styles.find((e:any) => e.key === key)
   ) {
     prop.formatsAry
       .find((e) => e.url === prop.edittedUrl)
-      .formats.find((e) => e.xpath === xpath)
-      .styles.find((e) => e.key === key).value = value;
+      .formats.find((e:any) => e.xpath === xpath)
+      .styles.find((e:any) => e.key === key).value = value;
   } else {
     prop.formatsAry
       .find((e) => e.url === prop.edittedUrl)
-      .formats.find((e) => e.xpath === xpath)
+      .formats.find((e:any) => e.xpath === xpath)
       .styles.push({ key: key, value: value });
   }
   console.log(prop.formatsAry);

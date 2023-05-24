@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@types/chrome": "^0.0.236",
-    "axios": "^1.4.0"
+    "axios": "^1.4.0",
+    "buffer": "^6.0.3"
   }
 }

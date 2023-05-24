@@ -1,3 +1,5 @@
+import { Buffer } from "buffer";
+
 export const downloadSetting = () => {
   const axios = require('axios');
 
@@ -7,9 +9,9 @@ export const downloadSetting = () => {
   axios
     .get(endpoint)
     .then((response: any) => {
-      const content = response.data.content;
-      console.log('downloaded', Buffer.from(response.data.content, 'base64').toString());
+      const content = Buffer.from(response.data.content, 'base64').toString();
       const json = JSON.parse(content);
+      console.log("Download Success",json);
       // Do something with the JSON data.
     });
 };

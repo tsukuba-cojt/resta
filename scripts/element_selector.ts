@@ -1,7 +1,7 @@
-import * as prop from "./prop.js";
-import { createXPathFromElement } from "./xpath_control.js";
+import * as prop from "./prop";
+import { createXPathFromElement } from "./xpath_control";
 export const elementSelector = () => {
-  const hovers = document.querySelectorAll(":hover");
+  const hovers:NodeListOf<HTMLElement> = document.querySelectorAll(":hover");
   let minSize = 100000;
   let minElement = undefined;
   // console.log(Array.from(hovers).filter((e) => e.tagName !== "TEXTAREA"));

@@ -1,6 +1,7 @@
 // Copy from https://stackoverflow.com/questions/2661818/javascript-get-xpath-of-a-node
-export const createXPathFromElement = (elm) => {
+export const createXPathFromElement = (elm: any) => {
   var allNodes = document.getElementsByTagName("*");
+  
   for (var segs = []; elm && elm.nodeType == 1; elm = elm.parentNode) {
     if (elm.hasAttribute("id")) {
       var uniqueIdCount = 0;
@@ -38,12 +39,15 @@ export const createXPathFromElement = (elm) => {
   return segs.length ? "/" + segs.join("/") : null;
 };
 
-export const getElementByXpath = (path) => {
+export const getElementByXpath = (path:string|null) => {
+  if (!path) {
+    return null;
+  }
   return document.evaluate(
     path,
     document,
     null,
     XPathResult.FIRST_ORDERED_NODE_TYPE,
     null
-  ).singleNodeValue;
+  ).singleNodeValue as HTMLElement;
 };

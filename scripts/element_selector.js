@@ -1,5 +1,5 @@
 import * as prop from "./prop.js";
-import { createXPathFromElement } from "./xpathcontrol.js";
+import { createXPathFromElement } from "./xpath_control.js";
 export const elementSelector = () => {
   const hovers = document.querySelectorAll(":hover");
   let minSize = 100000;

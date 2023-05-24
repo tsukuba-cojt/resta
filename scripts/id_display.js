@@ -1,5 +1,5 @@
-import { setIdDisplayDesign, setButtonDesign } from "./UIdesign.js";
-import { createXPathFromElement } from "./xpathcontrol.js";
+import { setIdDisplayDesign, setButtonDesign } from "./ui_design.js";
+import { createXPathFromElement } from "./xpath_control.js";
 import { setFormatAndPushToAry, saveFormat } from "./formatter.js";
 import * as prop from "./prop.js";
 export const setidDisplay = () => {

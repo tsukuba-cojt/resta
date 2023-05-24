@@ -1,17 +1,18 @@
-import { createXPathFromElement } from "./xpathcontrol.js";
-import { setidDisplay } from "./idDisplay.js";
+import { createXPathFromElement } from "./xpath_control.js";
+import { setidDisplay } from "./id_display.js";
 import { initStyle } from "./formatter.js";
 import * as prop from "./prop.js";
-import { elementSelector } from "./elementSelector.js";
+import { elementSelector } from "./element_selector.js";
 
-export const OnLoad = () => {
+export const onLoad = () => {
   console.log("OnLoad");
   prop.setUrl(window.location.href);
-  initStyle();
-  console.log("Init Style");
 
-  setidDisplay();
+  console.log("Init Style");
+  initStyle();
+
   console.log("Set idDisplay");
+  setidDisplay();
 
   document.body.appendChild(prop.idDisplay);
 };

@@ -29,7 +29,7 @@ export const setOverlapElement = (element) => {
 };
 
 export const mouseoverColor = "rgba(0, 0, 255, 0.3)";
-export const clickedColor = "rgba(255,0,0,0.4)";
+export const clickedColor = "rgba(255, 0, 0, 0.4)";
 
 // idDisplayのDOMを格納する変数
 export let idDisplay = undefined;

@@ -1,4 +1,4 @@
-import { getElementByXpath } from "./xpathcontrol.js";
+import { getElementByXpath } from "./xpath_control.js";
 import * as prop from "./prop.js";
 
 export const initStyle = async () => {

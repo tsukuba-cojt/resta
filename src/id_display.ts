@@ -1,40 +1,33 @@
-import { setIdDisplayDesign, setButtonDesign } from "./ui_design";
-import { createXPathFromElement } from "./xpath_control";
-import { saveFormat } from "./formatter";
-import * as prop from "./prop";
-import * as createUi from "./create_ui";
-import { downloadSetting } from "./file_downloader";
+import { setIdDisplayDesign, setButtonDesign } from './ui_design';
+import { createXPathFromElement } from './xpath_control';
+import { saveFormat } from './formatter';
+import * as prop from './prop';
+import { loadChilds } from './id_display_childs';
 export const setidDisplay = () => {
-  prop.setIdDisplay(document.createElement("div"));
-  prop.idDisplay.id = "ReDesignIdDisplay";
-
-  downloadSetting();
+  prop.setIdDisplay(document.createElement('div'));
+  prop.idDisplay.id = 'ReDesignIdDisplay';
 
   setIdDisplayDesign(prop.idDisplay);
 
-  // boldボタン
-  prop.idDisplay.appendChild(createUi.createToggleStyleButton("fontWeight", "bold", "normal", "B"));
+  loadChilds(prop.idDisplay);
 
-  // italicボタン
-  prop.idDisplay.appendChild(createUi.createToggleStyleButton("fontStyle", "italic", "normal", "I"));
-
-  const textarea = document.createElement("textarea");
-  textarea.style.width = "90%";
+  const textarea = document.createElement('textarea');
+  textarea.style.width = '90%';
   textarea.onkeydown = () => {
-    const property = textarea.value.split(":")[0];
-    const value = textarea.value.split(":")[1];
+    const property = textarea.value.split(':')[0];
+    const value = textarea.value.split(':')[1];
     if (prop.clickedElement) {
       prop.clickedElement.style.setProperty(property, value);
     }
   };
   prop.idDisplay.appendChild(textarea);
 
-  const saveButton = document.createElement("button");
+  const saveButton = document.createElement('button');
   setButtonDesign(saveButton);
-  saveButton.textContent = "💾";
+  saveButton.textContent = '💾';
   saveButton.onclick = async () => {
     const xpath = createXPathFromElement(prop.clickedElement);
-    console.log("xpath:" + xpath);
+    console.log('xpath:' + xpath);
     saveFormat();
   };
   prop.idDisplay.appendChild(saveButton);

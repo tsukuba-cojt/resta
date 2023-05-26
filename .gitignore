@@ -220,3 +220,5 @@ backend/test
 
 # other
 save.json
+
+.idea/

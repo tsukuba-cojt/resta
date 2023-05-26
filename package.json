@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start-react": "react-scripts start",
-    "build-react": "react-scripts build",
+    "start-react": "react-app-rewired start",
+    "build-react": "react-app-rewired build",
     "build": "TARGET_BROWSER=chrome webpack",
     "build-firefox": "TARGET_BROWSER=firefox webpack",
     "watch": "webpack --watch",
@@ -33,7 +33,6 @@
     "webextension-polyfill": "^0.10.0",
     "webpack": "^5.76.0",
     "webpack-cli": "^5.1.1",
-    "@types/chrome": "^0.0.236",
     "axios": "^1.4.0",
     "buffer": "^6.0.3"
   },

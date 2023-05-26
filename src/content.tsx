@@ -2,6 +2,9 @@ import { setidDisplay } from "./id_display";
 import { initStyle } from "./formatter";
 import * as prop from "./prop";
 import { elementSelector } from "./element_selector";
+import React from "react";
+import ReactDOM from "react-dom";
+import Base from "./components/Base";
 
 export const onLoad = () => {
   console.log("OnLoad");
@@ -13,7 +16,18 @@ export const onLoad = () => {
   console.log("Set idDisplay");
   setidDisplay();
 
-  document.body.appendChild(prop.idDisplay);
+  const div = document.createElement("div");
+  div.setAttribute("id", "root");
+  document.body.insertAdjacentElement("beforeend", div);
+
+  ReactDOM.render(
+      <React.StrictMode>
+        <Base />
+      </React.StrictMode>,
+      document.getElementById('root')
+  );
+
+  // document.body.appendChild(prop.idDisplay);
 };
 
 document.addEventListener("mouseover", () => {

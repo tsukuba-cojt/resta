@@ -16,15 +16,19 @@ export const onLoad = () => {
   console.log("Set idDisplay");
   setidDisplay();
 
+
+
   const div = document.createElement("div");
-  div.setAttribute("id", "root");
+  div.setAttribute("id", "resta-root");
   document.body.insertAdjacentElement("beforeend", div);
+
+
 
   ReactDOM.render(
       <React.StrictMode>
         <Base />
       </React.StrictMode>,
-      document.getElementById('root')
+      document.getElementById('resta-root')
   );
 
   // document.body.appendChild(prop.idDisplay);

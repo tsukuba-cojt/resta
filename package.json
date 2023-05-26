@@ -3,8 +3,6 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start-react": "react-scripts start",
-    "build-react": "react-scripts build",
     "build": "TARGET_BROWSER=chrome webpack",
     "build-firefox": "TARGET_BROWSER=firefox webpack",
     "watch": "webpack --watch",
@@ -15,6 +13,8 @@
   "license": "MIT",
   "dependencies": {
     "@types/chrome": "^0.0.236",
+    "@types/react-dom": "^18.2.4",
+    "@types/styled-components": "^5.1.26",
     "@types/webextension-polyfill": "^0.10.0",
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.48.2",
@@ -24,14 +24,13 @@
     "prettier": "^2.8.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-scripts": "^5.0.1",
     "styled-components": "^5.3.11",
     "ts-loader": "^9.4.2",
     "typescript": "^4.9.4",
     "webextension-polyfill": "^0.10.0",
     "webpack": "^5.76.0",
-    "webpack-cli": "^5.1.1",
-    "axios": "^1.4.0",
-    "buffer": "^6.0.3"
+    "webpack-cli": "^5.1.1"
   },
   "browserslist": {
     "production": [

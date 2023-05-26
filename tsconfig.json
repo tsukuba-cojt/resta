@@ -6,7 +6,7 @@
             "DOM"
         ],
         "rootDir": "./src",
-        "outDir": "./dist",
+        "outDir": "./dist/js",
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "strict": true,
@@ -23,6 +23,6 @@
     },
     "include": [
         "src/**/*",
-        "webpack.config.js"
+        "webpack/webpack.common.js"
     ]
 }

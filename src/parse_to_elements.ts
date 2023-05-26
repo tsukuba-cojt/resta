@@ -1,4 +1,4 @@
-import { createToggleStyleButton } from './create_ui';
+import * as create_ui from './create_ui';
 
 /*
 value::=element | element ":" value
@@ -23,12 +23,12 @@ export const parseToElements = (style: any) => {
     console.log('parsed ', styleObject);
     if (styleObject.type === ElementType.SELECT) {
       console.log(styleObject.values.length, styleObject.values);
-      if (styleObject.values.length === 2) {
+      if (styleObject.values.length === 1) {
         result.push(
-          createToggleStyleButton(
+          create_ui.createToggleStyleButton(
             Object.keys(style.css[0])[0] as string,
             styleObject.values[0],
-            styleObject.values[1],
+            '',
             style.iconchar
           )
         );
@@ -89,7 +89,6 @@ const parser = (value: string) => {
       }
     } else {
       type = ElementType.RAWTEXT;
-      lexime = '';
       do {
         lexime += value[index++];
       } while (index < value.length && value[index] !== ':');

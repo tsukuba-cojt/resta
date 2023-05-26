@@ -14,6 +14,7 @@ export const loadChilds = async (idDisplay: HTMLElement) => {
 
   for (const style of uiSetting) {
     const div = document.createElement('div');
+    div.id = style.name;
     for (const e of parseToElements(style)) {
       div.appendChild(e);
     }

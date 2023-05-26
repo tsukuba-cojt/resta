@@ -14,7 +14,7 @@ export const setFormatAndPushToAry = (
   value: string | null
 ) => {
   const elem = getElementByXpath(xpath);
-  if (!elem || !key || !value) {
+  if (!elem || !key || (!value && value !== '')) {
     console.log('setFormatAndPushToAry:invalid args:', xpath, key, value);
     return;
   }

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "react-scripts start",
+    "start-react": "react-scripts start",
     "build-react": "react-scripts build",
     "build": "TARGET_BROWSER=chrome webpack",
     "build-firefox": "TARGET_BROWSER=firefox webpack",

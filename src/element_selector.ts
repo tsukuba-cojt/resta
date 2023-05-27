@@ -23,7 +23,7 @@ export const elementSelector = () => {
 
   if (
     minElement !== prop.overlapElement &&
-    !minElement.closest("#ReDesignIdDisplay")
+    !minElement.closest("#resta-root")
   ) {
     if (prop.overlapElement && prop.overlapElement !== prop.clickedElement) {
       if (prop.overlapElement.tagName === "IMG") {

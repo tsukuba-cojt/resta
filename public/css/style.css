@@ -1,0 +1,28 @@
+@keyframes openAnimation {
+    from {
+        right: -300px;
+    }
+
+    to {
+        right: 0;
+    }
+}
+
+#resta-root {
+    position: fixed;
+    z-index: 99999;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: 100%;
+    padding: 16px;
+    animation: openAnimation 0.5s ease;
+    box-sizing: border-box;
+    color: #333;
+
+    text-align: initial;
+    line-height: initial;
+    font-size: initial;
+    font-weight: initial;
+    font-family: "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "メイリオ", Meiryo, Osaka, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+}

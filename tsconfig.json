@@ -19,6 +19,7 @@
         "noImplicitReturns": true,
         "skipLibCheck": true,
         "module": "ES2020",
+        "moduleResolution": "node",
       "jsx": "react"
     },
     "include": [

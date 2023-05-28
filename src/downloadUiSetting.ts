@@ -1,18 +1,8 @@
-import { Buffer } from 'buffer';
+import {RestaStyle, RestaStyles} from "./types/RestaSetting";
 
-export const downloadUiSetting = async () => {
-  const axios = require('axios');
-
-  let json: any;
-
-  const endpoint =
-    'https://api.github.com/repos/K-Kazuyuki/resta-ui-setting/contents/resta-setting.json';
-
-  await axios.get(endpoint).then((response: any) => {
-    const content = Buffer.from(response.data.content, 'base64').toString();
-    json = JSON.parse(content);
-
-    console.log('Download Success', json);
-  });
-  return json && json.styles ? json.styles : null;
+export const downloadUiSetting = async (): Promise<RestaStyle[]> => {
+    const endpoint =
+        'https://gist.githubusercontent.com/itsu-dev/80b3b29608fb11a697a1c98fb84cba91/raw/b658d3f27b658a28633eb75fe4cc0700c7e80732/resta-setting.json';
+    const json = await (await fetch(endpoint)).json();
+    return (json as RestaStyles).styles;
 };

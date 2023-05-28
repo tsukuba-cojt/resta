@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "ReSta",
+  "version": "1.0.0",
+  "description": "CSSを変更する",
+  "icons": {},
+  "action": {},
+  "permissions": ["activeTab", "tabs", "storage", "scripting"],
+  "content_scripts": [
+    {
+      "matches": ["https://www.mast.tsukuba.ac.jp/*"],
+      "js": ["js/main.js"],
+      "css": ["css/style.css"]
+    },
+    {
+      "matches": ["https://www.tsukuba.ac.jp/*"],
+      "js": ["js/main.js"],
+      "css": ["css/style.css"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["js/main.js", "css/style.css"],
+      "matches": ["https://www.mast.tsukuba.ac.jp/*"]
+    }
+  ]
+}

@@ -5,7 +5,7 @@ import {elementSelector} from "./element_selector";
 import React from "react";
 import ReactDOM from "react-dom";
 import Base from "./components/Base";
-import loadRestaSetting from "./feature/setting_loader";
+import loadRestaSetting from "./features/setting_loader";
 
 export const onLoad = () => {
     console.log("OnLoad");

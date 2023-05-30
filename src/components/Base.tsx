@@ -13,6 +13,7 @@ const Wrapper = styled.div`
   padding: 16px;
   background-color: #f0f0f099;
   box-sizing: border-box;
+  overflow-y: auto;
 
   border-radius: 8px;
   backdrop-filter: blur(20px);

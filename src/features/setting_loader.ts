@@ -29,10 +29,10 @@ const loadRestaSettingStyles = (styles: RestaStyle[]): ChangeStyleCategoryMap =>
             description: style.description,
             key: kebabToCamel(firstCSS[0]),
             parts: parts,
-            onChange: (key, value) => {
-                console.log(key, value);  // TODO to apply format
+            onChange: (xPath, key, value) => {
+                console.log(xPath, key, value);  // TODO to apply format
             }
-        })
+        });
 
         categories[style.category] = elements.reverse();
     });

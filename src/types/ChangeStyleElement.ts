@@ -7,7 +7,7 @@ export type ChangeStyleElement = {
     description: string;
     parts: LayoutPart[];
     key: string;
-    onChange: (key: string, value: string) => void;
+    onChange: (xPath: string, key: string, value: string) => void;
 }
 
 export type LayoutPart = {

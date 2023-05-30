@@ -5,6 +5,10 @@ import {ChangeStyleElement, LayoutPart} from "../types/ChangeStyleElement";
 import {Collapse, Input, InputNumber, Select} from "antd";
 import {CSSParseResultElementType} from "../types/RestaSetting";
 import t from "../utils/translator";
+import {setFormatAndPushToAry} from "../formatter";
+//import {createXPathFromElement} from "../xpath_control";
+import useHoveredAndSelectedElement from "../hooks/useHoveredAndSelectedElement";
+import getXPath from "get-xpath";
 
 const Wrapper = styled.div`
 `;
@@ -27,6 +31,8 @@ interface CategoryProps {
 }
 
 const ChangeStyleCategory = ({title, elements}: CategoryProps) => {
+
+    const [_, selectedElement] = useHoveredAndSelectedElement();
 
     const isNumberWithUnit = (parts: LayoutPart[]) => {
         return parts.length == 2
@@ -64,7 +70,9 @@ const ChangeStyleCategory = ({title, elements}: CategoryProps) => {
                                         <Select
                                             key={index}
                                             defaultValue={part.options![0]}
-                                            onChange={() => {
+                                            onChange={(value) => {
+                                                console.log(getXPath(selectedElement), element.key, value);
+                                                setFormatAndPushToAry(getXPath(selectedElement), element.key, value);
                                             }}
                                             options={part.options!.map((option) => {
                                                 return {value: option, label: option};

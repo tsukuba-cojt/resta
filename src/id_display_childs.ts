@@ -3,6 +3,7 @@ import { parseToElements } from './parse_to_elements';
 
 export const loadChilds = async (idDisplay: HTMLElement) => {
   const uiSetting = await downloadUiSetting();
+
   if (!uiSetting) {
     console.log(
       'Error(id_display_childs.ts): Could not download resta-setting.json'

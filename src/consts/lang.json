@@ -1,0 +1,13 @@
+{
+  "ja": {
+    "font": "フォント",
+    "name_font_family": "フォントファミリ",
+    "desc_font_family": "フォントファミリを指定します。",
+    "name_font_size": "フォントサイズ",
+    "desc_font_size": "フォントサイズを指定します。単位にはpx, pt, rem, emが指定できます。",
+    "name_font_style": "フォントスタイル",
+    "desc_font_style": "フォントスタイルを指定します。\nnormal：通常、italic：斜体",
+    "name_font_weight": "フォントの太さ",
+    "desc_font_weight": "フォントの太さを指定します。\nnormal：通常、bold：太字"
+  }
+}

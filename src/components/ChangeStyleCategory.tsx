@@ -28,17 +28,25 @@ const Description = styled.p`
 const {Panel} = Collapse;
 
 interface CategoryProps {
+    searchText: string;
     title: string;
     elements: ChangeStyleElement[];
 }
 
-const ChangeStyleCategory = ({title, elements}: CategoryProps) => {
+const ChangeStyleCategory = ({searchText, title, elements}: CategoryProps) => {
     const translator = useContext(TranslatorContext);
     const [_, selectedElement] = useHoveredAndSelectedElement();
 
     const onChange = (key: string, value: string) => {
         console.log(getXPath(selectedElement), key, value);
         setFormatAndPushToAry(getXPath(selectedElement), key, value);
+    }
+
+    const filter = (element: ChangeStyleElement) => {
+        if (searchText.length == 0) {
+            return true;
+        }
+        return t(translator.lang, element.name).includes(searchText) || element.key.includes(searchText);
     }
 
     const isNumberWithUnit = (parts: LayoutPart[]) => {
@@ -48,10 +56,10 @@ const ChangeStyleCategory = ({title, elements}: CategoryProps) => {
     }
 
     return <Wrapper>
-        <Title level={5}>{t(translator.lang, title)}</Title>
+        <Title level={5} style={{margin: "16px 0 8px"}}>{t(translator.lang, title)}</Title>
         <CollapseWrapper>
             <Collapse size="small">
-                {elements.map((element, index) =>
+                {elements.filter(filter).map((element, index) =>
                     <Panel key={index} header={t(translator.lang, element.name)}>
                         <Description>{t(translator.lang, element.description)}</Description>
                         {

@@ -1,9 +1,9 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import styled from "styled-components";
 import Title from "antd/lib/typography/Title";
 import {Input} from "antd";
 import {SearchOutlined} from "@ant-design/icons";
-import {ChangeStyleCategoryMap} from "../types/ChangeStyleElement";
+import {ChangeStyleCategoryMap, ChangeStyleElement} from "../types/ChangeStyleElement";
 import ChangeStyleCategory from "./ChangeStyleCategory";
 import {TranslatorContext, useTranslator} from "../contexts/TranslatorContext";
 import t from "../utils/translator";
@@ -37,6 +37,17 @@ interface BaseProps {
 
 const Base = ({categoryMap}: BaseProps) => {
     const translator = useTranslator();
+    const [searchText, setSearchText] = useState<string>("");
+
+    const filter = ([key, elements]: [string, ChangeStyleElement[]]): boolean => {
+        if (searchText.length == 0) {
+            return true;
+        }
+
+        return t(translator.lang, key).includes(searchText)
+            || elements.some((element) => t(translator.lang, element.name).includes(searchText))
+            || elements.some((element) => element.key.includes(searchText));
+    }
 
     useEffect(() => {
         (async () => {
@@ -45,16 +56,19 @@ const Base = ({categoryMap}: BaseProps) => {
         })();
     }, []);
 
+    useEffect(() => console.log(searchText), [searchText]);
+
     return (
         <Wrapper>
             <TranslatorContext.Provider value={translator}>
                 <Title level={4}>{t(translator.lang, "base_change_style")}</Title>
                 <InputWrapper>
-                    <Input placeholder={t(translator.lang, "base_search")} prefix={<SearchOutlined/>}/>
+                    <Input placeholder={t(translator.lang, "base_search")} prefix={<SearchOutlined/>}
+                           onChange={(e) => setSearchText(e.currentTarget!.value)}/>
                 </InputWrapper>
-                {
-                    Object.entries(categoryMap).map((values, index) =>
-                        <ChangeStyleCategory title={values[0]} elements={values[1]} key={index}/>
+                { searchText.length >= 0 &&
+                    Object.entries(categoryMap).filter(filter).map((elements, index) =>
+                        <ChangeStyleCategory searchText={searchText} title={elements[0]} elements={elements[1]} key={index}/>
                     )
                 }
             </TranslatorContext.Provider>

@@ -8,7 +8,7 @@
   "permissions": ["activeTab", "tabs", "storage", "scripting"],
   "content_scripts": [
     {
-      "matches": ["https://www.mast.tsukuba.ac.jp/*"],
+      "matches": ["https://www.mast.tsukuba.ac.jp/*", "http://www.slis.tsukuba.ac.jp/*"],
       "js": ["js/main.js"],
       "css": ["css/style.css"]
     },

@@ -2,13 +2,14 @@ import styled from "styled-components";
 import Title from "antd/lib/typography/Title";
 import React from "react";
 import {ChangeStyleElement, LayoutPart} from "../types/ChangeStyleElement";
-import {Collapse, Input, InputNumber, Select} from "antd";
+import {Collapse, Input, InputNumber} from "antd";
 import {CSSParseResultElementType} from "../types/RestaSetting";
 import t from "../utils/translator";
 import {setFormatAndPushToAry} from "../formatter";
-//import {createXPathFromElement} from "../xpath_control";
 import useHoveredAndSelectedElement from "../hooks/useHoveredAndSelectedElement";
 import getXPath from "get-xpath";
+import InputNumberWithUnit from "./controls/InputNumberWithUnit";
+import Select from "./controls/Select";
 
 const Wrapper = styled.div`
 `;
@@ -34,6 +35,11 @@ const ChangeStyleCategory = ({title, elements}: CategoryProps) => {
 
     const [_, selectedElement] = useHoveredAndSelectedElement();
 
+    const onChange = (key: string, value: string) => {
+        console.log(getXPath(selectedElement), key, value);
+        setFormatAndPushToAry(getXPath(selectedElement), key, value);
+    }
+
     const isNumberWithUnit = (parts: LayoutPart[]) => {
         return parts.length == 2
             && parts[0].type === CSSParseResultElementType.NUMBER
@@ -49,45 +55,22 @@ const ChangeStyleCategory = ({title, elements}: CategoryProps) => {
                         <Description>{t(element.description)}</Description>
                         {
                             isNumberWithUnit(element.parts) &&
-                            <InputNumber addonAfter={
-                                <Select
-                                    defaultValue={element.parts[1].options![0]}
-                                    onChange={() => {
-                                    }}
-                                    options={element.parts[1].options!.map((option) => {
-                                        return {value: option, label: option};
-                                    })}
-                                    dropdownStyle={{zIndex: 99999}}
-                                />
-                            }
-                                   key={index}
-                            />
+                            <InputNumberWithUnit key={index} element={element} onChange={onChange} />
                         }
                         {
                             !isNumberWithUnit(element.parts) && element.parts.map((part, index) =>
                                 <>
                                     {part.type === CSSParseResultElementType.SELECT &&
-                                        <Select
-                                            key={index}
-                                            defaultValue={part.options![0]}
-                                            onChange={(value) => {
-                                                console.log(getXPath(selectedElement), element.key, value);
-                                                setFormatAndPushToAry(getXPath(selectedElement), element.key, value);
-                                            }}
-                                            options={part.options!.map((option) => {
-                                                return {value: option, label: option};
-                                            })}
-                                            dropdownStyle={{zIndex: 99999}}
-                                        />
+                                        <Select key={index} cssKey={element.key} part={part} onChange={onChange}/>
                                     }
                                     {part.type === CSSParseResultElementType.STRING &&
-                                        <Input key={index}/>
+                                        <Input key={index} onChange={(value) => onChange(element.key, value.currentTarget.value)}/>
                                     }
                                     {part.type === CSSParseResultElementType.NUMBER &&
-                                        <InputNumber key={index}/>
+                                        <InputNumber key={index} onChange={(value) => onChange(element.key, value?.toString() ?? "")}/>
                                     }
                                     {part.type === CSSParseResultElementType.RAWTEXT &&
-                                        <span>{part.text}</span>
+                                        <span key={index}>{part.text}</span>
                                     }
                                 </>
                             )

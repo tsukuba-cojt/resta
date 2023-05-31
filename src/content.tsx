@@ -25,6 +25,7 @@ export const onLoad = () => {
         div.setAttribute("id", "resta-root");
         document.body.insertAdjacentElement("beforeend", div);
 
+
         ReactDOM.render(
             <React.StrictMode>
                 <Base categoryMap={categoryMap}/>

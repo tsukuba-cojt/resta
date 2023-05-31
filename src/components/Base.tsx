@@ -1,10 +1,13 @@
-import React from "react";
+import React, {useEffect} from "react";
 import styled from "styled-components";
 import Title from "antd/lib/typography/Title";
 import {Input} from "antd";
 import {SearchOutlined} from "@ant-design/icons";
 import {ChangeStyleCategoryMap} from "../types/ChangeStyleElement";
 import ChangeStyleCategory from "./ChangeStyleCategory";
+import {TranslatorContext, useTranslator} from "../contexts/TranslatorContext";
+import t from "../utils/translator";
+import {downloadLangJson} from "../downloadUiSetting";
 
 
 const Wrapper = styled.div`
@@ -33,17 +36,28 @@ interface BaseProps {
 }
 
 const Base = ({categoryMap}: BaseProps) => {
+    const translator = useTranslator();
+
+    useEffect(() => {
+        (async () => {
+            console.log(1234);
+            translator.setLanguage(await downloadLangJson());
+        })();
+    }, []);
+
     return (
         <Wrapper>
-            <Title level={4}>スタイルの変更</Title>
-            <InputWrapper>
-                <Input placeholder="検索" prefix={<SearchOutlined/>}/>
-            </InputWrapper>
-            {
-                Object.entries(categoryMap).map((values, index) =>
-                    <ChangeStyleCategory title={values[0]} elements={values[1]} key={index}/>
-                )
-            }
+            <TranslatorContext.Provider value={translator}>
+                <Title level={4}>{t(translator.lang, "base_change_style")}</Title>
+                <InputWrapper>
+                    <Input placeholder={t(translator.lang, "base_search")} prefix={<SearchOutlined/>}/>
+                </InputWrapper>
+                {
+                    Object.entries(categoryMap).map((values, index) =>
+                        <ChangeStyleCategory title={values[0]} elements={values[1]} key={index}/>
+                    )
+                }
+            </TranslatorContext.Provider>
         </Wrapper>
     )
 };

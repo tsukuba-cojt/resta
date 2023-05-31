@@ -5,7 +5,7 @@ import {ChangeStyleElement, LayoutPart} from "../types/ChangeStyleElement";
 import {Collapse, Input, InputNumber} from "antd";
 import {CSSParseResultElementType} from "../types/RestaSetting";
 import t from "../utils/translator";
-import {setFormatAndPushToAry} from "../formatter";
+import {setFormatAndPushToAry} from "../features/formatter";
 import useHoveredAndSelectedElement from "../hooks/useHoveredAndSelectedElement";
 import getXPath from "get-xpath";
 import InputNumberWithUnit from "./controls/InputNumberWithUnit";

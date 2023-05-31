@@ -1,7 +1,7 @@
-import {downloadUiSetting} from "../downloadUiSetting";
 import {ChangeStyleCategoryMap, LayoutPart} from "../types/ChangeStyleElement";
 import {CSSParseResult, CSSParseResultElementType, RestaStyle} from "../types/RestaSetting";
 import {kebabToCamel} from "../utils/CSSUtils";
+import {downloadUiSetting} from "./setting_downloader";
 
 export const loadRestaSetting = async (): Promise<ChangeStyleCategoryMap> => {
     const styles = await downloadUiSetting();

@@ -7,7 +7,7 @@ import {ChangeStyleCategoryMap} from "../types/ChangeStyleElement";
 import ChangeStyleCategory from "./ChangeStyleCategory";
 import {TranslatorContext, useTranslator} from "../contexts/TranslatorContext";
 import t from "../utils/translator";
-import {downloadLangJson} from "../downloadUiSetting";
+import {downloadLangJson} from "../features/setting_downloader";
 
 
 const Wrapper = styled.div`

@@ -1,18 +1,14 @@
-// import {setidDisplay} from "./id_display";
-import {initStyle} from "./formatter";
-import * as prop from "./prop";
-import React from "react";
-import ReactDOM from "react-dom";
-import Base from "./components/Base";
+import * as prop from "./features/prop";
+import {initStyle} from "./features/formatter";
 import loadRestaSetting from "./features/setting_loader";
+import ReactDOM from "react-dom";
+import React from "react";
+import Base from "./components/Base";
 import ElementSelector from "./features/ElementSelector";
 
-export const onLoad = () => {
+window.addEventListener('load', () => {
     console.log("OnLoad");
     prop.setUrl(window.location.href);
-
-    // console.log("Set idDisplay");
-    // setidDisplay();
 
     (async () => {
         console.log("Init Style");
@@ -34,15 +30,4 @@ export const onLoad = () => {
             document.getElementById('resta-root')
         );
     })();
-
-    // document.body.appendChild(prop.idDisplay);
-};
-
-/*
-document.addEventListener("mouseover", () => {
-    elementSelector();
 });
-
- */
-
-// TODO: mouseoverが取れたらもともとのStyleに戻す (今はすべて空文字列に変えている) @K-Kazuyuki

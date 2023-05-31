@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Title from "antd/lib/typography/Title";
-import React from "react";
+import React, {useContext} from "react";
 import {ChangeStyleElement, LayoutPart} from "../types/ChangeStyleElement";
 import {Collapse, Input, InputNumber} from "antd";
 import {CSSParseResultElementType} from "../types/RestaSetting";
@@ -10,6 +10,7 @@ import useHoveredAndSelectedElement from "../hooks/useHoveredAndSelectedElement"
 import getXPath from "get-xpath";
 import InputNumberWithUnit from "./controls/InputNumberWithUnit";
 import Select from "./controls/Select";
+import {TranslatorContext} from "../contexts/TranslatorContext";
 
 const Wrapper = styled.div`
 `;
@@ -32,7 +33,7 @@ interface CategoryProps {
 }
 
 const ChangeStyleCategory = ({title, elements}: CategoryProps) => {
-
+    const translator = useContext(TranslatorContext);
     const [_, selectedElement] = useHoveredAndSelectedElement();
 
     const onChange = (key: string, value: string) => {
@@ -47,12 +48,12 @@ const ChangeStyleCategory = ({title, elements}: CategoryProps) => {
     }
 
     return <Wrapper>
-        <Title level={5}>{t(title)}</Title>
+        <Title level={5}>{t(translator.lang, title)}</Title>
         <CollapseWrapper>
             <Collapse size="small">
                 {elements.map((element, index) =>
-                    <Panel key={index} header={t(element.name)}>
-                        <Description>{t(element.description)}</Description>
+                    <Panel key={index} header={t(translator.lang, element.name)}>
+                        <Description>{t(translator.lang, element.description)}</Description>
                         {
                             isNumberWithUnit(element.parts) &&
                             <InputNumberWithUnit key={index} element={element} onChange={onChange} />

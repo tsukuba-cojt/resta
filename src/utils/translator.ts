@@ -1,10 +1,18 @@
 // @ts-ignore
-import lang from "../consts/lang.json";
-import {i18n} from "webextension-polyfill";
+import lang from '../consts/lang.json';
+import { i18n } from 'webextension-polyfill';
+import { Language } from '../types/Language';
 
-const t = (key: string) => {
-    const s = lang[i18n.getUILanguage()][key];
+// 引数持ち
+const t = (lang: Language, key: string, ...params: any) => {
+  const s = lang[i18n.getUILanguage()][key];
+  if (params.length == 0 || s) {
     return s ? s : key;
-}
+  }
+
+  // 置き換え処理
+  const format = require('string-format');
+  return format(s, ...params);
+};
 
 export default t;

@@ -4,7 +4,7 @@ import {ChangeStyleElement} from "../../types/ChangeStyleElement";
 
 interface InputNumberWithUnitProps {
     element: ChangeStyleElement;
-    onChange: (key: string, value: string) => void;
+    onChange: (key: string, value: string, id:number) => void;
 }
 
 const InputNumberWithUnit = ({element, onChange}: InputNumberWithUnitProps) => {
@@ -16,7 +16,7 @@ const InputNumberWithUnit = ({element, onChange}: InputNumberWithUnitProps) => {
             <Select
                 defaultValue={element.parts[1].defaultValue as string ?? element.parts[1].options![0]}
                 onChange={(value) => {
-                    onChange(element.key, `${numberValue}${value}`);
+                    onChange(element.key, `${numberValue}${value}`, element.id);
                     setOptionValue(value);
                 }}
                 options={element.parts[1].options!.map((option) => {
@@ -26,7 +26,7 @@ const InputNumberWithUnit = ({element, onChange}: InputNumberWithUnitProps) => {
             />
         }
                      onChange={(value) => {
-                         onChange(element.key, `${value}${optionValue}`);
+                         onChange(element.key, `${value}${optionValue}`, element.id);
                          setNumberValue(value as number);
                      }}
         />

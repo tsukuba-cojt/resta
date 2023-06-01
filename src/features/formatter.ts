@@ -69,91 +69,65 @@ const pushToAry = (
   }
   // 以下のif文は、各配列が存在しない場合に配列を作成する処理
   // すでに該当箇所への変更がある場合は書き換えている
-  if (!prop.formatsArray.find((e) => e.xpath === xpath)) {
-    prop.formatsArray.push({ xpath: xpath, changes: [] });
+  if (!prop.formatsArray.find((e) => e.url === prop.edittedUrl)) {
+    prop.formatsArray.push({ url: prop.edittedUrl, formats: [] });
   }
   if (
     !prop.formatsArray
-      .find((e) => e.xpath === xpath)
-      ?.changes.find((e) => e.key === key)
+      .find((e) => e.url === prop.edittedUrl)
+      ?.formats.find((e) => e.xpath === xpath)
   ) {
     prop.formatsArray
-      .find((e) => e.xpath === xpath)
-      ?.changes.push({ key: key, values: [] });
+      .find((e) => e.url === prop.edittedUrl)
+      ?.formats.push({ xpath: xpath, changes: [] });
   }
   if (
     !prop.formatsArray
-      .find((e) => e.xpath === xpath)
-      ?.changes.find((e) => e.key === key)
-      ?.values.find((e) => e.id === id)
+      .find((e) => e.url === prop.edittedUrl)
+      ?.formats.find((e) => e.xpath === xpath)
+      ?.changes.find((e) => e.cssKey === key)
   ) {
     prop.formatsArray
-      .find((e) => e.xpath === xpath)
-      ?.changes.find((e) => e.key === key)
-      ?.values.push({ id: id, value: value });
+      .find((e) => e.url === prop.edittedUrl)
+      ?.formats.find((e) => e.xpath === xpath)
+      ?.changes.push({ cssKey: key, cssValues: [] });
+  }
+  if (
+    !prop.formatsArray
+      .find((e) => e.url === prop.edittedUrl)
+      ?.formats.find((e) => e.xpath === xpath)
+      ?.changes.find((e) => e.cssKey === key)
+      ?.cssValues.find((e) => e.id === id)
+  ) {
+    prop.formatsArray
+      .find((e) => e.url === prop.edittedUrl)
+      ?.formats.find((e) => e.xpath === xpath)
+      ?.changes.find((e) => e.cssKey === key)
+      ?.cssValues.push({ id: id, cssValue: value });
+    console.log('pushToAry:push', prop.formatsArray);
   } else {
     // idに対応する要素を取り除く
     prop.formatsArray
-      .find((e) => e.xpath === xpath)
-      ?.changes.find((e) => e.key === key)
-      ?.values.filter((e) => e.id !== id);
+      .find((e) => e.url === prop.edittedUrl)
+      ?.formats.find((e) => e.xpath === xpath)
+      ?.changes.find((e) => e.cssKey === key)
+      ?.cssValues.splice(
+        prop.formatsArray
+          .find((e) => e.url === prop.edittedUrl)
+          ?.formats.find((e) => e.xpath === xpath)
+          ?.changes.find((e) => e.cssKey === key)
+          ?.cssValues.findIndex((e) => e.id === id) || 0,
+        1
+      );
     // idに対応する要素を追加する
     // これにより、idに対応する要素が最後尾に移動する
     prop.formatsArray
-      .find((e) => e.xpath === xpath)
-      ?.changes.find((e) => e.key === key)
-      ?.values.push({ id: id, value: value });
-  }
-};
-
-// スタイルに変更を加えてformatsListに変更内容を追加
-export const setFormatAndPushToAryOld = (
-  xpath: string | null,
-  key: string | null,
-  value: string | null
-) => {
-  const elem = getElementByXpath(xpath);
-  if (!elem || !key || (!value && value !== '')) {
-    console.log('setFormatAndPushToAry:invalid args:', xpath, key, value);
-    return;
-  }
-  // スタイルの変更
-  elem.style[key as any] = value;
-  // 配列への追加処理
-  // 以下のif文は、各配列が存在しない場合に配列を作成する処理
-  // すでに該当箇所への変更がある場合は書き換えている
-  if (
-    !prop.formatsAryOld ||
-    !prop.formatsAryOld.find((e) => e.url === prop.edittedUrl)
-  ) {
-    prop.formatsAryOld.push({ url: prop.edittedUrl, formats: [] });
-  }
-  if (
-    !prop.formatsAryOld
       .find((e) => e.url === prop.edittedUrl)
-      .formats.find((e: any) => e.xpath === xpath)
-  ) {
-    prop.formatsAryOld
-      .find((e) => e.url === prop.edittedUrl)
-      .formats.push({ xpath: xpath, styles: [] });
+      ?.formats.find((e) => e.xpath === xpath)
+      ?.changes.find((e) => e.cssKey === key)
+      ?.cssValues.push({ id: id, cssValue: value });
+    console.log('pushToAry:already exists, overwrite', prop.formatsArray);
   }
-  if (
-    prop.formatsAryOld
-      .find((e) => e.url === prop.edittedUrl)
-      .formats.find((e: any) => e.xpath === xpath)
-      .styles.find((e: any) => e.key === key)
-  ) {
-    prop.formatsAryOld
-      .find((e) => e.url === prop.edittedUrl)
-      .formats.find((e: any) => e.xpath === xpath)
-      .styles.find((e: any) => e.key === key).value = value;
-  } else {
-    prop.formatsAryOld
-      .find((e) => e.url === prop.edittedUrl)
-      .formats.find((e: any) => e.xpath === xpath)
-      .styles.push({ key: key, value: value });
-  }
-  console.log('format changed', xpath, key, value);
 };
 
 export const loadFormat = async () => {
@@ -164,35 +138,40 @@ export const loadFormat = async () => {
     } else {
       console.log('load', prop.currentUrl, JSON.parse(result.formats));
       if (JSON.parse(result.formats))
-        prop.setFormatsAry(JSON.parse(result.formats));
+        prop.setFormatsAry(
+          JSON.parse(result.formats) as Array<prop.FormatBlockByURL>
+        );
       return;
     }
   });
 };
 
 export const saveFormat = () => {
-  if (prop.formatsAryOld.length == 0) return;
+  if (prop.formatsArray.length == 0) return;
   chrome.storage.local
-    .set({ formats: JSON.stringify(prop.formatsAryOld) })
+    .set({ formats: JSON.stringify(prop.formatsArray) })
     .then(() => {
-      console.log('save', prop.currentUrl, prop.formatsAryOld);
+      console.log('save', prop.currentUrl, prop.formatsArray);
     });
 };
 
 export const applyFormats = () => {
-  const formats = prop.formatsAryOld.filter((e) =>
-    prop.currentUrl.match(e.url)
-  );
+  const formats = prop.formatsArray.filter((e) => prop.currentUrl.match(e.url));
   for (const f of formats) {
-    console.log(f);
+    // console.log(f);
     for (const format of f.formats) {
       const xpath = format.xpath;
-      const styles = format.styles;
       const elem = getElementByXpath(xpath);
       if (!elem) continue;
-      for (const style of styles) {
-        console.log(style);
-        elem.style[style.key] = style.value;
+      for (const change of format.changes) {
+        console.log(
+          'apply:',
+          xpath,
+          change.cssKey,
+          change.cssValues[change.cssValues.length - 1].cssValue
+        );
+        elem.style[change.cssKey as any] =
+          change.cssValues[change.cssValues.length - 1].cssValue;
       }
     }
   }

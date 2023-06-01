@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from "react";
 import styled from "styled-components";
 import Title from "antd/lib/typography/Title";
-import {Input} from "antd";
+import {Button, Input} from "antd";
 import {SearchOutlined} from "@ant-design/icons";
 import {ChangeStyleCategoryMap, ChangeStyleElement} from "../types/ChangeStyleElement";
 import ChangeStyleCategory from "./ChangeStyleCategory";
 import {TranslatorContext, useTranslator} from "../contexts/TranslatorContext";
 import t from "../utils/translator";
 import {downloadLangJson} from "../features/setting_downloader";
+import { saveFormat } from "../features/formatter";
 
 
 const Wrapper = styled.div`
@@ -71,6 +72,7 @@ const Base = ({categoryMap}: BaseProps) => {
                         <ChangeStyleCategory searchText={searchText} title={elements[0]} elements={elements[1]} key={index}/>
                     )
                 }
+                <Button onClick={saveFormat}>{t(translator.lang, "save_button")}</Button>
             </TranslatorContext.Provider>
         </Wrapper>
     )

@@ -5,14 +5,15 @@ import {LayoutPart} from "../../types/ChangeStyleElement";
 interface SelectProps {
     cssKey: string;
     part: LayoutPart;
-    onChange: (key: string, value: string) => void;
+    id: number;
+    onChange: (key: string, value: string, id:number) => void;
 }
 
-const Select = ({cssKey, part, onChange}: SelectProps) => {
+const Select = ({cssKey, part, id, onChange}: SelectProps) => {
     return (
         <AntdSelect
             defaultValue={part.options![0]}
-            onChange={(value) => onChange(cssKey, value)}
+            onChange={(value) => onChange(cssKey, value, id)}
             options={part.options!.map((option) => {
                 return {value: option, label: option};
             })}

@@ -12,13 +12,15 @@ export const setEdittedUrl = (url: string) => {
   edittedUrl = url;
 };
 
-// スタイル変更の配列を格納する変数
-export let formatsAryOld: Array<any> = [];
-export const setFormatsAry = (ary: Array<any>) => {
-  formatsAryOld = ary;
+export let formatsArray: Array<FormatBlockByURL> = [];
+export const setFormatsAry = (ary: Array<FormatBlockByURL>) => {
+  formatsArray = ary;
 };
 
-export const formatsArray: Array<Format> = [];
+export type FormatBlockByURL = {
+  url: string;
+  formats: Array<Format>;
+};
 
 export type Format = {
   xpath: string;
@@ -26,11 +28,11 @@ export type Format = {
 };
 
 export type FormatChange = {
-  key: string;
-  values: Array<FormatStyleValue>;
+  cssKey: string;
+  cssValues: Array<FormatStyleValue>;
 };
 
 export type FormatStyleValue = {
   id: number;
-  value: string;
+  cssValue: string;
 };

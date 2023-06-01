@@ -21,9 +21,7 @@ const loadRestaSettingStyles = (
   const categories: ChangeStyleCategoryMap = {};
 
   styles.forEach((style) => {
-    const elements = categories[style.category]
-      ? [...categories[style.category]]
-      : [];
+    const elements = categories[style.category] ? categories[style.category] : [];
     const firstCSS = Object.entries(style.css)[0];
     const parts: LayoutPart[] = [];
 
@@ -46,7 +44,7 @@ const loadRestaSettingStyles = (
       },
     });
 
-    categories[style.category] = elements.reverse();
+    categories[style.category] = elements;
   });
 
   return categories;

@@ -7,8 +7,107 @@ export const initStyle = async () => {
   // このページに対応するフォーマットがあれば適用
   applyFormats();
 };
-// スタイルに変更を加えてformatsListに変更内容を追加
+
+/**
+ * スタイルに変更を加えてformatsListに変更内容を追加
+ * formatsListはsaveFormat()でlocalに保存される
+ */
 export const setFormatAndPushToAry = (
+  xpath: string | null,
+  key: string | null,
+  value: string | null,
+  id: number | null
+) => {
+  if (!xpath) {
+    console.log('setFormatAndPushToAry:invalid args, xpath is not found');
+    return;
+  }
+  const elem = getElementByXpath(xpath);
+  if (!elem) {
+    console.log('setFormatAndPushToAry:invalid args, elem is not found');
+    return;
+  }
+  if (!key) {
+    console.log('setFormatAndPushToAry:invalid args, key is not found');
+    return;
+  }
+  if (!value && value !== '') {
+    console.log('setFormatAndPushToAry:invalid args, value is not found');
+    return;
+  }
+  // スタイルの変更
+  elem.style[key as any] = value;
+  // 配列への追加処理
+  pushToAry(xpath, key, value, id);
+  console.log('format changed', xpath, key, value);
+};
+
+/**
+ * formatsArrayに変更内容を追加。
+ * すでに同じ要素がある場合は上書きし優先度レイヤーをトップにする
+ */
+const pushToAry = (
+  xpath: string | null,
+  key: string | null,
+  value: string | null,
+  id: number | null
+) => {
+  if (!xpath) {
+    console.log('setFormatAndPushToAry:invalid args, xpath is not found');
+    return;
+  }
+  if (!key) {
+    console.log('setFormatAndPushToAry:invalid args, key is not found');
+    return;
+  }
+  if (!value && value !== '') {
+    console.log('setFormatAndPushToAry:invalid args, value is not found');
+    return;
+  }
+  if (!id) {
+    id = 0;
+  }
+  // 以下のif文は、各配列が存在しない場合に配列を作成する処理
+  // すでに該当箇所への変更がある場合は書き換えている
+  if (!prop.formatsArray.find((e) => e.xpath === xpath)) {
+    prop.formatsArray.push({ xpath: xpath, changes: [] });
+  }
+  if (
+    !prop.formatsArray
+      .find((e) => e.xpath === xpath)
+      ?.changes.find((e) => e.key === key)
+  ) {
+    prop.formatsArray
+      .find((e) => e.xpath === xpath)
+      ?.changes.push({ key: key, values: [] });
+  }
+  if (
+    !prop.formatsArray
+      .find((e) => e.xpath === xpath)
+      ?.changes.find((e) => e.key === key)
+      ?.values.find((e) => e.id === id)
+  ) {
+    prop.formatsArray
+      .find((e) => e.xpath === xpath)
+      ?.changes.find((e) => e.key === key)
+      ?.values.push({ id: id, value: value });
+  } else {
+    // idに対応する要素を取り除く
+    prop.formatsArray
+      .find((e) => e.xpath === xpath)
+      ?.changes.find((e) => e.key === key)
+      ?.values.filter((e) => e.id !== id);
+    // idに対応する要素を追加する
+    // これにより、idに対応する要素が最後尾に移動する
+    prop.formatsArray
+      .find((e) => e.xpath === xpath)
+      ?.changes.find((e) => e.key === key)
+      ?.values.push({ id: id, value: value });
+  }
+};
+
+// スタイルに変更を加えてformatsListに変更内容を追加
+export const setFormatAndPushToAryOld = (
   xpath: string | null,
   key: string | null,
   value: string | null
@@ -24,32 +123,32 @@ export const setFormatAndPushToAry = (
   // 以下のif文は、各配列が存在しない場合に配列を作成する処理
   // すでに該当箇所への変更がある場合は書き換えている
   if (
-    !prop.formatsAry ||
-    !prop.formatsAry.find((e) => e.url === prop.edittedUrl)
+    !prop.formatsAryOld ||
+    !prop.formatsAryOld.find((e) => e.url === prop.edittedUrl)
   ) {
-    prop.formatsAry.push({ url: prop.edittedUrl, formats: [] });
+    prop.formatsAryOld.push({ url: prop.edittedUrl, formats: [] });
   }
   if (
-    !prop.formatsAry
+    !prop.formatsAryOld
       .find((e) => e.url === prop.edittedUrl)
       .formats.find((e: any) => e.xpath === xpath)
   ) {
-    prop.formatsAry
+    prop.formatsAryOld
       .find((e) => e.url === prop.edittedUrl)
       .formats.push({ xpath: xpath, styles: [] });
   }
   if (
-    prop.formatsAry
+    prop.formatsAryOld
       .find((e) => e.url === prop.edittedUrl)
       .formats.find((e: any) => e.xpath === xpath)
       .styles.find((e: any) => e.key === key)
   ) {
-    prop.formatsAry
+    prop.formatsAryOld
       .find((e) => e.url === prop.edittedUrl)
       .formats.find((e: any) => e.xpath === xpath)
       .styles.find((e: any) => e.key === key).value = value;
   } else {
-    prop.formatsAry
+    prop.formatsAryOld
       .find((e) => e.url === prop.edittedUrl)
       .formats.find((e: any) => e.xpath === xpath)
       .styles.push({ key: key, value: value });
@@ -72,16 +171,18 @@ export const loadFormat = async () => {
 };
 
 export const saveFormat = () => {
-  if (prop.formatsAry.length == 0) return;
+  if (prop.formatsAryOld.length == 0) return;
   chrome.storage.local
-    .set({ formats: JSON.stringify(prop.formatsAry) })
+    .set({ formats: JSON.stringify(prop.formatsAryOld) })
     .then(() => {
-      console.log('save', prop.currentUrl, prop.formatsAry);
+      console.log('save', prop.currentUrl, prop.formatsAryOld);
     });
 };
 
 export const applyFormats = () => {
-  const formats = prop.formatsAry.filter((e) => prop.currentUrl.match(e.url));
+  const formats = prop.formatsAryOld.filter((e) =>
+    prop.currentUrl.match(e.url)
+  );
   for (const f of formats) {
     console.log(f);
     for (const format of f.formats) {

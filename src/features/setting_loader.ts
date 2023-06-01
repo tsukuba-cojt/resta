@@ -36,6 +36,7 @@ const loadRestaSettingStyles = (
     );
 
     elements.push({
+      id: style.id,
       name: style.name,
       description: style.description,
       key: firstCSS[0],

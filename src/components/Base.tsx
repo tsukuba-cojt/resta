@@ -15,6 +15,8 @@ import {
 import t from '../utils/translator';
 import { downloadLangJson } from '../features/setting_downloader';
 import { saveFormat } from '../features/formatter';
+import useHoveredAndSelectedElement from "../hooks/useHoveredAndSelectedElement";
+import getXPath from "get-xpath";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -43,6 +45,7 @@ interface BaseProps {
 
 const Base = ({ categoryMap }: BaseProps) => {
   const translator = useTranslator();
+  const [_, selectedElement] = useHoveredAndSelectedElement();
   const [searchText, setSearchText] = useState<string>('');
 
   const filter = ([key, elements]: [string, ChangeStyleElement[]]): boolean => {
@@ -66,8 +69,6 @@ const Base = ({ categoryMap }: BaseProps) => {
     })();
   }, []);
 
-  useEffect(() => console.log(searchText), [searchText]);
-
   return (
     <Wrapper>
       <TranslatorContext.Provider value={translator}>
@@ -79,6 +80,7 @@ const Base = ({ categoryMap }: BaseProps) => {
             onChange={(e) => setSearchText(e.currentTarget!.value)}
           />
         </InputWrapper>
+        <p>{ getXPath(selectedElement)}</p>
         {searchText.length >= 0 &&
           Object.entries(categoryMap)
             .filter(filter)

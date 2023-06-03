@@ -112,7 +112,7 @@ const pushToAry = (
     return {
       undo: {
         type: 'delete',
-        xpath: xpath,
+        cssSelector: cssSelector,
         cssKey: key,
         cssValue: value,
         id: id,
@@ -120,7 +120,7 @@ const pushToAry = (
       },
       redo: {
         type: 'create',
-        xpath: xpath,
+        cssSelector: cssSelector,
         cssKey: key,
         cssValue: value,
         id: id,
@@ -130,7 +130,7 @@ const pushToAry = (
   } else {
     // すでにidに対応する要素がある場合
     // その要素を削除して末尾に追加する
-    const index = getIndex(xpath, key, id);
+    const index = getIndex(cssSelector, key, id);
     if (index == undefined) {
       console.log('pushToAry: bug detected, index is undefined');
     }
@@ -158,7 +158,7 @@ const pushToAry = (
     return {
       undo: {
         type: 'rewrite',
-        xpath: xpath,
+        cssSelector: cssSelector,
         cssKey: key,
         cssValue: log ? log[0].cssValue : '',
         id: id,
@@ -166,7 +166,7 @@ const pushToAry = (
       },
       redo: {
         type: 'rewrite',
-        xpath: xpath,
+        cssSelector: cssSelector,
         cssKey: key,
         cssValue: value,
         id: id,
@@ -177,13 +177,13 @@ const pushToAry = (
 };
 
 const getIndex = (
-  xpath: string,
+  cssSelector: string,
   key: string,
   id: number
 ): number | undefined => {
   return prop.formatsArray
     .find((e) => e.url === prop.edittedUrl)
-    ?.formats.find((e) => e.xpath === xpath)
+    ?.formats.find((e) => e.cssSelector === cssSelector)
     ?.changes.find((e) => e.cssKey === key)
     ?.cssValues.findIndex((e) => e.id === id);
 };

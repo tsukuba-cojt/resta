@@ -1,9 +1,10 @@
 import * as prop from './prop';
 import { UnRedo, UnRedoChanges, pushLog, resetUndoStack } from './ReUndo';
+import loadRestaSetting from './setting_loader';
 
 export const initStyle = async () => {
   // localからjson形式のデータを取得しparseしたものをformatsAryへ代入
-  await loadFormat();
+  await loadRestaSetting();
   // このページに対応するフォーマットがあれば適用
   applyFormats();
 };

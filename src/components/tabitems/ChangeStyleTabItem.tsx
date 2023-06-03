@@ -8,8 +8,8 @@ import {ChangeStyleCategoryMap, ChangeStyleElement} from "../../types/ChangeStyl
 import {downloadLangJson} from "../../features/setting_downloader";
 import {Input} from "antd";
 import {SearchOutlined} from "@ant-design/icons";
-import getXPath from "get-xpath";
 import ChangeStyleCategory from "../ChangeStyleCategory";
+import {getAbsoluteCSSSelector} from "../../utils/CSSUtils";
 
 const Wrapper = styled.div`
 `;
@@ -42,7 +42,6 @@ const ChangeStyleTabItem = ({ categoryMap }: ChangeStyleTabItemProps) => {
 
   useEffect(() => {
     (async () => {
-      console.log(1234);
       translator.setLanguage(await downloadLangJson());
     })();
   }, []);
@@ -56,7 +55,7 @@ const ChangeStyleTabItem = ({ categoryMap }: ChangeStyleTabItemProps) => {
           onChange={(e) => setSearchText(e.currentTarget!.value)}
         />
       </InputWrapper>
-      <p>{ getXPath(selectedElement)}</p>
+      <p>{ selectedElement ? getAbsoluteCSSSelector(selectedElement) : ""}</p>
       {searchText.length >= 0 &&
         Object.entries(categoryMap)
           .filter(filter)

@@ -1,8 +1,8 @@
 import { useLayoutEffect, useState } from 'react';
 
 const useHoveredAndSelectedElement = (): [
-  HTMLElement | null,
-  HTMLElement | null
+    HTMLElement | null,
+    HTMLElement | null
 ] => {
   const [hoveredElement, setHoveredElement] = useState<HTMLElement | null>(
     null
@@ -12,39 +12,27 @@ const useHoveredAndSelectedElement = (): [
   );
 
   useLayoutEffect(() => {
-    const updateElement = () => {
-      const hovers: NodeListOf<HTMLElement> =
-        document.querySelectorAll(':hover');
-      const minSize = Number.MAX_VALUE; // 1000000じゃ小さすぎる
-      let minElement: HTMLElement | null = null;
+    const updateElement = (event: MouseEvent) => {
+      const element = event.target as HTMLElement | null;
 
-      for (const hover of Array.from(hovers)) {
-        if (hover.dataset.noselect !== 'true') {
-          const rect = hover.getBoundingClientRect();
-          const size = rect.width * rect.height;
-          if (size < minSize) {
-            minElement = hover;
-          }
-        }
-      }
-
-      if (!minElement) {
+      if (!element) {
         return;
       }
 
       if (
-        minElement !== hoveredElement &&
-        !minElement.closest('#resta-root') &&
-        !minElement.closest('.ant-select-dropdown')
+        element !== hoveredElement &&
+        !element!.closest('#resta-root') &&
+        !element!.closest('.ant-select-dropdown')
       ) {
-        setHoveredElement(minElement);
-        const listener = () =>
+        setHoveredElement(element);
+        const listener = (ev: MouseEvent) => {
           setSelectedElement((prev) => {
             prev?.removeEventListener('mousedown', listener);
-            return minElement;
+            return ev.target as HTMLElement;
           });
+        }
 
-        minElement.addEventListener('mousedown', listener);
+        element.addEventListener('mousedown', listener);
       }
     };
 

@@ -4,7 +4,7 @@ import React, { useContext } from 'react';
 import { ChangeStyleElement, LayoutPart } from '../types/ChangeStyleElement';
 import { Collapse, Input, InputNumber } from 'antd';
 import { CSSParseResultElementType } from '../types/RestaSetting';
-import t from '../utils/translator';
+import t from '../features/translator';
 import { setFormatAndPushToAry } from '../features/formatter';
 import useHoveredAndSelectedElement from '../hooks/useHoveredAndSelectedElement';
 import getXPath from 'get-xpath';

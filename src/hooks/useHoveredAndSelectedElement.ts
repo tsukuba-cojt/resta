@@ -21,16 +21,21 @@ const useHoveredAndSelectedElement = (): [
 
       if (
         element !== hoveredElement &&
-        !element!.closest('resta-root') &&
         !element!.closest('#resta-root') &&
         !element!.closest('.ant-select-dropdown')
       ) {
         setHoveredElement(element);
         const listener = (ev: MouseEvent) => {
-          setSelectedElement((prev) => {
-            prev?.removeEventListener('mousedown', listener);
-            return ev.target as HTMLElement;
-          });
+          const newElement = ev.target as HTMLElement;
+          if (
+            !newElement.closest('#resta-root') &&
+            !newElement.closest('.ant-select-dropdown')
+          ) {
+            setSelectedElement((prev) => {
+              prev?.removeEventListener('mousedown', listener);
+              return newElement;
+            });
+          }
         };
 
         element.addEventListener('mousedown', listener);

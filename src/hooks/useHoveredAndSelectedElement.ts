@@ -1,8 +1,8 @@
 import { useLayoutEffect, useState } from 'react';
 
 const useHoveredAndSelectedElement = (): [
-    HTMLElement | null,
-    HTMLElement | null
+  HTMLElement | null,
+  HTMLElement | null
 ] => {
   const [hoveredElement, setHoveredElement] = useState<HTMLElement | null>(
     null
@@ -21,6 +21,7 @@ const useHoveredAndSelectedElement = (): [
 
       if (
         element !== hoveredElement &&
+        !element!.closest('resta-root') &&
         !element!.closest('#resta-root') &&
         !element!.closest('.ant-select-dropdown')
       ) {
@@ -30,7 +31,7 @@ const useHoveredAndSelectedElement = (): [
             prev?.removeEventListener('mousedown', listener);
             return ev.target as HTMLElement;
           });
-        }
+        };
 
         element.addEventListener('mousedown', listener);
       }

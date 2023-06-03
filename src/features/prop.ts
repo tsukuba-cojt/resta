@@ -23,7 +23,7 @@ export type FormatBlockByURL = {
 };
 
 export type Format = {
-  xpath: string;
+  cssSelector: string;
   changes: Array<FormatChange>;
 };
 

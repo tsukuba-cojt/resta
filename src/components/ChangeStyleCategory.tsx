@@ -5,7 +5,7 @@ import { ChangeStyleElement, LayoutPart } from '../types/ChangeStyleElement';
 import { Collapse, Input, InputNumber } from 'antd';
 import { CSSParseResultElementType } from '../types/RestaSetting';
 import t from '../utils/translator';
-import { setFormatAndPushToAry } from '../features/formatter';
+import { applyFormatAndSave } from '../features/formatter';
 import useHoveredAndSelectedElement from '../hooks/useHoveredAndSelectedElement';
 import getXPath from 'get-xpath';
 import InputNumberWithUnit from './controls/InputNumberWithUnit';
@@ -43,7 +43,7 @@ const ChangeStyleCategory = ({
   const onChange = (key: string, value: string, id: number) => {
     console.log(getXPath(selectedElement), key, value);
     // setFormatAndPushToAryOld(getXPath(selectedElement), key, value);
-    setFormatAndPushToAry(getXPath(selectedElement), key, value, id);
+    applyFormatAndSave(getXPath(selectedElement), key, value, id);
   };
 
   const filter = (element: ChangeStyleElement) => {

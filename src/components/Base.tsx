@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useLayoutEffect, useRef} from 'react';
 import styled from 'styled-components';
 import {Tabs} from 'antd';
 import {ChangeStyleCategoryMap} from '../types/ChangeStyleElement';
@@ -30,8 +30,11 @@ const Wrapper = styled.div`
 
 
 const TabWrapper = styled.div`
-  height: 100%;
-  overflow-y: auto;
+  overflow-y: hidden;
+`;
+
+const TabInnerWrapper = styled.div`
+  transform: translateY(0);
 `;
 
 interface BaseProps {
@@ -40,6 +43,7 @@ interface BaseProps {
 
 const Base = ({categoryMap}: BaseProps) => {
   const translator = useTranslator();
+  const tabInnerWrapperRef = useRef<HTMLDivElement>(null);
 
   const tabs = {
     'スタイルの変更': <ChangeStyleTabItem categoryMap={categoryMap}/>,
@@ -55,12 +59,30 @@ const Base = ({categoryMap}: BaseProps) => {
     };
   });
 
+  const onWheel = (event: WheelEvent) => {
+    event.preventDefault();
+    const ref = event.currentTarget as HTMLDivElement;
+    const currentValue = parseInt((ref.style.transform ? ref.style.transform : "0").match(/-?\d+/)![0]);
+    const newValue =
+      Math.max(
+        currentValue - event.deltaY >= 0 ? 0 : currentValue - event.deltaY,
+        ref.parentElement!.getBoundingClientRect().height - ref.getBoundingClientRect().height
+      );
+    ref.style.transform = `translateY(${newValue}px)`;
+  }
+
+  useLayoutEffect(() => {
+    tabInnerWrapperRef.current!.addEventListener('wheel', onWheel, {passive: false});
+  }, []);
+
   return (
     <Wrapper>
       <TranslatorContext.Provider value={translator}>
-        <ToolBar />
+        <ToolBar/>
         <TabWrapper>
-          <Tabs items={items}/>
+          <TabInnerWrapper ref={tabInnerWrapperRef}>
+            <Tabs items={items}/>
+          </TabInnerWrapper>
         </TabWrapper>
       </TranslatorContext.Provider>
     </Wrapper>

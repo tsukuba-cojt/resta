@@ -7,10 +7,10 @@ import { CSSParseResultElementType } from '../types/RestaSetting';
 import t from '../features/translator';
 import { setFormatAndPushToAry } from '../features/formatter';
 import useHoveredAndSelectedElement from '../hooks/useHoveredAndSelectedElement';
-import getXPath from 'get-xpath';
 import InputNumberWithUnit from './controls/InputNumberWithUnit';
 import Select from './controls/Select';
 import { TranslatorContext } from '../contexts/TranslatorContext';
+import { getAbsoluteCSSSelector } from '../utils/CSSUtils';
 
 const Wrapper = styled.div``;
 
@@ -41,9 +41,14 @@ const ChangeStyleCategory = ({
   const [_, selectedElement] = useHoveredAndSelectedElement();
 
   const onChange = (key: string, value: string, id: number) => {
-    console.log(getXPath(selectedElement), key, value);
-    // setFormatAndPushToAryOld(getXPath(selectedElement), key, value);
-    applyFormatAndSave(getXPath(selectedElement), key, value, id);
+    if (selectedElement) {
+      setFormatAndPushToAry(
+        getAbsoluteCSSSelector(selectedElement),
+        key,
+        value,
+        id
+      );
+    }
   };
 
   const filter = (element: ChangeStyleElement) => {

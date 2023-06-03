@@ -1,28 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import Title from 'antd/lib/typography/Title';
-import { Button, Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
-import {
-  ChangeStyleCategoryMap,
-  ChangeStyleElement,
-} from '../types/ChangeStyleElement';
-import ChangeStyleCategory from './ChangeStyleCategory';
+import {Tabs} from 'antd';
+import {ChangeStyleCategoryMap} from '../types/ChangeStyleElement';
 import {
   TranslatorContext,
   useTranslator,
 } from '../contexts/TranslatorContext';
-import t from '../utils/translator';
-import { downloadLangJson } from '../features/setting_downloader';
-import { saveFormat } from '../features/formatter';
+import ChangeStyleTabItem from "./tabitems/ChangeStyleTabItem";
+import ToolBar from "./ToolBar";
 
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
-  padding: 16px;
+  padding: 8px 16px 16px;
   background-color: #f0f0f099;
   box-sizing: border-box;
-  overflow-y: auto;
+  cursor: default;
+  display: flex;
+  flex-direction: column;
 
   border-radius: 8px;
   backdrop-filter: blur(20px);
@@ -33,66 +28,40 @@ const Wrapper = styled.div`
   box-shadow: 0 0 16px 0 #f0f0f0;
 `;
 
-const InputWrapper = styled.div`
-  padding-bottom: 16px;
+
+const TabWrapper = styled.div`
+  height: 100%;
+  overflow-y: auto;
 `;
 
 interface BaseProps {
   categoryMap: ChangeStyleCategoryMap;
 }
 
-const Base = ({ categoryMap }: BaseProps) => {
+const Base = ({categoryMap}: BaseProps) => {
   const translator = useTranslator();
-  const [searchText, setSearchText] = useState<string>('');
 
-  const filter = ([key, elements]: [string, ChangeStyleElement[]]): boolean => {
-    if (searchText.length == 0) {
-      return true;
-    }
-
-    return (
-      t(translator.lang, key).includes(searchText) ||
-      elements.some((element) =>
-        t(translator.lang, element.name).includes(searchText)
-      ) ||
-      elements.some((element) => element.key.includes(searchText))
-    );
+  const tabs = {
+    'スタイルの変更': <ChangeStyleTabItem categoryMap={categoryMap}/>,
+    'ページ設定': `a`,
+    '拡張機能設定': `x`,
   };
 
-  useEffect(() => {
-    (async () => {
-      console.log(1234);
-      translator.setLanguage(await downloadLangJson());
-    })();
-  }, []);
-
-  useEffect(() => console.log(searchText), [searchText]);
+  const items = Object.entries(tabs).map(([key, component], i) => {
+    return {
+      label: key,
+      key: i.toString(),
+      children: component,
+    };
+  });
 
   return (
     <Wrapper>
       <TranslatorContext.Provider value={translator}>
-        <Title level={4}>{t(translator.lang, 'base_change_style')}</Title>
-        <InputWrapper>
-          <Input
-            placeholder={t(translator.lang, 'base_search')}
-            prefix={<SearchOutlined />}
-            onChange={(e) => setSearchText(e.currentTarget!.value)}
-          />
-        </InputWrapper>
-        {searchText.length >= 0 &&
-          Object.entries(categoryMap)
-            .filter(filter)
-            .map((elements, index) => (
-              <ChangeStyleCategory
-                searchText={searchText}
-                title={elements[0]}
-                elements={elements[1]}
-                key={index}
-              />
-            ))}
-        <Button onClick={saveFormat}>
-          {t(translator.lang, 'save_button')}
-        </Button>
+        <ToolBar />
+        <TabWrapper>
+          <Tabs items={items}/>
+        </TabWrapper>
       </TranslatorContext.Provider>
     </Wrapper>
   );

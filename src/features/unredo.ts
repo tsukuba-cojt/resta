@@ -1,5 +1,7 @@
+import { deleteFromAry, pushToAry } from './formatter';
+
 const undoLength = 32;
-let undoStack: Array<UnRedoCommands> = [];
+const undoStack: Array<UnRedoCommands> = [];
 
 let index: number = 0;
 
@@ -7,14 +9,14 @@ export const reDo = () => {
   if (!canRedo()) {
     return;
   }
-  applyUndoChanges(undoStack[index++]);
+  applyUndoCommands(undoStack[index++]);
 };
 
 export const unDo = () => {
   if (!canUndo()) {
     return;
   }
-  applyRedoChanges(undoStack[--index]);
+  applyRedoCommands(undoStack[--index]);
 };
 
 export const canRedo = () => {
@@ -25,17 +27,28 @@ export const canUndo = () => {
   return index > 0;
 };
 
-export const applyUndoChanges = (changes: UnRedoCommands) => {};
+const applyUndoCommands = (changes: UnRedoCommands) => {
+  for (const command of changes.commands) {
+    applyCommand(command.undo);
+  }
+};
 
-export const applyRedoChanges = (changes: UnRedoCommands) => {};
+const applyRedoCommands = (changes: UnRedoCommands) => {
+  for (const command of changes.commands) {
+    applyCommand(command.redo);
+  }
+};
 
-export const applyUnRedoChange = (change: Command) => {
+export const applyCommand = (change: Command) => {
   switch (change.type) {
     case 'create':
+      pushToAry(change.cssSelector, change.cssKey, change.cssValue, change.id);
       break;
     case 'delete':
+      deleteFromAry(change.cssSelector, change.cssKey, change.id);
       break;
     case 'rewrite':
+      pushToAry(change.cssSelector, change.cssKey, change.cssValue, change.id);
       break;
   }
 };
@@ -45,14 +58,14 @@ export const applyUnRedoChange = (change: Command) => {
  * サイトの移動時などに呼び出す
  */
 export const resetUndoStack = () => {
-  undoStack = [];
+  undoStack.splice(0, undoStack.length);
   index = 0;
 };
 
 export const pushLog = (changes: UnRedoCommands) => {
   // すでに変更がある場合は、そこから先のRedo用の変更を削除する
   if (index < undoStack.length) {
-    undoStack = undoStack.slice(0, index);
+    undoStack.splice(index, undoStack.length - index);
   }
   undoStack.push(changes);
   // undoLengthを超えた場合は先頭を削除する

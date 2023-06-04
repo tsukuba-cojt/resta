@@ -1,10 +1,5 @@
 import * as prop from './prop';
-import {
-  UnRedoCommand,
-  UnRedoCommands,
-  pushLog,
-  resetUndoStack,
-} from './reundo';
+import { UnRedoCommand, UnRedoCommands, pushLog } from './unredo';
 
 export const initStyle = async () => {
   // localからjson形式のデータを取得しparseしたものをformatsAryへ代入
@@ -61,22 +56,22 @@ export const setFormatAndPushToAry = (
  * すでに同じ要素がある場合は上書きし優先度レイヤーをトップにする
  * ログを返す
  */
-const pushToAry = (
+export const pushToAry = (
   cssSelector: string | null,
   key: string | null,
   value: string | null,
   id: number | null
 ): UnRedoCommand | null => {
   if (!cssSelector) {
-    console.log('setFormatAndPushToAry:invalid args, cssSelector is not found');
+    console.log('pushToAry:invalid args, cssSelector is not found');
     return null;
   }
   if (!key) {
-    console.log('setFormatAndPushToAry:invalid args, key is not found');
+    console.log('pushToAry:invalid args, key is not found');
     return null;
   }
   if (!value && value !== '') {
-    console.log('setFormatAndPushToAry:invalid args, value is not found');
+    console.log('pushToAry:invalid args, value is not found');
     return null;
   }
   if (!id) {
@@ -188,6 +183,59 @@ const pushToAry = (
   }
 };
 
+/**
+ * formatsArrayから変更内容を削除
+ */
+export const deleteFromAry = (
+  cssSelector: string,
+  key: string,
+  id: number
+): UnRedoCommand | null => {
+  const index = getIndex(cssSelector, key, id);
+  if (index == undefined) {
+    console.log('deleteFromAry: bug detected, index is undefined');
+  }
+  const deletedElem = prop.formatsArray
+    .find((e) => e.url === prop.edittedUrl)
+    ?.formats.find((e) => e.cssSelector === cssSelector)
+    ?.changes.find((e) => e.cssKey === key)
+    ?.cssValues.splice(
+      prop.formatsArray
+        .find((e) => e.url === prop.edittedUrl)
+        ?.formats.find((e) => e.cssSelector === cssSelector)
+        ?.changes.find((e) => e.cssKey === key)
+        ?.cssValues.findIndex((e) => e.id === id) || 0,
+      1
+    );
+  if (deletedElem == undefined) {
+    console.log('deleteFromAry: bug detected, deletedElem is undefined');
+    return null;
+  }
+  console.log('deleteFromAry', prop.formatsArray);
+  return {
+    undo: {
+      type: 'create',
+      cssSelector: cssSelector,
+      cssKey: key,
+      cssValue: deletedElem ? deletedElem[0].cssValue : '',
+      id: id,
+      index: index || 0,
+    },
+    redo: {
+      type: 'delete',
+      cssSelector: cssSelector,
+      cssKey: key,
+      cssValue: '',
+      id: id,
+      index: undefined,
+    },
+  };
+};
+
+/**
+ * 要素の、cssSelectorに対するスタイルスタックのindexを返す
+ * 要素がない場合はundefinedを返す
+ */
 const getIndex = (
   cssSelector: string,
   key: string,
@@ -200,15 +248,10 @@ const getIndex = (
     ?.cssValues.findIndex((e) => e.id === id);
 };
 
-export const saveFormat = () => {
-  if (prop.formatsArray.length == 0) return;
-  chrome.storage.local
-    .set({ formats: JSON.stringify(prop.formatsArray) })
-    .then(() => {
-      console.log('save', prop.currentUrl, prop.formatsArray);
-    });
-};
-
+/**
+ * formatsArrayに登録されているフォーマットを適用する
+ * 比較的重い処理なので、ページ遷移時などに呼び出す
+ */
 export const applyFormats = () => {
   const formats = prop.formatsArray.filter((e) => prop.currentUrl.match(e.url));
   for (const f of formats) {
@@ -234,6 +277,21 @@ export const applyFormats = () => {
   }
 };
 
+/**
+ * localにフォーマットを保存する
+ */
+export const saveFormat = () => {
+  if (prop.formatsArray.length == 0) return;
+  chrome.storage.local
+    .set({ formats: JSON.stringify(prop.formatsArray) })
+    .then(() => {
+      console.log('save', prop.currentUrl, prop.formatsArray);
+    });
+};
+
+/**
+ * localからフォーマットを読み込む
+ */
 export const loadFormat = async () => {
   await chrome.storage.local.get(['formats']).then((result) => {
     if (!result.formats) {

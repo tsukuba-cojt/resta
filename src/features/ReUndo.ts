@@ -1,5 +1,5 @@
 const undoLength = 32;
-let undoStack: Array<UnRedoChanges> = [];
+let undoStack: Array<UnRedoCommands> = [];
 
 let index: number = 0;
 
@@ -25,11 +25,11 @@ export const canUndo = () => {
   return index > 0;
 };
 
-export const applyUndoChanges = (changes: UnRedoChanges) => {};
+export const applyUndoChanges = (changes: UnRedoCommands) => {};
 
-export const applyRedoChanges = (changes: UnRedoChanges) => {};
+export const applyRedoChanges = (changes: UnRedoCommands) => {};
 
-export const applyUnRedoChange = (change: ChangeValue) => {
+export const applyUnRedoChange = (change: Command) => {
   switch (change.type) {
     case 'create':
       break;
@@ -49,7 +49,7 @@ export const resetUndoStack = () => {
   index = 0;
 };
 
-export const pushLog = (changes: UnRedoChanges) => {
+export const pushLog = (changes: UnRedoCommands) => {
   // すでに変更がある場合は、そこから先のRedo用の変更を削除する
   if (index < undoStack.length) {
     undoStack = undoStack.slice(0, index);
@@ -62,21 +62,21 @@ export const pushLog = (changes: UnRedoChanges) => {
   index = undoStack.length;
 };
 
-export type UnRedoChanges = {
-  changes: Array<UnRedo>;
+export type UnRedoCommands = {
+  commands: Array<UnRedoCommand>;
 };
 
-export type UnRedo = {
-  undo: ChangeValue;
-  redo: ChangeValue;
+export type UnRedoCommand = {
+  undo: Command;
+  redo: Command;
 };
 
 /**
  * 作業を取り消すような変更を表す
  */
-export type ChangeValue = {
+export type Command = {
   type: ChangeType;
-  xpath: string;
+  cssSelector: string;
   cssKey: string;
   cssValue: string;
   id: number;

@@ -1,10 +1,14 @@
 import * as prop from './prop';
-import { UnRedo, UnRedoChanges, pushLog, resetUndoStack } from './ReUndo';
-import loadRestaSetting from './setting_loader';
+import {
+  UnRedoCommand,
+  UnRedoCommands,
+  pushLog,
+  resetUndoStack,
+} from './reundo';
 
 export const initStyle = async () => {
   // localからjson形式のデータを取得しparseしたものをformatsAryへ代入
-  await loadRestaSetting();
+  await loadFormat();
   // このページに対応するフォーマットがあれば適用
   applyFormats();
 };
@@ -21,12 +25,13 @@ export const setFormatAndPushToAry = (
   id: number | null
 ) => {
   if (!cssSelector) {
-    console.log('setFormatAndPushToAry:invalid args, xpath is not found');
+    console.log('setFormatAndPushToAry:invalid args, cssSelector is not found');
     return;
   }
   const elements = Array.from<HTMLElement>(
     document.querySelectorAll(cssSelector)
   );
+  const commands: UnRedoCommands = { commands: [] };
   elements.forEach((elem) => {
     if (!key) {
       console.log('setFormatAndPushToAry:invalid args, key is not found');
@@ -39,9 +44,16 @@ export const setFormatAndPushToAry = (
     // スタイルの変更
     elem.style[key as any] = value;
     // 配列への追加処理
-    pushToAry(cssSelector, key, value, id);
+    const command = pushToAry(cssSelector, key, value, id);
+    if (command) {
+      commands.commands.push(command);
+    }
     console.log('format changed', cssSelector, key, value);
   });
+  // ログに追加
+  if (commands.commands.length > 0) {
+    pushLog(commands);
+  }
 };
 
 /**
@@ -54,9 +66,9 @@ const pushToAry = (
   key: string | null,
   value: string | null,
   id: number | null
-) => {
+): UnRedoCommand | null => {
   if (!cssSelector) {
-    console.log('setFormatAndPushToAry:invalid args, xpath is not found');
+    console.log('setFormatAndPushToAry:invalid args, cssSelector is not found');
     return null;
   }
   if (!key) {
@@ -220,4 +232,20 @@ export const applyFormats = () => {
       });
     }
   }
+};
+
+export const loadFormat = async () => {
+  await chrome.storage.local.get(['formats']).then((result) => {
+    if (!result.formats) {
+      console.log('load:no format', prop.currentUrl);
+      return;
+    } else {
+      console.log('load', prop.currentUrl, JSON.parse(result.formats));
+      if (JSON.parse(result.formats))
+        prop.setFormatsAry(
+          JSON.parse(result.formats) as Array<prop.FormatBlockByURL>
+        );
+      return;
+    }
+  });
 };

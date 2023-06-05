@@ -1,7 +1,7 @@
 import { deleteFromAry, pushToAry, reloadStyle } from './formatter';
 
-const undoLength = 32;
-const undoStack: Array<UnRedoCommands> = [];
+const UNREDO_MAX_LENGTH = 32;
+const unRedoStack: Array<UnRedoCommands> = [];
 
 let index: number = 0;
 
@@ -9,18 +9,18 @@ export const reDo = (): void => {
   if (!canRedo()) {
     return;
   }
-  applyUndoCommands(undoStack[index++]);
+  applyRedoCommands(unRedoStack[index++]);
 };
 
 export const unDo = (): void => {
   if (!canUndo()) {
     return;
   }
-  applyRedoCommands(undoStack[--index]);
+  applyUndoCommands(unRedoStack[--index]);
 };
 
 export const canRedo = (): boolean => {
-  return index < undoStack.length;
+  return index < unRedoStack.length;
 };
 
 export const canUndo = (): boolean => {
@@ -32,34 +32,48 @@ export const canUndo = (): boolean => {
  * サイトの移動時などに呼び出す
  */
 export const resetUndoStack = () => {
-  undoStack.splice(0, undoStack.length);
+  unRedoStack.splice(0, unRedoStack.length);
   index = 0;
 };
 
 export const pushLog = (changes: UnRedoCommands) => {
-  // すでに変更がある場合は、そこから先のRedo用の変更を削除する
-  if (index < undoStack.length) {
-    undoStack.splice(index, undoStack.length - index);
+  if (changes.commands.length === 0) {
+    return;
   }
-  const lastChanges = undoStack[undoStack.length - 1];
+  // すでに変更がある場合は、そこから先のRedo用の変更を削除する
+  if (index < unRedoStack.length) {
+    unRedoStack.splice(index, unRedoStack.length - index);
+  }
+  const lastChanges = unRedoStack[unRedoStack.length - 1];
   // 直前の変更と同じidの場合は、直前の変更とマージする
   if (
     lastChanges &&
     lastChanges.commands[0].id !== 0 &&
-    lastChanges.commands[0].id === changes.commands[0].id
+    lastChanges.commands[0].id === changes.commands[0].id &&
+    lastChanges.commands[0].redo.type !== 'delete' &&
+    changes.commands[0].redo.type !== 'delete' &&
+    lastChanges.commands
+      .map((x) => x.cssSelector)
+      .sort()
+      .toString() ===
+      changes.commands
+        .map((x) => x.cssSelector)
+        .sort()
+        .toString()
   ) {
-    undoStack.pop();
-    undoStack.push(margeCommands(lastChanges, changes));
+    unRedoStack.pop();
+    unRedoStack.push(margeCommands(lastChanges, changes));
   } else {
     // マージの必要がない場合は、そのままundoStackに追加する
-    undoStack.push(changes);
+    unRedoStack.push(changes);
   }
 
   // undoLengthを超えた場合は先頭を削除する
-  if (undoStack.length > undoLength) {
-    undoStack.shift();
+  if (unRedoStack.length > UNREDO_MAX_LENGTH) {
+    unRedoStack.shift();
   }
-  index = undoStack.length;
+  index = unRedoStack.length;
+  console.log('pushLog', unRedoStack);
 };
 
 export type UnRedoCommands = {
@@ -74,13 +88,13 @@ export type UnRedoCommand = {
   redo: Command;
 };
 
-/**
- * 作業を取り消すような変更を表す
- */
 export type Command = {
   type: ChangeType;
   cssValue: string;
-  index: number | undefined; // create, rewriteのときのみ。undefinedのときは末尾に追加
+  /**
+   * create, rewriteのときのみ。undefinedのときは末尾に追加
+   */
+  index: number | undefined;
 };
 
 /**
@@ -96,18 +110,72 @@ const margeCommands = (
   const nextCommands = next.commands;
   const margedCommands: Array<UnRedoCommand> = [];
   for (const prevCommand of prevCommands) {
-    const nextCommand = nextCommands
+    const nextCommandIndex = nextCommands
       .filter((e) => e.id === prevCommand.id)
-      .find(
+      .findIndex(
         (e) =>
           e.cssSelector === prevCommand.cssSelector &&
           e.cssKey === prevCommand.cssKey
       );
-    if (nextCommand) {
-      if ([prevCommand.redo]) {
-      }
+    if (nextCommandIndex === -1) {
+      // nextCommandsにprevCommandと同じidの変更がない場合は、prevCommandをそのまま追加する
+      margedCommands.push(prevCommand);
+      continue;
+    }
+    const nextCommand = nextCommands.splice(nextCommandIndex, 1)[0];
+    switch (prevCommand.redo.type) {
+      case 'create':
+        if (nextCommand.redo.type === 'rewrite') {
+          margedCommands.push({
+            cssSelector: prevCommand.cssSelector,
+            cssKey: prevCommand.cssKey,
+            id: prevCommand.id,
+            undo: {
+              type: 'delete',
+              cssValue: '',
+              index: undefined,
+            },
+            redo: {
+              type: 'create',
+              cssValue: nextCommand.redo.cssValue,
+              index: nextCommand.redo.index,
+            },
+          });
+        } else {
+          console.log('margeCommands: bug detected, create -> create');
+          return { commands: [] };
+        }
+        break;
+      case 'rewrite':
+        if (nextCommand.redo.type === 'rewrite') {
+          margedCommands.push({
+            cssSelector: prevCommand.cssSelector,
+            cssKey: prevCommand.cssKey,
+            id: prevCommand.id,
+            undo: {
+              type: 'rewrite',
+              cssValue: prevCommand.undo.cssValue,
+              index: prevCommand.undo.index,
+            },
+            redo: {
+              type: 'rewrite',
+              cssValue: nextCommand.redo.cssValue,
+              index: nextCommand.redo.index,
+            },
+          });
+        } else {
+          console.log('margeCommands: bug detected, rewrite -> create');
+          return { commands: [] };
+        }
+        break;
+      default:
+        console.log('margeCommands: bug detected, try to marge delete');
+        return { commands: [] };
     }
   }
+  nextCommands.forEach((element) => {
+    margedCommands.push(element);
+  });
   return { commands: margedCommands } as UnRedoCommands;
 };
 
@@ -129,6 +197,7 @@ export const applyCommand = (
   id: number,
   change: Command
 ) => {
+  console.log('applyCommand', cssSelector, cssKey, id, change);
   switch (change.type) {
     case 'create':
       pushToAry(cssSelector, cssKey, change.cssValue, id);

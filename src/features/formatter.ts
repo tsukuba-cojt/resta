@@ -20,6 +20,10 @@ export const setFormatAndPushToAry = (
   value: string | null,
   id: number | null
 ) => {
+  console.log('setFormatAndPushToAry', cssSelector, key, value, id);
+  if (!id) {
+    id = 0;
+  }
   if (!cssSelector) {
     console.log('setFormatAndPushToAry:invalid args, cssSelector is not found');
     return;
@@ -49,7 +53,6 @@ export const setFormatAndPushToAry = (
   // ログに追加
   if (commands.commands.length > 0) {
     pushLog(commands);
-    console.log('pushLog', commands);
   }
 };
 
@@ -137,7 +140,7 @@ export const pushToAry = (
     // すでにidに対応する要素がある場合
     // その要素を削除して末尾に追加する
     const index = getIndex(cssSelector, key, id);
-    if (index == undefined) {
+    if (index == undefined || index === -1) {
       console.log('pushToAry: bug detected, index is undefined');
     }
     // idに対応する要素を取り除く
@@ -188,7 +191,7 @@ export const deleteFromAry = (
   id: number
 ): UnRedoCommand | null => {
   const index = getIndex(cssSelector, key, id);
-  if (index == undefined) {
+  if (index == undefined || index === -1) {
     console.log('deleteFromAry: bug detected, index is undefined');
   }
   const deletedElem = prop.formatsArray
@@ -203,10 +206,20 @@ export const deleteFromAry = (
         ?.cssValues.findIndex((e) => e.id === id) || 0,
       1
     );
-  if (deletedElem == undefined) {
+  if (!deletedElem) {
     console.log('deleteFromAry: bug detected, deletedElem is undefined');
     return null;
   }
+  const elements = Array.from<HTMLElement>(
+    document.querySelectorAll(cssSelector)
+  );
+  elements.forEach((elem) => {
+    const style = prop.formatsArray
+      .find((e) => e.url === prop.edittedUrl)
+      ?.formats.find((e) => e.cssSelector === cssSelector)
+      ?.changes.find((e) => e.cssKey === key)?.cssValues;
+    elem.style[key as any] = prop.getValue(style);
+  });
   console.log('deleteFromAry', prop.formatsArray);
   return {
     cssSelector: cssSelector,
@@ -238,7 +251,7 @@ export const reloadStyle = (cssSelector: string, key: string) => {
       console.log('reloadStyle:invalid args, style is not found');
       return;
     }
-    elem.style[key as any] = style[style.length - 1].cssValue;
+    elem.style[key as any] = prop.getValue(style);
   });
 };
 

@@ -16,6 +16,10 @@ export let formatsArray: Array<FormatBlockByURL> = [];
 export const setFormatsAry = (ary: Array<FormatBlockByURL>) => {
   formatsArray = ary;
 };
+export const resetFormatsAry = () => {
+  formatsArray.splice(0, formatsArray.length);
+  console.log('resetFormatsAry', formatsArray);
+};
 
 export type FormatBlockByURL = {
   url: string;

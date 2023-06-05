@@ -1,56 +1,30 @@
-import { deleteFromAry, pushToAry } from './formatter';
+import { deleteFromAry, pushToAry, reloadStyle } from './formatter';
 
 const undoLength = 32;
 const undoStack: Array<UnRedoCommands> = [];
 
 let index: number = 0;
 
-export const reDo = () => {
+export const reDo = (): void => {
   if (!canRedo()) {
     return;
   }
   applyUndoCommands(undoStack[index++]);
 };
 
-export const unDo = () => {
+export const unDo = (): void => {
   if (!canUndo()) {
     return;
   }
   applyRedoCommands(undoStack[--index]);
 };
 
-export const canRedo = () => {
+export const canRedo = (): boolean => {
   return index < undoStack.length;
 };
 
-export const canUndo = () => {
+export const canUndo = (): boolean => {
   return index > 0;
-};
-
-const applyUndoCommands = (changes: UnRedoCommands) => {
-  for (const command of changes.commands) {
-    applyCommand(command.undo);
-  }
-};
-
-const applyRedoCommands = (changes: UnRedoCommands) => {
-  for (const command of changes.commands) {
-    applyCommand(command.redo);
-  }
-};
-
-export const applyCommand = (change: Command) => {
-  switch (change.type) {
-    case 'create':
-      pushToAry(change.cssSelector, change.cssKey, change.cssValue, change.id);
-      break;
-    case 'delete':
-      deleteFromAry(change.cssSelector, change.cssKey, change.id);
-      break;
-    case 'rewrite':
-      pushToAry(change.cssSelector, change.cssKey, change.cssValue, change.id);
-      break;
-  }
 };
 
 /**
@@ -67,7 +41,20 @@ export const pushLog = (changes: UnRedoCommands) => {
   if (index < undoStack.length) {
     undoStack.splice(index, undoStack.length - index);
   }
-  undoStack.push(changes);
+  const lastChanges = undoStack[undoStack.length - 1];
+  // 直前の変更と同じidの場合は、直前の変更とマージする
+  if (
+    lastChanges &&
+    lastChanges.commands[0].id !== 0 &&
+    lastChanges.commands[0].id === changes.commands[0].id
+  ) {
+    undoStack.pop();
+    undoStack.push(margeCommands(lastChanges, changes));
+  } else {
+    // マージの必要がない場合は、そのままundoStackに追加する
+    undoStack.push(changes);
+  }
+
   // undoLengthを超えた場合は先頭を削除する
   if (undoStack.length > undoLength) {
     undoStack.shift();
@@ -80,6 +67,9 @@ export type UnRedoCommands = {
 };
 
 export type UnRedoCommand = {
+  cssSelector: string;
+  cssKey: string;
+  id: number;
   undo: Command;
   redo: Command;
 };
@@ -89,10 +79,7 @@ export type UnRedoCommand = {
  */
 export type Command = {
   type: ChangeType;
-  cssSelector: string;
-  cssKey: string;
   cssValue: string;
-  id: number;
   index: number | undefined; // create, rewriteのときのみ。undefinedのときは末尾に追加
 };
 
@@ -100,3 +87,58 @@ export type Command = {
  * 作業を取り消すような変更の種類
  */
 export type ChangeType = 'create' | 'delete' | 'rewrite';
+
+const margeCommands = (
+  prev: UnRedoCommands,
+  next: UnRedoCommands
+): UnRedoCommands => {
+  const prevCommands = prev.commands;
+  const nextCommands = next.commands;
+  const margedCommands: Array<UnRedoCommand> = [];
+  for (const prevCommand of prevCommands) {
+    const nextCommand = nextCommands
+      .filter((e) => e.id === prevCommand.id)
+      .find(
+        (e) =>
+          e.cssSelector === prevCommand.cssSelector &&
+          e.cssKey === prevCommand.cssKey
+      );
+    if (nextCommand) {
+      if ([prevCommand.redo]) {
+      }
+    }
+  }
+  return { commands: margedCommands } as UnRedoCommands;
+};
+
+const applyUndoCommands = (changes: UnRedoCommands) => {
+  for (const command of changes.commands) {
+    applyCommand(command.cssSelector, command.cssKey, command.id, command.undo);
+  }
+};
+
+const applyRedoCommands = (changes: UnRedoCommands) => {
+  for (const command of changes.commands) {
+    applyCommand(command.cssSelector, command.cssKey, command.id, command.redo);
+  }
+};
+
+export const applyCommand = (
+  cssSelector: string,
+  cssKey: string,
+  id: number,
+  change: Command
+) => {
+  switch (change.type) {
+    case 'create':
+      pushToAry(cssSelector, cssKey, change.cssValue, id);
+      break;
+    case 'delete':
+      deleteFromAry(cssSelector, cssKey, id);
+      break;
+    case 'rewrite':
+      pushToAry(cssSelector, cssKey, change.cssValue, id);
+      break;
+  }
+  reloadStyle(cssSelector, cssKey);
+};

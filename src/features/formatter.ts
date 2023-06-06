@@ -44,9 +44,9 @@ export const setFormatAndPushToAry = (
     // スタイルの変更
     elem.style[key as any] = value;
     // 配列への追加処理
-    const command = pushToAry(cssSelector, key, value, id);
-    if (command) {
-      commands.commands.push(command);
+    const c = pushToAry(cssSelector, key, value, id);
+    if (commands.commands.length === 0 && c) {
+      commands.commands.push(c);
     }
     console.log('format changed', cssSelector, key, value);
   });

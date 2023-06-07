@@ -84,7 +84,9 @@ const ChangeStyleCategory = ({
               {isNumberWithUnit(element.parts) && (
                 <InputNumberWithUnit
                   key={index}
-                  element={element}
+                  cssKey={element.key}
+                  id={element.id}
+                  options={element.parts[1].options!}
                   onChange={onChange}
                 />
               )}

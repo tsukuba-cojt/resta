@@ -3,7 +3,7 @@ import { Button } from 'antd';
 import {
   CloseOutlined,
   LeftOutlined, RedoOutlined,
-  RightOutlined,
+  RightOutlined, SettingOutlined,
   UndoOutlined,
 } from '@ant-design/icons';
 import React, { useState } from 'react';
@@ -11,15 +11,13 @@ import {
   closeContainer,
   toggleContainerPosition,
 } from '../features/root_manager';
-import { reDo, unDo } from '../features/unredo';
-import { resetFormatsAry } from '../features/prop';
-import {saveFormat} from "../features/format_manager";
+import {reDo, unDo} from '../features/unredo';
 
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 12px;
 `;
 
 const ToolBarSpace = styled.div`
@@ -49,6 +47,12 @@ const ToolBar = () => {
         icon={getIcon()}
         onClick={() => setRight(toggleContainerPosition)}
       />
+      <Button
+        type="ghost"
+        size={'small'}
+        icon={<SettingOutlined/>}
+        onClick={() => alert('setting')}
+      />
       <ToolBarSpace />
       <Button
         type="ghost"
@@ -62,17 +66,6 @@ const ToolBar = () => {
         icon={<RedoOutlined />}
         onClick={reDo}
       />
-      <Button
-        type="link"
-        style={{ padding: '4px 0' }}
-        onClick={() => {
-          resetFormatsAry();
-          saveFormat();
-          window.location.reload();
-        }}
-      >
-        Clear
-      </Button>
     </Wrapper>
   );
 };

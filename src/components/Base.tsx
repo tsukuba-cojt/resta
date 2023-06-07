@@ -8,11 +8,13 @@ import {
 } from '../contexts/TranslatorContext';
 import ChangeStyleTabItem from "./tabitems/ChangeStyleTabItem";
 import ToolBar from "./ToolBar";
+import {IconCategory2, IconCode, IconLayoutGrid, IconTypography} from "@tabler/icons-react";
+import FontCustomizer from "./tabitems/FontCustomizer";
 
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
-  padding: 8px 16px 16px;
+  padding: 12px 16px 16px;
   background-color: #f0f0f099;
   box-sizing: border-box;
   cursor: default;
@@ -37,6 +39,11 @@ const TabInnerWrapper = styled.div`
   transform: translateY(0);
 `;
 
+const TabIconWrapper = styled.div`
+  margin: 0 12px;
+  display: flex;
+`;
+
 interface BaseProps {
   categoryMap: ChangeStyleCategoryMap;
 }
@@ -46,14 +53,21 @@ const Base = ({categoryMap}: BaseProps) => {
   const tabInnerWrapperRef = useRef<HTMLDivElement>(null);
 
   const tabs = {
-    'スタイルの変更': <ChangeStyleTabItem categoryMap={categoryMap}/>,
-    'ページ設定': `a`,
-    '拡張機能設定': `x`,
+    'templates': <ChangeStyleTabItem categoryMap={categoryMap}/>,
+    'fonts': <FontCustomizer />,
+    'blocks': `x`,
+  };
+
+  const tabIcons: {[key: string]: React.JSX.Element} = {
+    'templates': <IconCategory2 size={16} strokeWidth={1.5} />,
+    'fonts': <IconTypography size={16} strokeWidth={1.5} />,
+    'blocks': <IconLayoutGrid size={16} strokeWidth={1.5} />,
+    'pro': <IconCode size={16} strokeWidth={1.5} />,
   };
 
   const items = Object.entries(tabs).map(([key, component], i) => {
     return {
-      label: key,
+      label: <TabIconWrapper>{tabIcons[key]!}</TabIconWrapper>,
       key: i.toString(),
       children: component,
     };
@@ -81,7 +95,7 @@ const Base = ({categoryMap}: BaseProps) => {
         <ToolBar/>
         <TabWrapper>
           <TabInnerWrapper ref={tabInnerWrapperRef}>
-            <Tabs items={items}/>
+            <Tabs items={items} tabBarGutter={0}/>
           </TabInnerWrapper>
         </TabWrapper>
       </TranslatorContext.Provider>

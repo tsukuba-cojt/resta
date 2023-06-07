@@ -9,6 +9,7 @@ export const setUrl = (url: string) => {
 // tsukuba.mast.ac.jp/* などのワイルドカードを含むURLを格納することもできる
 export let edittedUrl: string;
 export const setEdittedUrl = (url: string) => {
+  console.log('setEdittedUrl', url);
   edittedUrl = url;
 };
 
@@ -19,6 +20,13 @@ export const setFormatsAry = (ary: Array<FormatBlockByURL>) => {
 export const resetFormatsAry = () => {
   formatsArray.splice(0, formatsArray.length);
   console.log('resetFormatsAry', formatsArray);
+};
+
+export const removeCurrentFormat = () => {
+  const index = formatsArray.findIndex((x) => x.url === currentUrl);
+  if (index !== -1) {
+    formatsArray.splice(index, 1);
+  }
 };
 
 export type FormatBlockByURL = {

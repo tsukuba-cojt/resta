@@ -1,21 +1,22 @@
-import styled from "styled-components";
-import t from "../../features/translator";
+import styled from 'styled-components';
+import t from '../../features/translator';
 //import Title from "antd/lib/typography/Title";
-import React, {useContext, useEffect, useState} from "react";
-import {TranslatorContext} from "../../contexts/TranslatorContext";
-import useHoveredAndSelectedElement from "../../hooks/useHoveredAndSelectedElement";
-import {ChangeStyleCategoryMap, ChangeStyleElement} from "../../types/ChangeStyleElement";
-import {downloadLangJson} from "../../features/setting_downloader";
-import {Input} from "antd";
-import {SearchOutlined} from "@ant-design/icons";
-import ChangeStyleCategory from "../ChangeStyleCategory";
-import {getAbsoluteCSSSelector} from "../../utils/CSSUtils";
+import React, { useContext, useEffect, useState } from 'react';
+import { TranslatorContext } from '../../contexts/TranslatorContext';
+import useHoveredAndSelectedElement from '../../hooks/useHoveredAndSelectedElement';
+import {
+  ChangeStyleCategoryMap,
+  ChangeStyleElement,
+} from '../../types/ChangeStyleElement';
+import { downloadLangJson } from '../../features/setting_downloader';
+import { Input } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
+import ChangeStyleCategory from '../ChangeStyleCategory';
+import { getAbsoluteCSSSelector } from '../../utils/CSSUtils';
 
-const Wrapper = styled.div`
-`;
+const Wrapper = styled.div``;
 
-const InputWrapper = styled.div`
-`;
+const InputWrapper = styled.div``;
 
 interface ChangeStyleTabItemProps {
   categoryMap: ChangeStyleCategoryMap;
@@ -55,7 +56,7 @@ const ChangeStyleTabItem = ({ categoryMap }: ChangeStyleTabItemProps) => {
           onChange={(e) => setSearchText(e.currentTarget!.value)}
         />
       </InputWrapper>
-      <p>{ selectedElement ? getAbsoluteCSSSelector(selectedElement) : ""}</p>
+      <p>{selectedElement ? getAbsoluteCSSSelector(selectedElement) : ''}</p>
       {searchText.length >= 0 &&
         Object.entries(categoryMap)
           .filter(filter)
@@ -68,7 +69,7 @@ const ChangeStyleTabItem = ({ categoryMap }: ChangeStyleTabItemProps) => {
             />
           ))}
     </Wrapper>
-  )
+  );
 };
 
 export default ChangeStyleTabItem;

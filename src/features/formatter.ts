@@ -1,4 +1,4 @@
-import { loadFormat } from './load_save_format';
+import { loadFormat } from './format_manager';
 import * as prop from './prop';
 import { UnRedoCommand, UnRedoCommands, pushLog } from './unredo';
 

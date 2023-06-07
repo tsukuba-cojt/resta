@@ -1,21 +1,19 @@
 import styled from 'styled-components';
-import { Button, message } from 'antd';
+import { Button } from 'antd';
 import {
   CloseOutlined,
   LeftOutlined,
   RightOutlined,
   RollbackOutlined,
 } from '@ant-design/icons';
-import t from '../features/translator';
-import React, { useContext, useState } from 'react';
-import { saveFormat } from '../features/format_manager';
-import { TranslatorContext } from '../contexts/TranslatorContext';
+import React, { useState } from 'react';
 import {
   closeContainer,
   toggleContainerPosition,
 } from '../features/root_manager';
 import { reDo, unDo } from '../features/unredo';
 import { resetFormatsAry } from '../features/prop';
+import {saveFormat} from "../features/format_manager";
 
 const Wrapper = styled.div`
   display: flex;
@@ -31,24 +29,7 @@ const ToolBarSpace = styled.div`
 
 const ToolBar = () => {
   const [isRight, setRight] = useState<boolean>(true);
-  const translator = useContext(TranslatorContext);
-  const [messageApi, contextHolder] = message.useMessage();
   const getIcon = () => (isRight ? <LeftOutlined /> : <RightOutlined />);
-
-  const onSaveButtonClick = () => {
-    messageApi.open({
-      key: 'save_formats',
-      type: 'loading',
-      content: '保存中...',
-    });
-    saveFormat();
-    messageApi.open({
-      key: 'save_formats',
-      type: 'success',
-      content: '保存しました',
-      duration: 2,
-    });
-  };
 
   const onCloseButtonClick = () => {
     closeContainer();
@@ -56,7 +37,6 @@ const ToolBar = () => {
 
   return (
     <Wrapper>
-      {contextHolder}
       <Button
         type="ghost"
         size={'small'}
@@ -86,7 +66,11 @@ const ToolBar = () => {
       <Button
         type="link"
         style={{ padding: '4px 0' }}
-        onClick={resetFormatsAry}
+        onClick={() => {
+          resetFormatsAry();
+          saveFormat();
+          window.location.reload();
+        }}
       >
         Clear
       </Button>

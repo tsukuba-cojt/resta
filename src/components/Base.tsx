@@ -8,8 +8,9 @@ import {
 } from '../contexts/TranslatorContext';
 import ChangeStyleTabItem from "./tabitems/ChangeStyleTabItem";
 import ToolBar from "./ToolBar";
-import {IconCategory2, IconCode, IconLayoutGrid, IconTypography} from "@tabler/icons-react";
+import {IconCategory2, IconCode, IconLayoutGrid, IconSettings, IconTypography} from "@tabler/icons-react";
 import FontCustomizer from "./tabitems/FontCustomizer";
+import PageSettingTabItem from "./tabitems/PageSettingTabItem";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -56,6 +57,7 @@ const Base = ({categoryMap}: BaseProps) => {
     'templates': <ChangeStyleTabItem categoryMap={categoryMap}/>,
     'fonts': <FontCustomizer />,
     'blocks': `x`,
+    'settings': <PageSettingTabItem/>
   };
 
   const tabIcons: {[key: string]: React.JSX.Element} = {
@@ -63,6 +65,7 @@ const Base = ({categoryMap}: BaseProps) => {
     'fonts': <IconTypography size={16} strokeWidth={1.5} />,
     'blocks': <IconLayoutGrid size={16} strokeWidth={1.5} />,
     'pro': <IconCode size={16} strokeWidth={1.5} />,
+    'settings': <IconSettings size={16} strokeWidth={1.5}/>
   };
 
   const items = Object.entries(tabs).map(([key, component], i) => {

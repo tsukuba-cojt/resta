@@ -3,7 +3,7 @@ import { Button } from 'antd';
 import {
   CloseOutlined,
   LeftOutlined, RedoOutlined,
-  RightOutlined, SettingOutlined,
+  RightOutlined,
   UndoOutlined,
 } from '@ant-design/icons';
 import React, { useState } from 'react';
@@ -46,12 +46,6 @@ const ToolBar = () => {
         size={'small'}
         icon={getIcon()}
         onClick={() => setRight(toggleContainerPosition)}
-      />
-      <Button
-        type="ghost"
-        size={'small'}
-        icon={<SettingOutlined/>}
-        onClick={() => alert('setting')}
       />
       <ToolBarSpace />
       <Button

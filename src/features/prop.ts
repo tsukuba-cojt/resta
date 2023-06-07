@@ -16,6 +16,10 @@ export let formatsArray: Array<FormatBlockByURL> = [];
 export const setFormatsAry = (ary: Array<FormatBlockByURL>) => {
   formatsArray = ary;
 };
+export const resetFormatsAry = () => {
+  formatsArray.splice(0, formatsArray.length);
+  console.log('resetFormatsAry', formatsArray);
+};
 
 export type FormatBlockByURL = {
   url: string;
@@ -35,4 +39,11 @@ export type FormatChange = {
 export type FormatStyleValue = {
   id: number;
   cssValue: string;
+};
+
+export const getValue = (cssValues: Array<FormatStyleValue> | undefined) => {
+  if (!cssValues || cssValues.length === 0) {
+    return '';
+  }
+  return cssValues[cssValues.length - 1].cssValue || '';
 };

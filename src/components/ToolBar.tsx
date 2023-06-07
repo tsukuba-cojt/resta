@@ -2,9 +2,9 @@ import styled from 'styled-components';
 import { Button } from 'antd';
 import {
   CloseOutlined,
-  LeftOutlined,
+  LeftOutlined, RedoOutlined,
   RightOutlined,
-  RollbackOutlined,
+  UndoOutlined,
 } from '@ant-design/icons';
 import React, { useState } from 'react';
 import {
@@ -53,14 +53,13 @@ const ToolBar = () => {
       <Button
         type="ghost"
         size={'small'}
-        icon={<RollbackOutlined />}
+        icon={<UndoOutlined />}
         onClick={unDo}
       />
       <Button
-        style={{ transform: 'scale(-1,1)' }}
         type="ghost"
         size={'small'}
-        icon={<RollbackOutlined />}
+        icon={<RedoOutlined />}
         onClick={reDo}
       />
       <Button

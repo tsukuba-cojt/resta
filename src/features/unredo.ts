@@ -1,3 +1,4 @@
+import { saveFormat } from './format_manager';
 import { deleteFromAry, pushToAry, reloadStyle } from './formatter';
 
 const UNREDO_MAX_LENGTH = 32;
@@ -74,6 +75,7 @@ export const pushLog = (changes: UnRedoCommands) => {
   }
   index = unRedoStack.length;
   console.log('pushLog', unRedoStack);
+  saveFormat();
 };
 
 export type UnRedoCommands = {
@@ -210,4 +212,5 @@ export const applyCommand = (
       break;
   }
   reloadStyle(cssSelector, cssKey);
+  saveFormat();
 };

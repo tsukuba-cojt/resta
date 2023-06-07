@@ -1,10 +1,11 @@
-import ReactDOM from "react-dom";
-import React from "react";
-import Base from "../components/Base";
-import ElementSelector from "./ElementSelector";
-import {ChangeStyleCategoryMap} from "../types/ChangeStyleElement";
+import ReactDOM from 'react-dom';
+import React from 'react';
+import Base from '../components/Base';
+import ElementSelector from './ElementSelector';
+import { ChangeStyleCategoryMap } from '../types/ChangeStyleElement';
+import { setContainerActive } from '..';
 
-export const CONTAINER_ID = "resta-root";
+export const CONTAINER_ID = 'resta-root';
 
 export const initContainer = (categoryMap: ChangeStyleCategoryMap) => {
   const div = document.createElement('div');
@@ -13,8 +14,8 @@ export const initContainer = (categoryMap: ChangeStyleCategoryMap) => {
 
   ReactDOM.render(
     <React.StrictMode>
-      <Base categoryMap={categoryMap}/>
-      <ElementSelector/>
+      <Base categoryMap={categoryMap} />
+      <ElementSelector />
     </React.StrictMode>,
     div
   );
@@ -25,13 +26,16 @@ export const initContainer = (categoryMap: ChangeStyleCategoryMap) => {
   div.addEventListener('mousedown', (e: MouseEvent) => {
     const computedStyle = window.getComputedStyle(div);
     const rect = div.getBoundingClientRect();
-    if (computedStyle.right === "0px") {
+    if (computedStyle.right === '0px') {
       if (rect.x <= e.clientX && e.clientX <= rect.x + 3) {
         mouseDowning = true;
         baseX = e.clientX;
       }
     } else {
-      if (rect.x + rect.width <= e.clientX + 3 && e.clientX + 3 <= rect.x + rect.width + 3) {
+      if (
+        rect.x + rect.width <= e.clientX + 3 &&
+        e.clientX + 3 <= rect.x + rect.width + 3
+      ) {
         mouseDowning = true;
         baseX = e.clientX;
       }
@@ -42,7 +46,10 @@ export const initContainer = (categoryMap: ChangeStyleCategoryMap) => {
     if (mouseDowning) {
       const computedStyle = window.getComputedStyle(div);
       const rect = div.getBoundingClientRect();
-      div.style.width = computedStyle.right === "0px" ? `${rect.width + (baseX - e.clientX)}px` : `${rect.width + (e.clientX - baseX)}px`;
+      div.style.width =
+        computedStyle.right === '0px'
+          ? `${rect.width + (baseX - e.clientX)}px`
+          : `${rect.width + (e.clientX - baseX)}px`;
       baseX = e.clientX;
     }
   });
@@ -52,31 +59,36 @@ export const initContainer = (categoryMap: ChangeStyleCategoryMap) => {
       mouseDowning = false;
     }
   });
-}
+};
 
 export const closeContainer = () => {
   const root = document.getElementById(CONTAINER_ID);
   if (!root) throw new Error(`#${CONTAINER_ID} is null!`);
 
-  root.style.animationName = "closeAnimation";
-  root.style.animationDuration = "0.25s";
-  root.addEventListener('animationend', () => {
-    root.remove();
-  }, {once: true});
-}
+  root.style.animationName = 'closeAnimation';
+  root.style.animationDuration = '0.25s';
+  root.addEventListener(
+    'animationend',
+    () => {
+      root.remove();
+    },
+    { once: true }
+  );
+  setContainerActive(false);
+};
 
 export const toggleContainerPosition = (): boolean => {
   const root = document.getElementById(CONTAINER_ID);
   if (!root) throw new Error(`#${CONTAINER_ID} is null!`);
 
   const computedStyle = getComputedStyle(root);
-  if (computedStyle.right === "0px") {
-    root.style.left = "0";
-    root.style.right = "unset";
+  if (computedStyle.right === '0px') {
+    root.style.left = '0';
+    root.style.right = 'unset';
     return false;
   } else {
-    root.style.right = "0";
-    root.style.left = "unset";
+    root.style.right = '0';
+    root.style.left = 'unset';
     return true;
   }
-}
+};

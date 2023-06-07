@@ -1,5 +1,6 @@
 export type RestaStyles = {
   styles: RestaStyle[];
+  templates: RestaStyle[];
   categories: RestaCategory[];
 };
 

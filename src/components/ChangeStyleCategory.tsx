@@ -10,7 +10,7 @@ import useHoveredAndSelectedElement from '../hooks/useHoveredAndSelectedElement'
 import InputNumberWithUnit from './controls/InputNumberWithUnit';
 import Select from './controls/Select';
 import { TranslatorContext } from '../contexts/TranslatorContext';
-import {getAbsoluteCSSSelector} from "../utils/CSSUtils";
+import { getAbsoluteCSSSelector } from '../utils/CSSUtils';
 
 const Wrapper = styled.div``;
 
@@ -42,7 +42,12 @@ const ChangeStyleCategory = ({
 
   const onChange = (key: string, value: string, id: number) => {
     if (selectedElement) {
-      setFormatAndPushToAry(getAbsoluteCSSSelector(selectedElement), key, value, id);
+      setFormatAndPushToAry(
+        getAbsoluteCSSSelector(selectedElement),
+        key,
+        value,
+        id
+      );
     }
   };
 

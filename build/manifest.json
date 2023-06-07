@@ -8,16 +8,15 @@
   "permissions": ["activeTab", "tabs", "storage", "scripting"],
   "content_scripts": [
     {
-      "matches": ["https://www.mast.tsukuba.ac.jp/*", "http://www.slis.tsukuba.ac.jp/*"],
-      "js": ["js/main.js"],
-      "css": ["css/style.css"]
-    },
-    {
-      "matches": ["https://www.tsukuba.ac.jp/*"],
+      "matches": ["<all_urls>"],
       "js": ["js/main.js"],
       "css": ["css/style.css"]
     }
   ],
+  "background": {
+    "service_worker": "background.js",
+    "persistant": false
+  },
   "web_accessible_resources": [
     {
       "resources": ["js/main.js", "css/style.css"],

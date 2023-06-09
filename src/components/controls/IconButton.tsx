@@ -1,7 +1,7 @@
 import {Button} from "antd";
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {kebabToCamel} from "../../utils/CSSUtils";
-import useHoveredAndSelectedElement from "../../hooks/useHoveredAndSelectedElement";
+import {ElementSelectionContext} from "../../contexts/ElementSelectionContext";
 
 
 interface IconButtonProps {
@@ -15,7 +15,7 @@ interface IconButtonProps {
 
 const IconButton = ({icon, cssKey, id, actualValue, defaultValue, onChange}: IconButtonProps) => {
   const [value, setValue] = useState<string>(defaultValue);
-  const [_, selectedElement] = useHoveredAndSelectedElement();
+  const elementSelection = useContext(ElementSelectionContext);
 
   const onClick = () => {
     const newValue = isOn() ? defaultValue : actualValue;
@@ -28,13 +28,13 @@ const IconButton = ({icon, cssKey, id, actualValue, defaultValue, onChange}: Ico
   }
 
   useEffect(() => {
-    if (selectedElement) {
-      const style = getComputedStyle(selectedElement);
+    if (elementSelection.selectedElement) {
+      const style = getComputedStyle(elementSelection.selectedElement);
       const value = (style as any)[kebabToCamel(cssKey)] as string;
       setValue(value);
       console.log(cssKey, value)
     }
-  }, [selectedElement]);
+  }, [elementSelection.selectedElement]);
 
   return <Button type={isOn() ? "primary" : "ghost"} icon={icon} onClick={onClick} />;
 };

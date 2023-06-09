@@ -7,7 +7,7 @@ export const kebabToCamel = (text: string): string => {
   }
 
   for (let i = 1; i < split.length; i++) {
-    result += split[1].toUpperCase()[0] + split[1].substring(1);
+    result += split[i].toUpperCase()[0] + split[i].substring(1);
   }
   return result;
 };
@@ -47,16 +47,22 @@ const createSelector = (element: HTMLElement): string => {
     return returnWithAttr('src');
   } else if (element.getAttribute('class')) {
     return returnWithAttr('class');
+  } else if (element.getAttribute('style')) {
+    return returnWithAttr('style');
   }
 
   if (element.parentElement) {
-    let i = 1;
-    for (const node of Array.from(element.parentElement.childNodes)) {
-      if (node == element) {
-        return `${tag}:nth-of-type(${i})`;
-      }
-      i++;
+    if (element.parentElement.childNodes.length === 1) {
+      return tag;
     }
+
+    const index =
+      Array
+        .from(element.parentElement.childNodes)
+        .filter((node) => node.nodeName.toLowerCase() === tag)
+        .indexOf(element);
+
+    return index !== -1 ? `${tag}:nth-of-type(${index + 1})` : tag;
   }
 
   return tag;

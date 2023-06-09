@@ -1,8 +1,8 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useContext, useEffect, useMemo, useState} from "react";
 import {ColorPicker as AntdColorPicker, Space} from 'antd';
 import type {Color} from 'antd/es/color-picker';
 import {kebabToCamel} from "../../utils/CSSUtils";
-import useHoveredAndSelectedElement from "../../hooks/useHoveredAndSelectedElement";
+import {ElementSelectionContext} from "../../contexts/ElementSelectionContext";
 
 interface ColorPickerProps {
   cssKey: string;
@@ -13,7 +13,7 @@ interface ColorPickerProps {
 const ColorPicker = ({cssKey, id, onChange}: ColorPickerProps) => {
   const [colorHex, setColorHex] = useState<Color | string>('#1677ff');
   const [formatHex, setFormatHex] = useState<"rgb" | "hsb" | "hex">('hex');
-  const [_, selectedElement] = useHoveredAndSelectedElement();
+  const elementSelection = useContext(ElementSelectionContext);
 
   const hexString = useMemo(
     () => (typeof colorHex === 'string' ? colorHex : colorHex.toHexString()),
@@ -26,12 +26,12 @@ const ColorPicker = ({cssKey, id, onChange}: ColorPickerProps) => {
   }
 
   useEffect(() => {
-    if (selectedElement) {
-      const style = getComputedStyle(selectedElement);
+    if (elementSelection.selectedElement) {
+      const style = getComputedStyle(elementSelection.selectedElement);
       const value = (style as any)[kebabToCamel(cssKey)] as string;
       setColorHex(value);
     }
-  }, [selectedElement]);
+  }, [elementSelection.selectedElement]);
 
   return (
     <Space>

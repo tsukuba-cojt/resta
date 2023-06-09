@@ -1,36 +1,28 @@
 import styled from "styled-components";
-import React, {useContext, useEffect, useState} from "react";
-import {setFormatAndPushToAry} from "../../features/formatter";
-import {getAbsoluteCSSSelector} from "../../utils/CSSUtils";
-import {TranslatorContext} from "../../contexts/TranslatorContext";
-import useHoveredAndSelectedElement from "../../hooks/useHoveredAndSelectedElement";
-import TextArea from "../controls/TextArea";
-import SubTitle from "../typography/SubTitle";
-import RadioGroup from "../controls/RadioGroup";
+import React, {useContext, useEffect} from "react";
+import {setFormatAndPushToAry} from "../../../features/formatter";
+import {getAbsoluteCSSSelector} from "../../../utils/CSSUtils";
+import {TranslatorContext} from "../../../contexts/TranslatorContext";
+import TextArea from "../../controls/TextArea";
+import RadioGroup from "../../controls/RadioGroup";
 import {
   AlignCenterOutlined,
   AlignLeftOutlined,
-  AlignRightOutlined, BgColorsOutlined,
+  AlignRightOutlined,
   BoldOutlined, FontColorsOutlined, FontSizeOutlined,
-  ItalicOutlined, UnderlineOutlined
+  ItalicOutlined, UnderlineOutlined, VerticalAlignBottomOutlined, VerticalAlignMiddleOutlined, VerticalAlignTopOutlined
 } from "@ant-design/icons";
-import IconButton from "../controls/IconButton";
-import InputNumberWithUnit from "../controls/InputNumberWithUnit";
-import ColorPicker from "../controls/ColorPicker";
+import IconButton from "../../controls/IconButton";
+import InputNumberWithUnit from "../../controls/InputNumberWithUnit";
+import ColorPicker from "../../controls/ColorPicker";
 import {IconTypography} from "@tabler/icons-react";
+import Section from "../common/Section";
+import SubTitle from "../common/SubTitle";
+import Flex from "../common/Flex";
+import {fontUnits} from "../../../consts/units";
+import {ElementSelectionContext} from "../../../contexts/ElementSelectionContext";
 
 const Wrapper = styled.div``;
-
-const Section = styled.div`
-  padding-bottom: 12px;
-`;
-
-const Flex = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 6px;
-`;
 
 const IW = styled.span`
   display: flex;
@@ -41,13 +33,11 @@ const IW = styled.span`
 
 const FontCustomizer = () => {
   const translator = useContext(TranslatorContext);
-  const [_, selectedElement] = useHoveredAndSelectedElement();
-  const [updateIndex, setUpdateIndex] = useState<number>(0);
+  const elementSelection = useContext(ElementSelectionContext);
 
   const onChange = (key: string, value: string, id: number) => {
-    if (selectedElement) {
-      setFormatAndPushToAry(getAbsoluteCSSSelector(selectedElement), key, value, id);
-      setUpdateIndex(updateIndex + 1);
+    if (elementSelection.selectedElement) {
+      setFormatAndPushToAry(getAbsoluteCSSSelector(elementSelection.selectedElement), key, value, id);
     }
   };
 
@@ -57,7 +47,7 @@ const FontCustomizer = () => {
 
   return (
     <Wrapper>
-      {selectedElement &&
+      {elementSelection.selectedElement &&
         <>
           <Section>
             <SubTitle text={'フォント'}/>
@@ -81,7 +71,7 @@ const FontCustomizer = () => {
           <Section>
             <Flex>
               <FontSizeOutlined/>
-              <InputNumberWithUnit cssKey={"font-size"} id={106} options={["pt", "rem", "em", "px"]} onChange={onChange}/>
+              <InputNumberWithUnit cssKey={"font-size"} id={106} options={fontUnits} onChange={onChange}/>
             </Flex>
           </Section>
 
@@ -89,13 +79,6 @@ const FontCustomizer = () => {
             <Flex>
               <FontColorsOutlined/>
               <ColorPicker cssKey={"color"} id={107} onChange={onChange}/>
-            </Flex>
-          </Section>
-
-          <Section>
-            <Flex>
-              <BgColorsOutlined/>
-              <ColorPicker cssKey={"background-color"} id={108} onChange={onChange}/>
             </Flex>
           </Section>
 
@@ -110,22 +93,18 @@ const FontCustomizer = () => {
                         onChange={onChange}/>
           </Section>
 
-          {
-            /*
           <Section>
             <RadioGroup cssKey={"vertical-align"} id={109}
                         values={{
-                          'top': <IW><IconAlignBoxCenterTop strokeWidth={1.5} width={"1.0em"} height={"1.0em"}/></IW>,
-                          "middle": <IW><IconAlignBoxCenterMiddle strokeWidth={1.5} width={"1.0em"} height={"1.0em"}/></IW>,
-                          "bottom": <IW><IconAlignBoxCenterBottom strokeWidth={1.5} width={"1.0em"} height={"1.0em"}/></IW>
+                          'top': <IW><VerticalAlignTopOutlined/></IW>,
+                          "middle": <IW><VerticalAlignMiddleOutlined/></IW>,
+                          "bottom": <IW><VerticalAlignBottomOutlined/></IW>
                         }}
                         onChange={onChange}/>
           </Section>
-            */
-          }
         </>
       }
-      {!selectedElement &&
+      {!elementSelection.selectedElement &&
         <p>要素を選択してください</p>
       }
     </Wrapper>

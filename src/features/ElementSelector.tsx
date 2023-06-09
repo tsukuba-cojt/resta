@@ -1,43 +1,63 @@
-import React, { useEffect } from 'react';
-import useHoveredAndSelectedElement from '../hooks/useHoveredAndSelectedElement';
+import React, {useContext, useLayoutEffect} from 'react';
+import {CONTAINER_ID} from "./root_manager";
+import {ElementSelectionContext} from "../contexts/ElementSelectionContext";
 
 const ElementSelector = () => {
-  const HOVERED_PADDING_COLOR = '#81C78480';
   const HOVERED_BACKGROUND_COLOR = '#64B5F680';
-  const HOVERED_COLOR = 'rgba(0, 0, 255, 0.3)';
   /*
     const SELECTED_PADDING_COLOR = '#FF000080';
     const SELECTED_BACKGROUND_COLOR = '#00FF0080';
     const SELECTED_COLOR = 'rgba(255, 0, 0, 0.4)';
      */
 
-  const [hoveredElement, _ /* selectedElement */] =
-    useHoveredAndSelectedElement();
+  const elementSelection = useContext(ElementSelectionContext);
 
-  useEffect(() => {
-    if (hoveredElement) {
-      const previousBorder = hoveredElement.style.border;
-      const previousBackgroundImage = hoveredElement.style.backgroundImage;
-      const previousBackgroundClip = hoveredElement.style.backgroundClip;
-
-      if (hoveredElement.tagName === 'IMG') {
-        hoveredElement.style.border = `2px solid  ${HOVERED_COLOR}`;
-      } else {
-        hoveredElement.style.backgroundImage = `linear-gradient(to bottom, ${HOVERED_BACKGROUND_COLOR} 0%, ${HOVERED_BACKGROUND_COLOR} 100%), linear-gradient(to bottom, ${HOVERED_PADDING_COLOR} 0%, ${HOVERED_PADDING_COLOR} 100%)`;
-        hoveredElement.style.backgroundClip = 'content-box, padding-box';
+  useLayoutEffect(() => {
+    const updateElement = (event: MouseEvent) => {
+      if (!document.getElementById(CONTAINER_ID)) {
+        document.removeEventListener('mouseover', updateElement);
       }
 
-      hoveredElement.addEventListener(
-        'mouseout',
-        () => {
-          hoveredElement.style.border = previousBorder;
-          hoveredElement.style.backgroundImage = previousBackgroundImage;
-          hoveredElement.style.backgroundClip = previousBackgroundClip;
-        },
-        { once: true }
-      );
-    }
-  }, [hoveredElement]);
+      const element = event.target as HTMLElement | null;
+
+      if (!element) {
+        return;
+      }
+
+      if (
+        element !== elementSelection.hoveredElement &&
+        !element!.closest('#resta-root') &&
+        !element!.closest('.ant-select-dropdown') &&
+        !element!.closest('.ant-popover')
+      ) {
+        elementSelection.setHoveredElement(element);
+
+        const previousBackgroundColor = element.style.backgroundColor;
+        element.style.backgroundColor = HOVERED_BACKGROUND_COLOR;
+        element.addEventListener('mouseout',
+          () => element.style.backgroundColor = previousBackgroundColor, { once: true }
+        );
+
+        const listener = (ev: MouseEvent) => {
+          const newElement = ev.target as HTMLElement;
+          if (
+            !newElement.closest('#resta-root') &&
+            !newElement.closest('.ant-select-dropdown') &&
+            !element!.closest('.ant-popover')
+          ) {
+            elementSelection.selectedElement?.removeEventListener('mousedown', listener);
+            elementSelection.setSelectedElement(newElement);
+          }
+        };
+
+        element.addEventListener('mousedown', listener);
+      }
+    };
+
+    document.addEventListener('mouseover', updateElement);
+
+    return () => document.removeEventListener('mouseover', updateElement);
+  }, []);
 
   /*
     現状クリック時に色を変えることがバグの温床となっているので無効化

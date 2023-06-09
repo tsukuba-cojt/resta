@@ -1,7 +1,7 @@
 import {Input} from "antd";
-import React, {useEffect, useState} from "react";
-import useHoveredAndSelectedElement from "../../hooks/useHoveredAndSelectedElement";
+import React, {useContext, useEffect, useState} from "react";
 import {kebabToCamel} from "../../utils/CSSUtils";
+import {ElementSelectionContext} from "../../contexts/ElementSelectionContext";
 
 interface TextAreaProps {
   cssKey: string;
@@ -12,7 +12,7 @@ interface TextAreaProps {
 const TextArea = ({cssKey, id, placeHolder, onChange}: TextAreaProps) => {
   const [value, setValue] = useState<string>("");
   const { TextArea } = Input;
-  const [_, selectedElement] = useHoveredAndSelectedElement();
+  const elementSelection = useContext(ElementSelectionContext);
 
   const onTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setValue(e.currentTarget.value);
@@ -20,12 +20,12 @@ const TextArea = ({cssKey, id, placeHolder, onChange}: TextAreaProps) => {
   }
 
   useEffect(() => {
-    if (selectedElement) {
-      const style = getComputedStyle(selectedElement);
+    if (elementSelection.selectedElement) {
+      const style = getComputedStyle(elementSelection.selectedElement);
       const defaultValue = (style as any)[kebabToCamel(cssKey)] as string;
       setValue(defaultValue);
     }
-  }, [selectedElement]);
+  }, [elementSelection.selectedElement]);
 
   return (
     <TextArea value={value} autoSize={{ minRows: 1, maxRows: 5 }} placeholder={placeHolder} onChange={onTextChange} />

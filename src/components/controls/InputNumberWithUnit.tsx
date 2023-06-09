@@ -1,7 +1,7 @@
-import { InputNumber, Select } from 'antd';
-import React, {useEffect, useState} from 'react';
-import useHoveredAndSelectedElement from "../../hooks/useHoveredAndSelectedElement";
+import {Col, Input, Row, Select, Slider} from 'antd';
+import React, {useContext, useEffect, useState} from 'react';
 import {kebabToCamel} from "../../utils/CSSUtils";
+import {ElementSelectionContext} from "../../contexts/ElementSelectionContext";
 
 interface InputNumberWithUnitProps {
   cssKey: string;
@@ -16,41 +16,89 @@ const InputNumberWithUnit = ({
   options,
   onChange,
 }: InputNumberWithUnitProps) => {
-  const [numberValue, setNumberValue] = useState<number>(0);
+  const [inputValue, setInputValue] = useState<string>("0");
   const [optionValue, setOptionValue] = useState<string>(options[0]);
-  const [_, selectedElement] = useHoveredAndSelectedElement();
-  //const [defaultNumberValue, setDefaultNumberValue] = useState<number>(0);
-  //const [defaultOptionValue, setDefaultOptionValue] = useState<string>("");
+  const [inputStatus, setInputStatus] = useState<'error' | ''>('');
+  const elementSelection = useContext(ElementSelectionContext);
 
   useEffect(() => {
-    if (selectedElement) {
-      const style = getComputedStyle(selectedElement);
-      const value = (style as any)[kebabToCamel(cssKey)] as string;
-      setNumberValue(parseFloat(value.match(/^\d*.?\d+/)![0] ?? "0"));
-      setOptionValue(value.match(/[a-z]+$/)![0] ?? "");
+    if (elementSelection.selectedElement) {
+      const style = getComputedStyle(elementSelection.selectedElement);
+      const rawValue = (style as any)[kebabToCamel(cssKey)] as string;
+
+      const num = rawValue.match(/^\d*.?\d+/);
+      setInputValue(num ? num[0] : rawValue);
+
+      const option = rawValue.match(/[a-z]+$/);
+      if (option) {
+        setOptionValue(option[0] ?? "");
+      }
     }
-  }, [selectedElement]);
+  }, [elementSelection.selectedElement]);
+
+  const onSliderChange = (value: number) => {
+    let newOptionValue = optionValue;
+    if (optionValue.length === 0) {
+      setOptionValue(options[0]);
+      newOptionValue = optionValue[0];
+    }
+    onChange(cssKey, `${value}${newOptionValue}`, id);
+    setInputValue(value.toString());
+  }
+
+  const onValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.currentTarget.value;
+    if (value.match(/^\d*.?\d+$/)) {
+      let newOptionValue = optionValue;
+      if (optionValue.length === 0) {
+        setOptionValue(options[0]);
+        newOptionValue = optionValue[0];
+      }
+      onChange(cssKey, `${value}${newOptionValue}`, id);
+      setInputStatus('');
+
+    } else if (['auto', 'initial'].includes(value)) {
+      onChange(cssKey, `${value}`, id);
+      setOptionValue("");
+      setInputStatus('');
+
+    } else {
+      setInputStatus('error');
+    }
+
+    setInputValue(value);
+  }
 
   return (
-    <InputNumber
-      value={numberValue}
-      addonAfter={
-        <Select
-          defaultValue={options[0]}
-          value={optionValue}
-          onChange={(value) => {
-            onChange(cssKey, `${numberValue}${value}`, id);
-            setOptionValue(value);
-          }}
-          options={options.map((v) => ({ value: v, label: v }))}
-          dropdownStyle={{ zIndex: 99999 }}
+    <Row gutter={16}>
+      <Col span={12}>
+        <Slider
+          min={0}
+          max={100}
+          onChange={onSliderChange}
+          value={inputValue.match(/^\d*.?\d+$/) ? parseFloat(inputValue) : 0}
         />
-      }
-      onChange={(value) => {
-        onChange(cssKey, `${value}${optionValue}`, id);
-        setNumberValue(value as number);
-      }}
-    />
+      </Col>
+      <Col span={12}>
+        <Input
+          value={inputValue}
+          status={inputStatus}
+          addonAfter={
+            <Select
+              defaultValue={options[0]}
+              value={optionValue}
+              onChange={(value) => {
+                onChange(cssKey, `${inputValue}${value}`, id);
+                setOptionValue(value);
+              }}
+              options={options.map((v) => ({ value: v, label: v }))}
+              dropdownStyle={{ zIndex: 99999 }}
+            />
+          }
+          onChange={onValueChange}
+        />
+      </Col>
+    </Row>
   );
 };
 

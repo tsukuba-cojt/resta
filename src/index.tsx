@@ -31,3 +31,12 @@ chrome.runtime.onMessage.addListener(() => {
   activateContainer();
   isContainerActive = true;
 });
+
+const target = document.querySelector('body');
+const observer = new MutationObserver(() => {
+  console.log('OnUpdated');
+  initStyle();
+});
+observer.observe(target!, {
+  childList: true,
+});

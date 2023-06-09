@@ -3,7 +3,7 @@ import { initStyle } from './features/formatter';
 import loadRestaSetting from './features/setting_loader';
 import { initContainer } from './features/root_manager';
 
-let isContainerActive: boolean = false;
+export let isContainerActive: boolean = false;
 export const setContainerActive = (value: boolean) => {
   isContainerActive = value;
 };

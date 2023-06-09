@@ -17,11 +17,7 @@ import {
 import IconButton from "../controls/IconButton";
 import InputNumberWithUnit from "../controls/InputNumberWithUnit";
 import ColorPicker from "../controls/ColorPicker";
-import {
-  IconAlignBoxCenterBottom,
-  IconAlignBoxCenterMiddle,
-  IconAlignBoxCenterTop, IconTypography
-} from "@tabler/icons-react";
+import {IconTypography} from "@tabler/icons-react";
 
 const Wrapper = styled.div``;
 
@@ -34,6 +30,13 @@ const Flex = styled.div`
   justify-content: flex-start;
   align-items: center;
   gap: 6px;
+`;
+
+const IW = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(100% - 6px);
 `;
 
 const FontCustomizer = () => {
@@ -100,22 +103,26 @@ const FontCustomizer = () => {
             <SubTitle text={'段落'}/>
             <RadioGroup cssKey={"text-align"} id={102}
                         values={{
-                          'left': <AlignLeftOutlined/>,
-                          "center": <AlignCenterOutlined/>,
-                          "right": <AlignRightOutlined/>
+                          'left': <IW><AlignLeftOutlined/></IW>,
+                          "center": <IW><AlignCenterOutlined/></IW>,
+                          "right": <IW><AlignRightOutlined/></IW>
                         }}
                         onChange={onChange}/>
           </Section>
 
+          {
+            /*
           <Section>
             <RadioGroup cssKey={"vertical-align"} id={109}
                         values={{
-                          'top': <IconAlignBoxCenterTop strokeWidth={1.5} width={"1.0em"} height={"1.0em"}/>,
-                          "middle": <IconAlignBoxCenterMiddle strokeWidth={1.5} width={"1.0em"} height={"1.0em"}/>,
-                          "bottom": <IconAlignBoxCenterBottom strokeWidth={1.5} width={"1.0em"} height={"1.0em"}/>
+                          'top': <IW><IconAlignBoxCenterTop strokeWidth={1.5} width={"1.0em"} height={"1.0em"}/></IW>,
+                          "middle": <IW><IconAlignBoxCenterMiddle strokeWidth={1.5} width={"1.0em"} height={"1.0em"}/></IW>,
+                          "bottom": <IW><IconAlignBoxCenterBottom strokeWidth={1.5} width={"1.0em"} height={"1.0em"}/></IW>
                         }}
                         onChange={onChange}/>
           </Section>
+            */
+          }
         </>
       }
       {!selectedElement &&

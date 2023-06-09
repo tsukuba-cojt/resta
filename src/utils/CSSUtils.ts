@@ -47,16 +47,22 @@ const createSelector = (element: HTMLElement): string => {
     return returnWithAttr('src');
   } else if (element.getAttribute('class')) {
     return returnWithAttr('class');
+  } else if (element.getAttribute('style')) {
+    return returnWithAttr('style');
   }
 
   if (element.parentElement) {
-    let i = 1;
-    for (const node of Array.from(element.parentElement.childNodes)) {
-      if (node == element) {
-        return `${tag}:nth-of-type(${i})`;
-      }
-      i++;
+    if (element.parentElement.childNodes.length === 1) {
+      return tag;
     }
+
+    const index =
+      Array
+        .from(element.parentElement.childNodes)
+        .filter((node) => node.nodeName.toLowerCase() === tag)
+        .indexOf(element);
+
+    return index !== -1 ? `${tag}:nth-of-type(${index + 1})` : tag;
   }
 
   return tag;

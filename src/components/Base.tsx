@@ -9,8 +9,9 @@ import {
 import ChangeStyleTabItem from "./tabitems/ChangeStyleTabItem";
 import ToolBar from "./ToolBar";
 import {IconCategory2, IconCode, IconLayoutGrid, IconSettings, IconTypography} from "@tabler/icons-react";
-import FontCustomizer from "./tabitems/FontCustomizer";
+import FontCustomizer from "./tabitems/font/FontCustomizer";
 import PageSettingTabItem from "./tabitems/PageSettingTabItem";
+import BlockCustomizer from "./tabitems/block/BlockCustomizer";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -55,8 +56,8 @@ const Base = ({categoryMap}: BaseProps) => {
 
   const tabs = {
     'templates': <ChangeStyleTabItem categoryMap={categoryMap}/>,
-    'fonts': <FontCustomizer />,
-    'blocks': `x`,
+    'fonts': <FontCustomizer/>,
+    'blocks': <BlockCustomizer/>,
     'settings': <PageSettingTabItem/>
   };
 

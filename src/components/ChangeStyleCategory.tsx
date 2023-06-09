@@ -98,7 +98,7 @@ const ChangeStyleCategory = ({
                         key={index}
                         cssKey={element.key}
                         id={element.id}
-                        part={part}
+                        options={{}}
                         onChange={onChange}
                       />
                     )}

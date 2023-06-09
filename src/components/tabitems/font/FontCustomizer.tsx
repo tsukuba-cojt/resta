@@ -1,36 +1,28 @@
 import styled from "styled-components";
-import React, {useContext, useEffect, useState} from "react";
-import {setFormatAndPushToAry} from "../../features/formatter";
-import {getAbsoluteCSSSelector} from "../../utils/CSSUtils";
-import {TranslatorContext} from "../../contexts/TranslatorContext";
-import useHoveredAndSelectedElement from "../../hooks/useHoveredAndSelectedElement";
-import TextArea from "../controls/TextArea";
-import SubTitle from "../typography/SubTitle";
-import RadioGroup from "../controls/RadioGroup";
+import React, {useContext, useEffect} from "react";
+import {setFormatAndPushToAry} from "../../../features/formatter";
+import {getAbsoluteCSSSelector} from "../../../utils/CSSUtils";
+import {TranslatorContext} from "../../../contexts/TranslatorContext";
+import useHoveredAndSelectedElement from "../../../hooks/useHoveredAndSelectedElement";
+import TextArea from "../../controls/TextArea";
+import RadioGroup from "../../controls/RadioGroup";
 import {
   AlignCenterOutlined,
   AlignLeftOutlined,
-  AlignRightOutlined, BgColorsOutlined,
+  AlignRightOutlined,
   BoldOutlined, FontColorsOutlined, FontSizeOutlined,
   ItalicOutlined, UnderlineOutlined
 } from "@ant-design/icons";
-import IconButton from "../controls/IconButton";
-import InputNumberWithUnit from "../controls/InputNumberWithUnit";
-import ColorPicker from "../controls/ColorPicker";
+import IconButton from "../../controls/IconButton";
+import InputNumberWithUnit from "../../controls/InputNumberWithUnit";
+import ColorPicker from "../../controls/ColorPicker";
 import {IconTypography} from "@tabler/icons-react";
+import Section from "../common/Section";
+import SubTitle from "../common/SubTitle";
+import Flex from "../common/Flex";
+import {fontUnits} from "../../../consts/units";
 
 const Wrapper = styled.div``;
-
-const Section = styled.div`
-  padding-bottom: 12px;
-`;
-
-const Flex = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 6px;
-`;
 
 const IW = styled.span`
   display: flex;
@@ -41,13 +33,11 @@ const IW = styled.span`
 
 const FontCustomizer = () => {
   const translator = useContext(TranslatorContext);
-  const [_, selectedElement] = useHoveredAndSelectedElement();
-  const [updateIndex, setUpdateIndex] = useState<number>(0);
+  const [_, selectedElement] = useHoveredAndSelectedElement();;
 
   const onChange = (key: string, value: string, id: number) => {
     if (selectedElement) {
       setFormatAndPushToAry(getAbsoluteCSSSelector(selectedElement), key, value, id);
-      setUpdateIndex(updateIndex + 1);
     }
   };
 
@@ -81,7 +71,7 @@ const FontCustomizer = () => {
           <Section>
             <Flex>
               <FontSizeOutlined/>
-              <InputNumberWithUnit cssKey={"font-size"} id={106} options={["pt", "rem", "em", "px"]} onChange={onChange}/>
+              <InputNumberWithUnit cssKey={"font-size"} id={106} options={fontUnits} onChange={onChange}/>
             </Flex>
           </Section>
 
@@ -89,13 +79,6 @@ const FontCustomizer = () => {
             <Flex>
               <FontColorsOutlined/>
               <ColorPicker cssKey={"color"} id={107} onChange={onChange}/>
-            </Flex>
-          </Section>
-
-          <Section>
-            <Flex>
-              <BgColorsOutlined/>
-              <ColorPicker cssKey={"background-color"} id={108} onChange={onChange}/>
             </Flex>
           </Section>
 

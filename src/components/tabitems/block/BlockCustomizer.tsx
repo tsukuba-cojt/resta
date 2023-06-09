@@ -11,6 +11,9 @@ import BackgroundColorCustomizer from "./BackgroundColorCustomizer";
 import {setFormatAndPushToAry} from "../../../features/formatter";
 import {getAbsoluteCSSSelector} from "../../../utils/CSSUtils";
 import BorderColorCustomizer from "./BorderColorCustomizer";
+import BorderRadiusCustomizer from "./BorderRadiusCustomizer";
+import PaddingCustomizer from "./PaddingCustomizer";
+import SizeCustomizer from "./SizeCustomizer";
 
 const Wrapper = styled.div``;
 
@@ -31,7 +34,10 @@ const BlockCustomizer = () => {
 
   const customizers: { [key: string]: React.JSX.Element } = {
     '背景色': <BackgroundColorCustomizer onChange={onChange}/>,
-    '枠線': <BorderColorCustomizer onChange={onChange}/>
+    '幅と高さ': <SizeCustomizer onChange={onChange}/>,
+    '余白': <PaddingCustomizer onChange={onChange}/>,
+    '角丸': <BorderRadiusCustomizer onChange={onChange}/>,
+    '枠線': <BorderColorCustomizer onChange={onChange}/>,
   }
 
   return (

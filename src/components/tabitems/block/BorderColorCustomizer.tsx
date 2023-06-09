@@ -46,9 +46,9 @@ interface BorderColorCustomizerProps {
 const BorderColorCustomizer = ({onChange}: BorderColorCustomizerProps) => {
   const borders = {
     '上': "border-top",
+    '右': "border-right",
     '下': "border-bottom",
     '左': "border-left",
-    '右': "border-right",
   };
 
   return (

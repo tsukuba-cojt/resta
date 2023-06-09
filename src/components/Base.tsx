@@ -12,6 +12,8 @@ import {IconCategory2, IconCode, IconLayoutGrid, IconSettings, IconTypography} f
 import FontCustomizer from "./tabitems/font/FontCustomizer";
 import PageSettingTabItem from "./tabitems/PageSettingTabItem";
 import BlockCustomizer from "./tabitems/block/BlockCustomizer";
+import {ElementSelectionContext, useElementSelectionContext} from "../contexts/ElementSelectionContext";
+import ElementSelector from "../features/ElementSelector";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -52,6 +54,7 @@ interface BaseProps {
 
 const Base = ({categoryMap}: BaseProps) => {
   const translator = useTranslator();
+  const elementSelection = useElementSelectionContext();
   const tabInnerWrapperRef = useRef<HTMLDivElement>(null);
 
   const tabs = {
@@ -96,12 +99,15 @@ const Base = ({categoryMap}: BaseProps) => {
   return (
     <Wrapper>
       <TranslatorContext.Provider value={translator}>
-        <ToolBar/>
-        <TabWrapper>
-          <TabInnerWrapper ref={tabInnerWrapperRef}>
-            <Tabs items={items} tabBarGutter={0}/>
-          </TabInnerWrapper>
-        </TabWrapper>
+        <ElementSelectionContext.Provider value={elementSelection}>
+          <ToolBar/>
+          <TabWrapper>
+            <TabInnerWrapper ref={tabInnerWrapperRef}>
+              <Tabs items={items} tabBarGutter={0}/>
+            </TabInnerWrapper>
+          </TabWrapper>
+          <ElementSelector/>
+        </ElementSelectionContext.Provider>
       </TranslatorContext.Provider>
     </Wrapper>
   );

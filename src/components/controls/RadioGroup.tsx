@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {kebabToCamel} from "../../utils/CSSUtils";
-import useHoveredAndSelectedElement from "../../hooks/useHoveredAndSelectedElement";
 import { Radio } from "antd";
 import {RadioChangeEvent} from "antd/es/radio/interface";
+import {ElementSelectionContext} from "../../contexts/ElementSelectionContext";
 
 interface RadioGroupProps {
   cssKey: string;
@@ -14,7 +14,7 @@ interface RadioGroupProps {
 const RadioGroup = ({cssKey, id, values, onChange}: RadioGroupProps) => {
   const options = Object.entries(values).map((value) => ({value: value[0], label: value[1]}));
   const [value, setValue] = useState<string>("");
-  const [_, selectedElement] = useHoveredAndSelectedElement();
+  const elementSelection = useContext(ElementSelectionContext);
 
   // @ts-ignore
   const onRadioChange = (e: RadioChangeEvent) => {
@@ -23,12 +23,12 @@ const RadioGroup = ({cssKey, id, values, onChange}: RadioGroupProps) => {
   }
 
   useEffect(() => {
-    if (selectedElement) {
-      const style = getComputedStyle(selectedElement);
+    if (elementSelection.selectedElement) {
+      const style = getComputedStyle(elementSelection.selectedElement);
       const value = (style as any)[kebabToCamel(cssKey)] as string;
       setValue(value);
     }
-  }, [selectedElement]);
+  }, [elementSelection.selectedElement]);
 
   return <Radio.Group options={options} onChange={onRadioChange} value={value} optionType="button"/>;
 };

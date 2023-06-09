@@ -1,7 +1,7 @@
 import {Col, Input, Row, Select, Slider} from 'antd';
-import React, {useEffect, useState} from 'react';
-import useHoveredAndSelectedElement from "../../hooks/useHoveredAndSelectedElement";
+import React, {useContext, useEffect, useState} from 'react';
 import {kebabToCamel} from "../../utils/CSSUtils";
+import {ElementSelectionContext} from "../../contexts/ElementSelectionContext";
 
 interface InputNumberWithUnitProps {
   cssKey: string;
@@ -19,11 +19,11 @@ const InputNumberWithUnit = ({
   const [inputValue, setInputValue] = useState<string>("0");
   const [optionValue, setOptionValue] = useState<string>(options[0]);
   const [inputStatus, setInputStatus] = useState<'error' | ''>('');
-  const [_, selectedElement] = useHoveredAndSelectedElement();
+  const elementSelection = useContext(ElementSelectionContext);
 
   useEffect(() => {
-    if (selectedElement) {
-      const style = getComputedStyle(selectedElement);
+    if (elementSelection.selectedElement) {
+      const style = getComputedStyle(elementSelection.selectedElement);
       const rawValue = (style as any)[kebabToCamel(cssKey)] as string;
 
       const num = rawValue.match(/^\d*.?\d+/);
@@ -34,7 +34,7 @@ const InputNumberWithUnit = ({
         setOptionValue(option[0] ?? "");
       }
     }
-  }, [selectedElement]);
+  }, [elementSelection.selectedElement]);
 
   const onSliderChange = (value: number) => {
     let newOptionValue = optionValue;

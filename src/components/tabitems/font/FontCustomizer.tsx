@@ -3,7 +3,6 @@ import React, {useContext, useEffect} from "react";
 import {setFormatAndPushToAry} from "../../../features/formatter";
 import {getAbsoluteCSSSelector} from "../../../utils/CSSUtils";
 import {TranslatorContext} from "../../../contexts/TranslatorContext";
-import useHoveredAndSelectedElement from "../../../hooks/useHoveredAndSelectedElement";
 import TextArea from "../../controls/TextArea";
 import RadioGroup from "../../controls/RadioGroup";
 import {
@@ -21,6 +20,7 @@ import Section from "../common/Section";
 import SubTitle from "../common/SubTitle";
 import Flex from "../common/Flex";
 import {fontUnits} from "../../../consts/units";
+import {ElementSelectionContext} from "../../../contexts/ElementSelectionContext";
 
 const Wrapper = styled.div``;
 
@@ -33,11 +33,11 @@ const IW = styled.span`
 
 const FontCustomizer = () => {
   const translator = useContext(TranslatorContext);
-  const [_, selectedElement] = useHoveredAndSelectedElement();;
+  const elementSelection = useContext(ElementSelectionContext);
 
   const onChange = (key: string, value: string, id: number) => {
-    if (selectedElement) {
-      setFormatAndPushToAry(getAbsoluteCSSSelector(selectedElement), key, value, id);
+    if (elementSelection.selectedElement) {
+      setFormatAndPushToAry(getAbsoluteCSSSelector(elementSelection.selectedElement), key, value, id);
     }
   };
 
@@ -47,7 +47,7 @@ const FontCustomizer = () => {
 
   return (
     <Wrapper>
-      {selectedElement &&
+      {elementSelection.selectedElement &&
         <>
           <Section>
             <SubTitle text={'フォント'}/>
@@ -104,7 +104,7 @@ const FontCustomizer = () => {
           </Section>
         </>
       }
-      {!selectedElement &&
+      {!elementSelection.selectedElement &&
         <p>要素を選択してください</p>
       }
     </Wrapper>

@@ -1,7 +1,6 @@
 import ReactDOM from 'react-dom';
 import React from 'react';
 import Base from '../components/Base';
-import ElementSelector from './ElementSelector';
 import { ChangeStyleCategoryMap } from '../types/ChangeStyleElement';
 import { setContainerActive } from '..';
 
@@ -14,8 +13,7 @@ export const initContainer = (categoryMap: ChangeStyleCategoryMap) => {
 
   ReactDOM.render(
     <React.StrictMode>
-      <Base categoryMap={categoryMap} />
-      <ElementSelector />
+      <Base categoryMap={categoryMap} />\
     </React.StrictMode>,
     div
   );

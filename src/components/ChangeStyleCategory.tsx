@@ -6,11 +6,11 @@ import { Collapse, Input, InputNumber } from 'antd';
 import { CSSParseResultElementType } from '../types/RestaSetting';
 import t from '../features/translator';
 import { setFormatAndPushToAry } from '../features/formatter';
-import useHoveredAndSelectedElement from '../hooks/useHoveredAndSelectedElement';
 import InputNumberWithUnit from './controls/InputNumberWithUnit';
 import Select from './controls/Select';
 import { TranslatorContext } from '../contexts/TranslatorContext';
 import { getAbsoluteCSSSelector } from '../utils/CSSUtils';
+import {ElementSelectionContext} from "../contexts/ElementSelectionContext";
 
 const Wrapper = styled.div``;
 
@@ -38,12 +38,12 @@ const ChangeStyleCategory = ({
   elements,
 }: CategoryProps) => {
   const translator = useContext(TranslatorContext);
-  const [_, selectedElement] = useHoveredAndSelectedElement();
+  const elementSelection = useContext(ElementSelectionContext);
 
   const onChange = (key: string, value: string, id: number) => {
-    if (selectedElement) {
+    if (elementSelection.selectedElement) {
       setFormatAndPushToAry(
-        getAbsoluteCSSSelector(selectedElement),
+        getAbsoluteCSSSelector(elementSelection.selectedElement),
         key,
         value,
         id

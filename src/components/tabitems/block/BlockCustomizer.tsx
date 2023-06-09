@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import useHoveredAndSelectedElement from "../../../hooks/useHoveredAndSelectedElement";
 import React, {useContext, useState} from "react";
 import {Input} from "antd";
 import t from "../../../features/translator";
@@ -14,6 +13,7 @@ import BorderColorCustomizer from "./BorderColorCustomizer";
 import BorderRadiusCustomizer from "./BorderRadiusCustomizer";
 import PaddingCustomizer from "./PaddingCustomizer";
 import SizeCustomizer from "./SizeCustomizer";
+import {ElementSelectionContext} from "../../../contexts/ElementSelectionContext";
 
 const Wrapper = styled.div``;
 
@@ -23,12 +23,12 @@ const InputWrapper = styled.div`
 
 const BlockCustomizer = () => {
   const translator = useContext(TranslatorContext);
-  const [_, selectedElement] = useHoveredAndSelectedElement();
+  const elementSelection = useContext(ElementSelectionContext);
   const [searchText, setSearchText] = useState<string>('');
 
   const onChange = (key: string, value: string, id: number) => {
-    if (selectedElement) {
-      setFormatAndPushToAry(getAbsoluteCSSSelector(selectedElement), key, value, id);
+    if (elementSelection.selectedElement) {
+      setFormatAndPushToAry(getAbsoluteCSSSelector(elementSelection.selectedElement), key, value, id);
     }
   };
 
@@ -42,7 +42,7 @@ const BlockCustomizer = () => {
 
   return (
     <Wrapper>
-      {selectedElement &&
+      {elementSelection.selectedElement &&
         <>
           <InputWrapper>
             <Input
@@ -63,7 +63,7 @@ const BlockCustomizer = () => {
           }
         </>
       }
-      {!selectedElement &&
+      {!elementSelection.selectedElement &&
         <p>要素を選択してください</p>
       }
     </Wrapper>

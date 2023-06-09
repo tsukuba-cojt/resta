@@ -7,7 +7,7 @@ export const kebabToCamel = (text: string): string => {
   }
 
   for (let i = 1; i < split.length; i++) {
-    result += split[1].toUpperCase()[0] + split[1].substring(1);
+    result += split[i].toUpperCase()[0] + split[i].substring(1);
   }
   return result;
 };

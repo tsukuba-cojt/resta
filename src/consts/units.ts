@@ -1,3 +1,3 @@
 export const blockUnits = ['pt', 'px', 'rem', 'em', '%'];
 
-export const fontUnits = ['pt', 'rem', 'em', 'px'];
+export const fontUnits = ['px', 'rem', 'em', 'pt'];

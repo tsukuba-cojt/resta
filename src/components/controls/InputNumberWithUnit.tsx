@@ -1,4 +1,4 @@
-import { InputNumber, Select } from 'antd';
+import {Col, Input, Row, Select, Slider} from 'antd';
 import React, {useEffect, useState} from 'react';
 import useHoveredAndSelectedElement from "../../hooks/useHoveredAndSelectedElement";
 import {kebabToCamel} from "../../utils/CSSUtils";
@@ -16,41 +16,89 @@ const InputNumberWithUnit = ({
   options,
   onChange,
 }: InputNumberWithUnitProps) => {
-  const [numberValue, setNumberValue] = useState<number>(0);
+  const [inputValue, setInputValue] = useState<string>("0");
   const [optionValue, setOptionValue] = useState<string>(options[0]);
+  const [inputStatus, setInputStatus] = useState<'error' | ''>('');
   const [_, selectedElement] = useHoveredAndSelectedElement();
-  //const [defaultNumberValue, setDefaultNumberValue] = useState<number>(0);
-  //const [defaultOptionValue, setDefaultOptionValue] = useState<string>("");
 
   useEffect(() => {
     if (selectedElement) {
       const style = getComputedStyle(selectedElement);
-      const value = (style as any)[kebabToCamel(cssKey)] as string;
-      setNumberValue(parseFloat(value.match(/^\d*.?\d+/)![0] ?? "0"));
-      setOptionValue(value.match(/[a-z]+$/)![0] ?? "");
+      const rawValue = (style as any)[kebabToCamel(cssKey)] as string;
+
+      const num = rawValue.match(/^\d*.?\d+/);
+      setInputValue(num ? num[0] : rawValue);
+
+      const option = rawValue.match(/[a-z]+$/);
+      if (option) {
+        setOptionValue(option[0] ?? "");
+      }
     }
   }, [selectedElement]);
 
-  return (
-    <InputNumber
-      value={numberValue}
-      addonAfter={
-        <Select
-          defaultValue={options[0]}
-          value={optionValue}
-          onChange={(value) => {
-            onChange(cssKey, `${numberValue}${value}`, id);
-            setOptionValue(value);
-          }}
-          options={options.map((v) => ({ value: v, label: v }))}
-          dropdownStyle={{ zIndex: 99999 }}
-        />
+  const onSliderChange = (value: number) => {
+    let newOptionValue = optionValue;
+    if (optionValue.length === 0) {
+      setOptionValue(options[0]);
+      newOptionValue = optionValue[0];
+    }
+    onChange(cssKey, `${value}${newOptionValue}`, id);
+    setInputValue(value.toString());
+  }
+
+  const onValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.currentTarget.value;
+    if (value.match(/^\d*.?\d+$/)) {
+      let newOptionValue = optionValue;
+      if (optionValue.length === 0) {
+        setOptionValue(options[0]);
+        newOptionValue = optionValue[0];
       }
-      onChange={(value) => {
-        onChange(cssKey, `${value}${optionValue}`, id);
-        setNumberValue(value as number);
-      }}
-    />
+      onChange(cssKey, `${value}${newOptionValue}`, id);
+      setInputStatus('');
+
+    } else if (['auto', 'initial'].includes(value)) {
+      onChange(cssKey, `${value}`, id);
+      setOptionValue("");
+      setInputStatus('');
+
+    } else {
+      setInputStatus('error');
+    }
+
+    setInputValue(value);
+  }
+
+  return (
+    <Row gutter={16}>
+      <Col span={12}>
+        <Slider
+          min={0}
+          max={100}
+          onChange={onSliderChange}
+          value={inputValue.match(/^\d*.?\d+$/) ? parseFloat(inputValue) : 0}
+        />
+      </Col>
+      <Col span={12}>
+        <Input
+          value={inputValue}
+          status={inputStatus}
+          addonAfter={
+            <Select
+              defaultValue={options[0]}
+              value={optionValue}
+              onChange={(value) => {
+                onChange(cssKey, `${inputValue}${value}`, id);
+                setOptionValue(value);
+              }}
+              options={options.map((v) => ({ value: v, label: v }))}
+              dropdownStyle={{ zIndex: 99999 }}
+            />
+          }
+          onChange={onValueChange}
+        />
+      </Col>
+    </Row>
   );
 };
 

@@ -46,6 +46,7 @@ const ElementSelector = () => {
             !element!.closest('.ant-popover')
           ) {
             elementSelection.selectedElement?.removeEventListener('mousedown', listener);
+            newElement.style.backgroundColor = previousBackgroundColor;
             elementSelection.setSelectedElement(newElement);
           }
         };

@@ -11,7 +11,7 @@ import {
   AlignLeftOutlined,
   AlignRightOutlined,
   BoldOutlined, FontColorsOutlined, FontSizeOutlined,
-  ItalicOutlined, UnderlineOutlined
+  ItalicOutlined, UnderlineOutlined, VerticalAlignBottomOutlined, VerticalAlignMiddleOutlined, VerticalAlignTopOutlined
 } from "@ant-design/icons";
 import IconButton from "../../controls/IconButton";
 import InputNumberWithUnit from "../../controls/InputNumberWithUnit";
@@ -93,19 +93,15 @@ const FontCustomizer = () => {
                         onChange={onChange}/>
           </Section>
 
-          {
-            /*
           <Section>
             <RadioGroup cssKey={"vertical-align"} id={109}
                         values={{
-                          'top': <IW><IconAlignBoxCenterTop strokeWidth={1.5} width={"1.0em"} height={"1.0em"}/></IW>,
-                          "middle": <IW><IconAlignBoxCenterMiddle strokeWidth={1.5} width={"1.0em"} height={"1.0em"}/></IW>,
-                          "bottom": <IW><IconAlignBoxCenterBottom strokeWidth={1.5} width={"1.0em"} height={"1.0em"}/></IW>
+                          'top': <IW><VerticalAlignTopOutlined/></IW>,
+                          "middle": <IW><VerticalAlignMiddleOutlined/></IW>,
+                          "bottom": <IW><VerticalAlignBottomOutlined/></IW>
                         }}
                         onChange={onChange}/>
           </Section>
-            */
-          }
         </>
       }
       {!selectedElement &&

@@ -1,4 +1,5 @@
 import { useLayoutEffect, useState } from 'react';
+import {CONTAINER_ID} from "../features/root_manager";
 
 const useHoveredAndSelectedElement = (): [
   HTMLElement | null,
@@ -13,6 +14,10 @@ const useHoveredAndSelectedElement = (): [
 
   useLayoutEffect(() => {
     const updateElement = (event: MouseEvent) => {
+      if (!document.getElementById(CONTAINER_ID)) {
+        document.removeEventListener('mouseover', updateElement);
+      }
+
       const element = event.target as HTMLElement | null;
 
       if (!element) {

@@ -14,6 +14,7 @@ import BorderRadiusCustomizer from "./BorderRadiusCustomizer";
 import PaddingCustomizer from "./PaddingCustomizer";
 import SizeCustomizer from "./SizeCustomizer";
 import {ElementSelectionContext} from "../../../contexts/ElementSelectionContext";
+import BoxShadowCustomizer from "./BoxShadowCustomizer";
 
 const Wrapper = styled.div``;
 
@@ -38,6 +39,7 @@ const BlockCustomizer = () => {
     '余白': <PaddingCustomizer onChange={onChange}/>,
     '角丸': <BorderRadiusCustomizer onChange={onChange}/>,
     '枠線': <BorderColorCustomizer onChange={onChange}/>,
+    '影': <BoxShadowCustomizer onChange={onChange}/>,
   }
 
   return (

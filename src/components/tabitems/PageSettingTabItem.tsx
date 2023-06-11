@@ -7,7 +7,7 @@ import { downloadLangJson } from '../../features/setting_downloader';
 import { Button, Collapse, Input, Popconfirm } from 'antd';
 import * as prop from '../../features/prop';
 import { saveFormat } from '../../features/format_manager';
-import {resetFormatsAry} from "../../features/prop";
+import { removeAllFormats } from '../../features/prop';
 
 const Wrapper = styled.div``;
 
@@ -31,13 +31,13 @@ const PageSettingTabItem = () => {
     })();
   }, []);
   const onClickInitPageFormat = () => {
-    prop.resetFormatsAry();
+    prop.removeCurrentFormat();
     saveFormat();
     window.location.reload();
   };
 
   const onClickInitAllPageFormat = () => {
-    resetFormatsAry();
+    removeAllFormats();
     saveFormat();
     window.location.reload();
   };

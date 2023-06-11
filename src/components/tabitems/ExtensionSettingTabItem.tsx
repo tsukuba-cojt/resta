@@ -5,7 +5,7 @@ import React, { useContext, useEffect } from 'react';
 import { TranslatorContext } from '../../contexts/TranslatorContext';
 import { downloadLangJson } from '../../features/setting_downloader';
 import { Button, Collapse, Popconfirm } from 'antd';
-import { resetFormatsAry } from '../../features/prop';
+import { removeAllFormats } from '../../features/prop';
 import { saveFormat } from '../../features/format_manager';
 
 const Wrapper = styled.div``;
@@ -30,7 +30,7 @@ const ExtensionSettingTabItem = () => {
     })();
   }, []);
   const onClickInitAllPageFormat = () => {
-    resetFormatsAry();
+    removeAllFormats();
     saveFormat();
     window.location.reload();
   };

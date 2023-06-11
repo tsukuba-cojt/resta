@@ -276,7 +276,10 @@ const getIndex = (
  * 比較的重い処理なので、ページ遷移時などに呼び出す
  */
 export const applyFormats = () => {
-  const formats = prop.formatsArray.filter((e) => prop.currentUrl.match(e.url));
+  const formats = prop.formatsArray.filter((e) =>
+    matchUrl(e.url, prop.currentUrl)
+  );
+  console.log('start:applyFormats', formats);
   for (const f of formats) {
     // console.log(f);
     for (const format of f.formats) {
@@ -297,5 +300,20 @@ export const applyFormats = () => {
         }
       });
     }
+  }
+};
+
+export const matchUrl = (url: string, matchUrl: string) => {
+  let hasWildcard = false;
+  let compareUrl = '';
+  // 最後の文字が*ならワイルドカードとして扱う
+  if (matchUrl[matchUrl.length - 1] === '*') {
+    hasWildcard = true;
+    compareUrl = matchUrl.slice(0, -1);
+  }
+  if (hasWildcard) {
+    return url === compareUrl || url.startsWith(compareUrl);
+  } else {
+    return url === matchUrl;
   }
 };

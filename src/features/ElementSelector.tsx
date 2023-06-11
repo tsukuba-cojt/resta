@@ -1,6 +1,6 @@
-import React, {useContext, useLayoutEffect} from 'react';
-import {CONTAINER_ID} from "./root_manager";
-import {ElementSelectionContext} from "../contexts/ElementSelectionContext";
+import React, { useContext, useLayoutEffect } from 'react';
+import { CONTAINER_ID } from './root_manager';
+import { ElementSelectionContext } from '../contexts/ElementSelectionContext';
 
 const ElementSelector = () => {
   const HOVERED_BACKGROUND_COLOR = '#64B5F680';
@@ -34,9 +34,25 @@ const ElementSelector = () => {
 
         const previousBackgroundColor = element.style.backgroundColor;
         element.style.backgroundColor = HOVERED_BACKGROUND_COLOR;
-        element.addEventListener('mouseout',
-          () => element.style.backgroundColor = previousBackgroundColor, { once: true }
+        element.addEventListener(
+          'mouseout',
+          () => (element.style.backgroundColor = previousBackgroundColor),
+          { once: true }
         );
+
+        const clickListener = (ev: MouseEvent) => {
+          const newElement = ev.target as HTMLElement;
+          if (
+            !newElement.closest('#resta-root') &&
+            !newElement.closest('.ant-select-dropdown') &&
+            !element!.closest('.ant-popover')
+          ) {
+            if (ev.shiftKey) {
+              ev.preventDefault();
+              newElement.removeEventListener('click', clickListener);
+            }
+          }
+        };
 
         const listener = (ev: MouseEvent) => {
           const newElement = ev.target as HTMLElement;
@@ -45,12 +61,16 @@ const ElementSelector = () => {
             !newElement.closest('.ant-select-dropdown') &&
             !element!.closest('.ant-popover')
           ) {
-            elementSelection.selectedElement?.removeEventListener('mousedown', listener);
+            elementSelection.selectedElement?.removeEventListener(
+              'mousedown',
+              listener
+            );
             newElement.style.backgroundColor = previousBackgroundColor;
             elementSelection.setSelectedElement(newElement);
           }
         };
 
+        element.addEventListener('click', clickListener, { passive: false });
         element.addEventListener('mousedown', listener);
       }
     };

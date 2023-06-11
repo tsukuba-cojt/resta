@@ -1,13 +1,15 @@
 import styled from 'styled-components';
-import t from '../../features/translator';
+import t from '../../../features/translator';
 import Title from 'antd/lib/typography/Title';
 import React, { useContext, useEffect } from 'react';
-import { TranslatorContext } from '../../contexts/TranslatorContext';
-import { downloadLangJson } from '../../features/setting_downloader';
+import { TranslatorContext } from '../../../contexts/TranslatorContext';
+import { downloadLangJson } from '../../../features/setting_downloader';
 import { Button, Collapse, Input, Popconfirm } from 'antd';
-import * as prop from '../../features/prop';
-import { saveFormat } from '../../features/format_manager';
-import { removeAllFormats } from '../../features/prop';
+import * as prop from '../../../features/prop';
+import { saveFormat } from '../../../features/format_manager';
+import { removeAllFormats } from '../../../features/prop';
+import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
+import { getAbsoluteCSSSelector } from '../../../utils/CSSUtils';
 
 const Wrapper = styled.div``;
 
@@ -41,6 +43,8 @@ const PageSettingTabItem = () => {
     saveFormat();
     window.location.reload();
   };
+
+  const elementSelection = useContext(ElementSelectionContext);
 
   let index = 0;
 
@@ -102,6 +106,24 @@ const PageSettingTabItem = () => {
             >
               <Button danger>{t(translator.lang, 'execute')}</Button>
             </Popconfirm>
+          </Panel>
+        </Collapse>
+      </CollapseWrapper>
+
+      <Title level={5} style={{ margin: '16px 0 8px' }}>
+        {t(translator.lang, 'developer_tools')}
+      </Title>
+      <CollapseWrapper>
+        <Collapse size="small">
+          <Panel header={t(translator.lang, 'get_css_selector')} key={index++}>
+            <Description>
+              {t(translator.lang, 'get_css_selector_description')}
+            </Description>
+            <p>
+              {elementSelection.selectedElement
+                ? getAbsoluteCSSSelector(elementSelection.selectedElement)
+                : ''}
+            </p>
           </Panel>
         </Collapse>
       </CollapseWrapper>

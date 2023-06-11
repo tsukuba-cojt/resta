@@ -1,12 +1,12 @@
 import styled from 'styled-components';
-import t from '../../features/translator';
+import t from '../../../features/translator';
 import Title from 'antd/lib/typography/Title';
 import React, { useContext, useEffect } from 'react';
-import { TranslatorContext } from '../../contexts/TranslatorContext';
-import { downloadLangJson } from '../../features/setting_downloader';
+import { TranslatorContext } from '../../../contexts/TranslatorContext';
+import { downloadLangJson } from '../../../features/setting_downloader';
 import { Button, Collapse, Popconfirm } from 'antd';
-import { removeAllFormats } from '../../features/prop';
-import { saveFormat } from '../../features/format_manager';
+import { removeAllFormats } from '../../../features/prop';
+import { saveFormat } from '../../../features/format_manager';
 
 const Wrapper = styled.div``;
 

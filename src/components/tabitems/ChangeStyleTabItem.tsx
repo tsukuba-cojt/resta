@@ -11,8 +11,6 @@ import { downloadLangJson } from '../../features/setting_downloader';
 import { Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import ChangeStyleCategory from '../ChangeStyleCategory';
-import { getAbsoluteCSSSelector } from '../../utils/CSSUtils';
-import {ElementSelectionContext} from "../../contexts/ElementSelectionContext";
 
 const Wrapper = styled.div``;
 
@@ -24,7 +22,6 @@ interface ChangeStyleTabItemProps {
 
 const ChangeStyleTabItem = ({ categoryMap }: ChangeStyleTabItemProps) => {
   const translator = useContext(TranslatorContext);
-  const elementSelection = useContext(ElementSelectionContext);
   const [searchText, setSearchText] = useState<string>('');
 
   const filter = ([key, elements]: [string, ChangeStyleElement[]]): boolean => {
@@ -56,7 +53,6 @@ const ChangeStyleTabItem = ({ categoryMap }: ChangeStyleTabItemProps) => {
           onChange={(e) => setSearchText(e.currentTarget!.value)}
         />
       </InputWrapper>
-      <p>{elementSelection.selectedElement ? getAbsoluteCSSSelector(elementSelection.selectedElement) : ''}</p>
       {searchText.length >= 0 &&
         Object.entries(categoryMap)
           .filter(filter)

@@ -1,19 +1,28 @@
-import React, {useLayoutEffect, useRef} from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import styled from 'styled-components';
-import {Tabs} from 'antd';
-import {ChangeStyleCategoryMap} from '../types/ChangeStyleElement';
+import { Tabs } from 'antd';
+import { ChangeStyleCategoryMap } from '../types/ChangeStyleElement';
 import {
   TranslatorContext,
   useTranslator,
 } from '../contexts/TranslatorContext';
-import ChangeStyleTabItem from "./tabitems/ChangeStyleTabItem";
-import ToolBar from "./ToolBar";
-import {IconCategory2, IconCode, IconLayoutGrid, IconSettings, IconTypography} from "@tabler/icons-react";
-import FontCustomizer from "./tabitems/font/FontCustomizer";
-import PageSettingTabItem from "./tabitems/PageSettingTabItem";
-import BlockCustomizer from "./tabitems/block/BlockCustomizer";
-import {ElementSelectionContext, useElementSelectionContext} from "../contexts/ElementSelectionContext";
-import ElementSelector from "../features/ElementSelector";
+import ChangeStyleTabItem from './tabitems/ChangeStyleTabItem';
+import ToolBar from './ToolBar';
+import {
+  IconCategory2,
+  IconCode,
+  IconLayoutGrid,
+  IconSettings,
+  IconTypography,
+} from '@tabler/icons-react';
+import FontCustomizer from './tabitems/font/FontCustomizer';
+import PageSettingTabItem from './tabitems/settings/PageSettingTabItem';
+import BlockCustomizer from './tabitems/block/BlockCustomizer';
+import {
+  ElementSelectionContext,
+  useElementSelectionContext,
+} from '../contexts/ElementSelectionContext';
+import ElementSelector from '../features/ElementSelector';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -34,7 +43,6 @@ const Wrapper = styled.div`
   box-shadow: 0 0 16px 0 #f0f0f0;
 `;
 
-
 const TabWrapper = styled.div`
   overflow-y: hidden;
 `;
@@ -52,24 +60,24 @@ interface BaseProps {
   categoryMap: ChangeStyleCategoryMap;
 }
 
-const Base = ({categoryMap}: BaseProps) => {
+const Base = ({ categoryMap }: BaseProps) => {
   const translator = useTranslator();
   const elementSelection = useElementSelectionContext();
   const tabInnerWrapperRef = useRef<HTMLDivElement>(null);
 
   const tabs = {
-    'templates': <ChangeStyleTabItem categoryMap={categoryMap}/>,
-    'fonts': <FontCustomizer/>,
-    'blocks': <BlockCustomizer/>,
-    'settings': <PageSettingTabItem/>
+    templates: <ChangeStyleTabItem categoryMap={categoryMap} />,
+    fonts: <FontCustomizer />,
+    blocks: <BlockCustomizer />,
+    settings: <PageSettingTabItem />,
   };
 
-  const tabIcons: {[key: string]: React.JSX.Element} = {
-    'templates': <IconCategory2 size={16} strokeWidth={1.5} />,
-    'fonts': <IconTypography size={16} strokeWidth={1.5} />,
-    'blocks': <IconLayoutGrid size={16} strokeWidth={1.5} />,
-    'pro': <IconCode size={16} strokeWidth={1.5} />,
-    'settings': <IconSettings size={16} strokeWidth={1.5}/>
+  const tabIcons: { [key: string]: React.JSX.Element } = {
+    templates: <IconCategory2 size={16} strokeWidth={1.5} />,
+    fonts: <IconTypography size={16} strokeWidth={1.5} />,
+    blocks: <IconLayoutGrid size={16} strokeWidth={1.5} />,
+    pro: <IconCode size={16} strokeWidth={1.5} />,
+    settings: <IconSettings size={16} strokeWidth={1.5} />,
   };
 
   const items = Object.entries(tabs).map(([key, component], i) => {
@@ -83,30 +91,34 @@ const Base = ({categoryMap}: BaseProps) => {
   const onWheel = (event: WheelEvent) => {
     event.preventDefault();
     const ref = event.currentTarget as HTMLDivElement;
-    const currentValue = parseInt((ref.style.transform ? ref.style.transform : "0").match(/-?\d+/)![0]);
-    const newValue =
-      Math.max(
-        currentValue - event.deltaY >= 0 ? 0 : currentValue - event.deltaY,
-        ref.parentElement!.getBoundingClientRect().height - ref.getBoundingClientRect().height
-      );
+    const currentValue = parseInt(
+      (ref.style.transform ? ref.style.transform : '0').match(/-?\d+/)![0]
+    );
+    const newValue = Math.max(
+      currentValue - event.deltaY >= 0 ? 0 : currentValue - event.deltaY,
+      ref.parentElement!.getBoundingClientRect().height -
+        ref.getBoundingClientRect().height
+    );
     ref.style.transform = `translateY(${newValue}px)`;
-  }
+  };
 
   useLayoutEffect(() => {
-    tabInnerWrapperRef.current!.addEventListener('wheel', onWheel, {passive: false});
+    tabInnerWrapperRef.current!.addEventListener('wheel', onWheel, {
+      passive: false,
+    });
   }, []);
 
   return (
     <Wrapper>
       <TranslatorContext.Provider value={translator}>
         <ElementSelectionContext.Provider value={elementSelection}>
-          <ToolBar/>
+          <ToolBar />
           <TabWrapper>
             <TabInnerWrapper ref={tabInnerWrapperRef}>
-              <Tabs items={items} tabBarGutter={0}/>
+              <Tabs items={items} tabBarGutter={0} />
             </TabInnerWrapper>
           </TabWrapper>
-          <ElementSelector/>
+          <ElementSelector />
         </ElementSelectionContext.Provider>
       </TranslatorContext.Provider>
     </Wrapper>

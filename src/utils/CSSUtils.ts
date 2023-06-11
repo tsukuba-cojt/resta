@@ -56,14 +56,16 @@ const createSelector = (element: HTMLElement): string => {
       return tag;
     }
 
-    const index =
-      Array
-        .from(element.parentElement.childNodes)
-        .filter((node) => node.nodeName.toLowerCase() === tag)
-        .indexOf(element);
+    const index = Array.from(element.parentElement.childNodes)
+      .filter((node) => node.nodeName.toLowerCase() === tag)
+      .indexOf(element);
 
     return index !== -1 ? `${tag}:nth-of-type(${index + 1})` : tag;
   }
 
   return tag;
+};
+
+export const rgbToHexColor = (rgb: number[]) => {
+  return `#${rgb.map((v) => ('00' + v.toString(16)).slice(-2)).join('')}`;
 };

@@ -17,7 +17,7 @@ export let formatsArray: Array<FormatBlockByURL> = [];
 export const setFormatsAry = (ary: Array<FormatBlockByURL>) => {
   formatsArray = ary;
 };
-export const resetFormatsAry = () => {
+export const removeAllFormats = () => {
   formatsArray.splice(0, formatsArray.length);
   console.log('resetFormatsAry', formatsArray);
 };

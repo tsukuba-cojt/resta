@@ -1,8 +1,9 @@
 import styled from 'styled-components';
-import { Button } from 'antd';
+import { Button, Select } from 'antd';
 import {
   CloseOutlined,
-  LeftOutlined, RedoOutlined,
+  LeftOutlined,
+  RedoOutlined,
   RightOutlined,
   UndoOutlined,
 } from '@ant-design/icons';
@@ -11,7 +12,8 @@ import {
   closeContainer,
   toggleContainerPosition,
 } from '../features/root_manager';
-import {reDo, unDo} from '../features/unredo';
+import { reDo, unDo } from '../features/unredo';
+import { pseudoClassOptions } from '../consts/menu';
 
 const Wrapper = styled.div`
   display: flex;
@@ -48,6 +50,15 @@ const ToolBar = () => {
         onClick={() => setRight(toggleContainerPosition)}
       />
       <ToolBarSpace />
+      <Select
+        size={'small'}
+        bordered={false}
+        options={pseudoClassOptions}
+        defaultValue={pseudoClassOptions[0]}
+        popupMatchSelectWidth={false}
+        dropdownStyle={{ zIndex: 99999 }}
+        placement={'bottomRight'}
+      />
       <Button
         type="ghost"
         size={'small'}

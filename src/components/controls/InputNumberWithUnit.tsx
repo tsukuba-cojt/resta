@@ -20,6 +20,7 @@ const InputNumberWithUnit = ({
   const [optionValue, setOptionValue] = useState<string>(options[0]);
   const [inputStatus, setInputStatus] = useState<'error' | ''>('');
   const elementSelection = useContext(ElementSelectionContext);
+  const ignores = ['auto', 'initial'];
 
   useEffect(() => {
     if (elementSelection.selectedElement) {
@@ -30,8 +31,10 @@ const InputNumberWithUnit = ({
       setInputValue(num ? num[0] : rawValue);
 
       const option = rawValue.match(/[a-z]+$/);
-      if (option) {
-        setOptionValue(option[0] ?? "");
+      if (!ignores.includes(rawValue) && option) {
+        setOptionValue(option[0]);
+      } else {
+        setOptionValue('');
       }
     }
   }, [elementSelection.selectedElement]);
@@ -57,7 +60,7 @@ const InputNumberWithUnit = ({
       onChange(cssKey, `${value}${newOptionValue}`, id);
       setInputStatus('');
 
-    } else if (['auto', 'initial'].includes(value)) {
+    } else if (ignores.includes(value)) {
       onChange(cssKey, `${value}`, id);
       setOptionValue("");
       setInputStatus('');
@@ -91,8 +94,8 @@ const InputNumberWithUnit = ({
                 onChange(cssKey, `${inputValue}${value}`, id);
                 setOptionValue(value);
               }}
-              options={options.map((v) => ({ value: v, label: v }))}
-              dropdownStyle={{ zIndex: 99999 }}
+              options={!ignores.includes(inputValue) ? options.map((v) => ({ value: v, label: v })) : []}
+              dropdownStyle={{ zIndex: 99999, minWidth: '67px' }}
             />
           }
           onChange={onValueChange}

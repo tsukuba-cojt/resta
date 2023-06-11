@@ -276,12 +276,7 @@ const getIndex = (
  * 比較的重い処理なので、ページ遷移時などに呼び出す
  */
 export const applyFormats = () => {
-  if (!prop.currentUrl) {
-    prop.setUrl(window.location.href);
-  }
-  const formats = prop.formatsArray
-    .filter((e) => e !== undefined)
-    .filter((e) => prop.currentUrl.match(e.url));
+  const formats = prop.formatsArray.filter((e) => prop.currentUrl.match(e.url));
   for (const f of formats) {
     // console.log(f);
     for (const format of f.formats) {

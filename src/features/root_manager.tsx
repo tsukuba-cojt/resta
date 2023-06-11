@@ -13,7 +13,7 @@ export const initContainer = (categoryMap: ChangeStyleCategoryMap) => {
 
   ReactDOM.render(
     <React.StrictMode>
-      <Base categoryMap={categoryMap} />\
+      <Base categoryMap={categoryMap} />
     </React.StrictMode>,
     div
   );

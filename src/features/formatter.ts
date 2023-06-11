@@ -277,7 +277,7 @@ const getIndex = (
  */
 export const applyFormats = () => {
   const formats = prop.formatsArray.filter((e) =>
-    matchUrl(e.url, prop.currentUrl)
+    matchUrl(prop.currentUrl, e.url)
   );
   console.log('start:applyFormats', formats);
   for (const f of formats) {
@@ -289,14 +289,17 @@ export const applyFormats = () => {
       );
       elements.forEach((elem) => {
         for (const change of format.changes) {
+          if (change.cssValues.length === 0) {
+            continue;
+          }
+          elem.style[change.cssKey as any] =
+            change.cssValues[change.cssValues.length - 1].cssValue;
           console.log(
             'apply:',
             cssSelector,
             change.cssKey,
             change.cssValues[change.cssValues.length - 1].cssValue
           );
-          elem.style[change.cssKey as any] =
-            change.cssValues[change.cssValues.length - 1].cssValue;
         }
       });
     }

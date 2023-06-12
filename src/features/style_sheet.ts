@@ -60,7 +60,7 @@ export const setStyleRule = (styles: StyleRule) => {
   }
 };
 
-export const removeRule = (cssSelector: string) => {
+export const removeStyleRule = (cssSelector: string, cssKey: string) => {
   const styleSheet = getStyleSheet();
   if (!styleSheet) {
     return;
@@ -69,7 +69,7 @@ export const removeRule = (cssSelector: string) => {
     const rule = styleSheet?.cssRules[i];
     if (rule instanceof CSSStyleRule) {
       if (rule.selectorText === cssSelector) {
-        styleSheet?.deleteRule(i);
+        rule.style.removeProperty(cssKey);
         return;
       }
     }

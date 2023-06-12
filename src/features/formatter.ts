@@ -1,6 +1,6 @@
 import { loadFormat } from './format_manager';
 import * as prop from './prop';
-import { setStyleRule } from './style_sheet';
+import { StyleRule, removeStyleRule, setStyleRule } from './style_sheet';
 import { UnRedoCommand, UnRedoCommands, pushLog } from './unredo';
 
 export const initStyle = async () => {
@@ -8,6 +8,41 @@ export const initStyle = async () => {
   await loadFormat();
   // このページに対応するフォーマットがあれば適用
   applyFormats();
+};
+
+export const setFormatsAndPushToAry = (rules: Array<StyleRule>) => {
+  const commands: UnRedoCommands = { commands: [] };
+  for (const rule of rules) {
+    for (const value of rule.values) {
+      setStyleRule(rule);
+      const c = pushToAry(rule.cssSelector, value.key, value.value, 0);
+      if (c) {
+        commands.commands.push(c);
+      }
+    }
+  }
+  if (commands.commands.length > 0) {
+    pushLog(commands);
+  }
+};
+
+export type RemoveRule = {
+  cssSelector: string;
+  key: string;
+  id: number;
+};
+
+export const removeFormatsAndPushToAry = (values: Array<RemoveRule>) => {
+  const commands: UnRedoCommands = { commands: [] };
+  for (const value of values) {
+    const c = deleteFromAry(value.cssSelector, value.key, value.id);
+    if (c) {
+      commands.commands.push(c);
+    }
+  }
+  if (commands.commands.length > 0) {
+    pushLog(commands);
+  }
 };
 
 /**
@@ -41,15 +76,11 @@ export const setFormatAndPushToAry = (
     cssSelector: cssSelector,
     values: [{ key: key, value: value }],
   });
-  const commands: UnRedoCommands = { commands: [] };
-  // 配列への追加処理
   const c = pushToAry(cssSelector, key, value, id);
-  if (commands.commands.length === 0 && c) {
-    commands.commands.push(c);
-  }
-  // ログに追加
-  if (commands.commands.length > 0) {
-    pushLog(commands);
+  if (c) {
+    pushLog({
+      commands: [c],
+    });
   }
 };
 
@@ -207,16 +238,19 @@ export const deleteFromAry = (
     console.log('deleteFromAry: bug detected, deletedElem is undefined');
     return null;
   }
-  const elements = Array.from<HTMLElement>(
-    document.querySelectorAll(cssSelector)
-  );
-  elements.forEach((elem) => {
-    const style = prop.formatsArray
-      .find((e) => e.url === prop.edittedUrl)
-      ?.formats.find((e) => e.cssSelector === cssSelector)
-      ?.changes.find((e) => e.cssKey === key)?.cssValues;
-    elem.style[key as any] = prop.getValue(style);
-  });
+  const style = prop.formatsArray
+    .find((e) => e.url === prop.edittedUrl)
+    ?.formats.find((e) => e.cssSelector === cssSelector)
+    ?.changes.find((e) => e.cssKey === key)?.cssValues;
+  if (!style) {
+    removeStyleRule(cssSelector, key);
+  } else {
+    // 削除した要素を適用する
+    setStyleRule({
+      cssSelector: cssSelector,
+      values: [{ key: key, value: prop.getValue(style) }],
+    });
+  }
   console.log('deleteFromAry', prop.formatsArray);
   return {
     cssSelector: cssSelector,
@@ -236,19 +270,16 @@ export const deleteFromAry = (
 };
 
 export const reloadStyle = (cssSelector: string, key: string) => {
-  const elements = Array.from<HTMLElement>(
-    document.querySelectorAll(cssSelector)
-  );
-  elements.forEach((elem) => {
-    const style = prop.formatsArray
-      .find((e) => e.url === prop.edittedUrl)
-      ?.formats.find((e) => e.cssSelector === cssSelector)
-      ?.changes.find((e) => e.cssKey === key)?.cssValues;
-    if (!style) {
-      console.log('reloadStyle:invalid args, style is not found');
-      return;
-    }
-    elem.style[key as any] = prop.getValue(style);
+  const style = prop.formatsArray
+    .find((e) => e.url === prop.edittedUrl)
+    ?.formats.find((e) => e.cssSelector === cssSelector)
+    ?.changes.find((e) => e.cssKey === key)?.cssValues;
+  if (!style) {
+    return;
+  }
+  setStyleRule({
+    cssSelector: cssSelector,
+    values: [{ key: key, value: prop.getValue(style) }],
   });
 };
 

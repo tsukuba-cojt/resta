@@ -1,5 +1,6 @@
 import { loadFormat } from './format_manager';
 import * as prop from './prop';
+import { setStyleRule } from './style_sheet';
 import { UnRedoCommand, UnRedoCommands, pushLog } from './unredo';
 
 export const initStyle = async () => {
@@ -28,28 +29,24 @@ export const setFormatAndPushToAry = (
     console.log('setFormatAndPushToAry:invalid args, cssSelector is not found');
     return;
   }
-  const elements = Array.from<HTMLElement>(
-    document.querySelectorAll(cssSelector)
-  );
-  const commands: UnRedoCommands = { commands: [] };
-  elements.forEach((elem) => {
-    if (!key) {
-      console.log('setFormatAndPushToAry:invalid args, key is not found');
-      return;
-    }
-    if (!value && value !== '') {
-      console.log('setFormatAndPushToAry:invalid args, value is not found');
-      return;
-    }
-    // スタイルの変更
-    elem.style[key as any] = value;
-    // 配列への追加処理
-    const c = pushToAry(cssSelector, key, value, id);
-    if (commands.commands.length === 0 && c) {
-      commands.commands.push(c);
-    }
-    console.log('format changed', cssSelector, key, value);
+  if (!key && key !== '') {
+    console.log('setFormatAndPushToAry:invalid args, key is not found');
+    return;
+  }
+  if (!value && value !== '') {
+    console.log('setFormatAndPushToAry:invalid args, value is not found');
+    return;
+  }
+  setStyleRule({
+    cssSelector: cssSelector,
+    values: [{ key: key, value: value }],
   });
+  const commands: UnRedoCommands = { commands: [] };
+  // 配列への追加処理
+  const c = pushToAry(cssSelector, key, value, id);
+  if (commands.commands.length === 0 && c) {
+    commands.commands.push(c);
+  }
   // ログに追加
   if (commands.commands.length > 0) {
     pushLog(commands);
@@ -284,29 +281,23 @@ export const applyFormats = () => {
     // console.log(f);
     for (const format of f.formats) {
       const cssSelector = format.cssSelector;
-      const elements = Array.from<HTMLElement>(
-        document.querySelectorAll(cssSelector)
-      );
-      elements.forEach((elem) => {
-        for (const change of format.changes) {
-          if (change.cssValues.length === 0) {
-            continue;
-          }
-          elem.style[change.cssKey as any] =
-            change.cssValues[change.cssValues.length - 1].cssValue;
-          console.log(
-            'apply:',
-            cssSelector,
-            change.cssKey,
-            change.cssValues[change.cssValues.length - 1].cssValue
-          );
-        }
+      setStyleRule({
+        cssSelector: cssSelector,
+        values: format.changes.map((e) => {
+          return {
+            key: e.cssKey,
+            value: e.cssValues[e.cssValues.length - 1].cssValue,
+          };
+        }),
       });
     }
   }
 };
 
 export const matchUrl = (url: string, matchUrl: string) => {
+  if (!matchUrl || !url) {
+    return false;
+  }
   let hasWildcard = false;
   let compareUrl = '';
   // 最後の文字が*ならワイルドカードとして扱う

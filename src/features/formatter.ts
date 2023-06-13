@@ -314,12 +314,18 @@ export const applyFormats = () => {
       const cssSelector = format.cssSelector;
       setStyleRule({
         cssSelector: cssSelector,
-        values: format.changes.map((e) => {
-          return {
-            key: e.cssKey,
-            value: e.cssValues[e.cssValues.length - 1].cssValue,
-          };
-        }),
+        values: format.changes
+          .map((e) => {
+            if (e.cssValues.length !== 0) {
+              return {
+                key: e.cssKey,
+                value: e.cssValues[e.cssValues.length - 1].cssValue,
+              };
+            } else {
+              return { key: '', value: '' };
+            }
+          })
+          .filter((e) => e.key !== '' && e.value !== ''),
       });
     }
   }

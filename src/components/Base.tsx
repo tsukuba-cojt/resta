@@ -23,6 +23,8 @@ import {
   useElementSelectionContext,
 } from '../contexts/ElementSelectionContext';
 import ElementSelector from '../features/ElementSelector';
+import { setFormatAndPushToAry } from '../features/formatter';
+import { getAbsoluteCSSSelector } from '../utils/CSSUtils';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -65,10 +67,22 @@ const Base = ({ categoryMap }: BaseProps) => {
   const elementSelection = useElementSelectionContext();
   const tabInnerWrapperRef = useRef<HTMLDivElement>(null);
 
+  const onChange = (key: string, value: string, id: number) => {
+    if (elementSelection.selectedElement) {
+      setFormatAndPushToAry(
+        getAbsoluteCSSSelector(elementSelection.selectedElement) +
+          elementSelection.selectedPseudoClass,
+        key,
+        value,
+        id
+      );
+    }
+  };
+
   const tabs = {
     templates: <ChangeStyleTabItem categoryMap={categoryMap} />,
-    fonts: <FontCustomizer />,
-    blocks: <BlockCustomizer />,
+    fonts: <FontCustomizer onChange={onChange} />,
+    blocks: <BlockCustomizer onChange={onChange} />,
     settings: <PageSettingTabItem />,
   };
 

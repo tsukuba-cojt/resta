@@ -49,8 +49,11 @@ const ElementSelector = () => {
           ) {
             if (ev.shiftKey) {
               ev.preventDefault();
-              newElement.removeEventListener('click', clickListener);
             }
+            elementSelection.selectedElement?.removeEventListener(
+              'click',
+              clickListener
+            );
           }
         };
 

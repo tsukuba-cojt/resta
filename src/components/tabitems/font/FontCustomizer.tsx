@@ -11,6 +11,7 @@ import {
   FontColorsOutlined,
   FontSizeOutlined,
   ItalicOutlined,
+  LineHeightOutlined,
   UnderlineOutlined,
   VerticalAlignBottomOutlined,
   VerticalAlignMiddleOutlined,
@@ -99,6 +100,18 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
               <InputNumberWithUnit
                 cssKey={'font-size'}
                 id={106}
+                options={fontUnits}
+                onChange={onChange}
+              />
+            </Flex>
+          </Section>
+
+          <Section>
+            <Flex>
+              <LineHeightOutlined />
+              <InputNumberWithUnit
+                cssKey={'line-height'}
+                id={120}
                 options={fontUnits}
                 onChange={onChange}
               />

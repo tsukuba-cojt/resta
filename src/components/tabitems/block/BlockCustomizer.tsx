@@ -34,8 +34,8 @@ const BlockCustomizer = ({ onChange }: BlockCustomizerProps) => {
     幅と高さ: <SizeCustomizer onChange={onChange} />,
     余白: <PaddingCustomizer onChange={onChange} />,
     角丸: <BorderRadiusCustomizer onChange={onChange} />,
-    枠線: <BorderColorCustomizer onChange={onChange} />,
     影: <BoxShadowCustomizer onChange={onChange} />,
+    枠線: <BorderColorCustomizer onChange={onChange} />,
   };
 
   return (

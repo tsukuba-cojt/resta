@@ -6,10 +6,8 @@ import {
   TranslatorContext,
   useTranslator,
 } from '../contexts/TranslatorContext';
-import ChangeStyleTabItem from './tabitems/ChangeStyleTabItem';
 import ToolBar from './ToolBar';
 import {
-  IconCategory2,
   IconCode,
   IconLayoutGrid,
   IconSettings,
@@ -62,7 +60,7 @@ interface BaseProps {
   categoryMap: ChangeStyleCategoryMap;
 }
 
-const Base = ({ categoryMap }: BaseProps) => {
+const Base = ({}: /* categoryMap */ BaseProps) => {
   const translator = useTranslator();
   const elementSelection = useElementSelectionContext();
   const tabInnerWrapperRef = useRef<HTMLDivElement>(null);
@@ -80,14 +78,14 @@ const Base = ({ categoryMap }: BaseProps) => {
   };
 
   const tabs = {
-    templates: <ChangeStyleTabItem categoryMap={categoryMap} />,
+    //templates: <ChangeStyleTabItem categoryMap={categoryMap} />,
     fonts: <FontCustomizer onChange={onChange} />,
     blocks: <BlockCustomizer onChange={onChange} />,
     settings: <PageSettingTabItem />,
   };
 
   const tabIcons: { [key: string]: React.JSX.Element } = {
-    templates: <IconCategory2 size={16} strokeWidth={1.5} />,
+    //templates: <IconCategory2 size={16} strokeWidth={1.5} />,
     fonts: <IconTypography size={16} strokeWidth={1.5} />,
     blocks: <IconLayoutGrid size={16} strokeWidth={1.5} />,
     pro: <IconCode size={16} strokeWidth={1.5} />,

@@ -19,7 +19,11 @@ import {
 import IconButton from '../../controls/IconButton';
 import InputNumberWithUnit from '../../controls/InputNumberWithUnit';
 import ColorPicker from '../../controls/ColorPicker';
-import { IconLetterSpacing, IconTypography } from '@tabler/icons-react';
+import {
+  IconLetterSpacing,
+  IconSpace,
+  IconTypography,
+} from '@tabler/icons-react';
 import Section from '../common/Section';
 import SubTitle from '../common/SubTitle';
 import Flex from '../common/Flex';
@@ -99,6 +103,7 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
           </Section>
 
           <Section>
+            <SubTitle text={t('font_title_typography')} />
             <Flex>
               <Tooltip title={t('font_prop_size')}>
                 <FontSizeOutlined />
@@ -151,6 +156,24 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
                 options={fontUnits}
                 onChange={onChange}
                 ignores={['normal', 'inherit', 'initial', 'unset']}
+              />
+            </Flex>
+          </Section>
+
+          <Section>
+            <Flex>
+              <Tooltip title={t('font_prop_text_indent')}>
+                <IconSpace size={16} strokeWidth={1.5} />
+              </Tooltip>
+              <InputNumberWithUnit
+                cssKey={'text-indent'}
+                id={122}
+                options={fontUnits}
+                onChange={onChange}
+                sliderMin={0}
+                sliderMax={2}
+                sliderStep={0.1}
+                ignores={['inherit', 'initial', 'revert', 'unset']}
               />
             </Flex>
           </Section>

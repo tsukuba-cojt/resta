@@ -46,6 +46,7 @@
     "font_prop_line_spacing": "行間",
     "font_prop_letter_spacing": "字間",
     "font_prop_color": "文字色",
+    "font_prop_text_indent": "字下げ",
 
     "page_settings": "ページ設定",
     "init_page_format": "編集中のデザイン初期化",

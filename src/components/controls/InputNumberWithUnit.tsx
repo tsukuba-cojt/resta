@@ -9,6 +9,9 @@ interface InputNumberWithUnitProps {
   options: string[];
   onChange: (key: string, value: string, id: number) => void;
   ignores?: string[];
+  sliderMin?: number;
+  sliderMax?: number;
+  sliderStep?: number;
 }
 
 const InputNumberWithUnit = ({
@@ -17,6 +20,9 @@ const InputNumberWithUnit = ({
   options,
   onChange,
   ignores = [],
+  sliderMin = 0,
+  sliderMax = 100,
+  sliderStep = 1,
 }: InputNumberWithUnitProps) => {
   const [inputValue, setInputValue] = useState<string>('0');
   const [optionValue, setOptionValue] = useState<string>(options[0]);
@@ -75,8 +81,9 @@ const InputNumberWithUnit = ({
     <Row gutter={16}>
       <Col span={12}>
         <Slider
-          min={0}
-          max={100}
+          min={sliderMin}
+          max={sliderMax}
+          step={sliderStep}
           onChange={onSliderChange}
           value={inputValue.match(/^\d*.?\d+$/) ? parseFloat(inputValue) : 0}
         />

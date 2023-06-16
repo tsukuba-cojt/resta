@@ -33,6 +33,7 @@ const TemplateCard = ({template}: TemplateCardProps) => {
         (style.pseudoClasses ?? ['']).forEach((pseudoClass) =>
           setFormatsAndPushToAry([
             {
+              id: getId(`${pseudoClass ? ':' : ''}${pseudoClass}`),
               cssSelector: getAbsoluteCSSSelector(elementSelection.selectedElement!) + `${pseudoClass ? ':' : ''}${pseudoClass}`,
               values: Object.entries(style.css).map(([key, value]) => ({key, value}))
             }
@@ -52,6 +53,8 @@ const TemplateCard = ({template}: TemplateCardProps) => {
     }
   }
 
+  const getId = (additional: string = '') => Array.from(template.name + additional).map((v) => v.charCodeAt(0)).reduce((s, e) => s + e, 0);
+
   const insertCSS = () => {
     template.styles.forEach((style) => {
       getStyleSheet()?.insertRule(
@@ -64,7 +67,7 @@ const TemplateCard = ({template}: TemplateCardProps) => {
 
   useEffect(() => {
     insertCSS();
-  });
+  }, []);
 
   return (
     <Card

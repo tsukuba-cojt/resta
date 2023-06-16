@@ -46,7 +46,7 @@ export type FormatChange = {
 };
 
 export type FormatStyleValue = {
-  id: number;
+  id: number | string;
   cssValue: string;
 };
 

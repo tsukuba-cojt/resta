@@ -20,7 +20,7 @@ import {
 import IconButton from '../../controls/IconButton';
 import InputNumberWithUnit from '../../controls/InputNumberWithUnit';
 import ColorPicker from '../../controls/ColorPicker';
-import { IconTypography } from '@tabler/icons-react';
+import { IconLetterSpacing, IconTypography } from '@tabler/icons-react';
 import Section from '../common/Section';
 import SubTitle from '../common/SubTitle';
 import Flex from '../common/Flex';
@@ -102,6 +102,19 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
                 id={106}
                 options={fontUnits}
                 onChange={onChange}
+                ignores={[
+                  'xx-small',
+                  'x-small',
+                  'small',
+                  'medium',
+                  'large',
+                  'x-large',
+                  'xx-large',
+                  'xxx-large',
+                  'inherit',
+                  'initial',
+                  'unset',
+                ]}
               />
             </Flex>
           </Section>
@@ -114,6 +127,20 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
                 id={120}
                 options={fontUnits}
                 onChange={onChange}
+                ignores={['normal', 'inherit', 'initial', 'revert', 'unset']}
+              />
+            </Flex>
+          </Section>
+
+          <Section>
+            <Flex>
+              <IconLetterSpacing size={16} strokeWidth={1.5} />
+              <InputNumberWithUnit
+                cssKey={'letter-spacing'}
+                id={121}
+                options={fontUnits}
+                onChange={onChange}
+                ignores={['normal', 'inherit', 'initial', 'unset']}
               />
             </Flex>
           </Section>

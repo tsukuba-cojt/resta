@@ -85,7 +85,7 @@ export type UnRedoCommands = {
 export type UnRedoCommand = {
   cssSelector: string;
   cssKey: string;
-  id: number;
+  id: number | string;
   undo: Command;
   redo: Command;
 };
@@ -196,7 +196,7 @@ const applyRedoCommands = (changes: UnRedoCommands) => {
 export const applyCommand = (
   cssSelector: string,
   cssKey: string,
-  id: number,
+  id: number | string,
   change: Command
 ) => {
   console.log('applyCommand', cssSelector, cssKey, id, change);

@@ -13,7 +13,10 @@ export const getStyleSheet = () => {
   return styleSheet;
 };
 
-export const setStyleRule = (styles: StyleRule) => {
+export const setStyleRule = (styles: {
+  cssSelector: string;
+  values: Array<StyleValue>;
+}) => {
   if (!styles.values || !styles.cssSelector) {
     console.log('setStyleRule: invalid value');
     return;
@@ -28,7 +31,7 @@ export const setStyleRule = (styles: StyleRule) => {
         if (rule instanceof CSSStyleRule) {
           if (rule.selectorText === styles.cssSelector) {
             rule.style.setProperty(style.key, style.value);
-            return;
+            continue;
           }
         }
       }
@@ -47,7 +50,7 @@ export const setStyleRule = (styles: StyleRule) => {
         if (rule instanceof CSSStyleRule) {
           if (rule.selectorText === styles.cssSelector) {
             rule.style.setProperty(style.key, style.value);
-            return;
+            continue;
           }
         }
       }
@@ -77,6 +80,7 @@ export const removeStyleRule = (cssSelector: string, cssKey: string) => {
 };
 
 export type StyleRule = {
+  id: number | string;
   cssSelector: string;
   values: Array<StyleValue>;
 };

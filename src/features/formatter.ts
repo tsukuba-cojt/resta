@@ -15,7 +15,7 @@ export const setFormatsAndPushToAry = (rules: Array<StyleRule>) => {
   for (const rule of rules) {
     for (const value of rule.values) {
       setStyleRule(rule);
-      const c = pushToAry(rule.cssSelector, value.key, value.value, 0);
+      const c = pushToAry(rule.cssSelector, value.key, value.value, rule.id);
       if (c) {
         commands.commands.push(c);
       }
@@ -29,7 +29,7 @@ export const setFormatsAndPushToAry = (rules: Array<StyleRule>) => {
 export type RemoveRule = {
   cssSelector: string;
   key: string;
-  id: number;
+  id: number | string;
 };
 
 export const removeFormatsAndPushToAry = (values: Array<RemoveRule>) => {
@@ -54,7 +54,7 @@ export const setFormatAndPushToAry = (
   cssSelector: string | null,
   key: string | null,
   value: string | null,
-  id: number | null
+  id: number | string | null
 ) => {
   console.log('setFormatAndPushToAry', cssSelector, key, value, id);
   if (!id) {
@@ -93,7 +93,7 @@ export const pushToAry = (
   cssSelector: string | null,
   key: string | null,
   value: string | null,
-  id: number | null
+  id: number | string | null
 ): UnRedoCommand | null => {
   if (!cssSelector) {
     console.log('pushToAry:invalid args, cssSelector is not found');
@@ -216,7 +216,7 @@ export const pushToAry = (
 export const deleteFromAry = (
   cssSelector: string,
   key: string,
-  id: number
+  id: number | string
 ): UnRedoCommand | null => {
   const index = getIndex(cssSelector, key, id);
   if (index == undefined || index === -1) {
@@ -290,7 +290,7 @@ export const reloadStyle = (cssSelector: string, key: string) => {
 const getIndex = (
   cssSelector: string,
   key: string,
-  id: number
+  id: number | string
 ): number | undefined => {
   return prop.formatsArray
     .find((e) => e.url === prop.edittedUrl)

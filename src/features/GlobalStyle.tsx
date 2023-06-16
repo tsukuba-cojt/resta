@@ -1,24 +1,27 @@
-@keyframes openAnimation {
+import { createGlobalStyle } from 'styled-components';
+
+const GlobalStyle = createGlobalStyle`
+  @keyframes openAnimation {
     from {
-        right: -300px;
+      right: -300px;
     }
 
     to {
-        right: 0;
+      right: 0;
     }
-}
+  }
 
-@keyframes closeAnimation {
+  @keyframes closeAnimation {
     from {
-        opacity: 1.0;
+      opacity: 1.0;
     }
 
     to {
-        opacity: 0;
+      opacity: 0;
     }
-}
-
-#resta-root {
+  }
+  
+  #resta-root {
     position: fixed;
     z-index: 99998;
     top: 0;
@@ -38,8 +41,15 @@
     font-size: initial;
     font-weight: initial;
     font-family: "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "メイリオ", Meiryo, Osaka, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
-}
+  }
+  
+  .ant-tooltip {
+    z-index: 99999;
+  }
 
-.ant-popover {
+  .ant-popover {
     z-index: 99999 !important;
-}
+  }
+`;
+
+export default GlobalStyle;

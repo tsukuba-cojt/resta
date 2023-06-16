@@ -3,7 +3,6 @@ import React, { useContext, useState } from 'react';
 import { Input } from 'antd';
 import t from '../../../features/translator';
 import { SearchOutlined } from '@ant-design/icons';
-import { TranslatorContext } from '../../../contexts/TranslatorContext';
 import SubTitle from '../common/SubTitle';
 import Section from '../common/Section';
 import BackgroundColorCustomizer from './BackgroundColorCustomizer';
@@ -25,7 +24,6 @@ interface BlockCustomizerProps {
 }
 
 const BlockCustomizer = ({ onChange }: BlockCustomizerProps) => {
-  const translator = useContext(TranslatorContext);
   const elementSelection = useContext(ElementSelectionContext);
   const [searchText, setSearchText] = useState<string>('');
 
@@ -44,16 +42,14 @@ const BlockCustomizer = ({ onChange }: BlockCustomizerProps) => {
         <>
           <InputWrapper>
             <Input
-              placeholder={t(translator.lang, 'base_search')}
+              placeholder={t('base_search')}
               prefix={<SearchOutlined />}
               onChange={(e) => setSearchText(e.currentTarget!.value)}
             />
           </InputWrapper>
           {Object.entries(customizers)
             .filter((entry) =>
-              searchText
-                ? t(translator.lang, entry[0]).includes(searchText)
-                : true
+              searchText ? t(entry[0]).includes(searchText) : true
             )
             .map(([title, element]) => (
               <Section>

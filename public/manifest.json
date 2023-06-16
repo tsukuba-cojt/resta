@@ -9,8 +9,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["js/main.js"],
-      "css": ["css/style.css"]
+      "js": ["js/main.js"]
     }
   ],
   "background": {
@@ -19,7 +18,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["js/main.js", "css/style.css"],
+      "resources": ["js/main.js"],
       "matches": ["https://www.mast.tsukuba.ac.jp/*"]
     }
   ]

@@ -1,13 +1,17 @@
-import {Col, Input, Row, Select, Slider} from 'antd';
-import React, {useContext, useEffect, useState} from 'react';
-import {kebabToCamel} from "../../utils/CSSUtils";
-import {ElementSelectionContext} from "../../contexts/ElementSelectionContext";
+import { Col, Input, Row, Select, Slider } from 'antd';
+import React, { useContext, useEffect, useState } from 'react';
+import { kebabToCamel } from '../../utils/CSSUtils';
+import { ElementSelectionContext } from '../../contexts/ElementSelectionContext';
 
 interface InputNumberWithUnitProps {
   cssKey: string;
   id: number;
   options: string[];
   onChange: (key: string, value: string, id: number) => void;
+  ignores?: string[];
+  sliderMin?: number;
+  sliderMax?: number;
+  sliderStep?: number;
 }
 
 const InputNumberWithUnit = ({
@@ -15,12 +19,15 @@ const InputNumberWithUnit = ({
   id,
   options,
   onChange,
+  ignores = [],
+  sliderMin = 0,
+  sliderMax = 100,
+  sliderStep = 1,
 }: InputNumberWithUnitProps) => {
-  const [inputValue, setInputValue] = useState<string>("0");
+  const [inputValue, setInputValue] = useState<string>('0');
   const [optionValue, setOptionValue] = useState<string>(options[0]);
   const [inputStatus, setInputStatus] = useState<'error' | ''>('');
   const elementSelection = useContext(ElementSelectionContext);
-  const ignores = ['auto', 'initial'];
 
   useEffect(() => {
     if (elementSelection.selectedElement) {
@@ -47,7 +54,7 @@ const InputNumberWithUnit = ({
     }
     onChange(cssKey, `${value}${newOptionValue}`, id);
     setInputValue(value.toString());
-  }
+  };
 
   const onValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.currentTarget.value;
@@ -59,25 +66,24 @@ const InputNumberWithUnit = ({
       }
       onChange(cssKey, `${value}${newOptionValue}`, id);
       setInputStatus('');
-
     } else if (ignores.includes(value)) {
       onChange(cssKey, `${value}`, id);
-      setOptionValue("");
+      setOptionValue('');
       setInputStatus('');
-
     } else {
       setInputStatus('error');
     }
 
     setInputValue(value);
-  }
+  };
 
   return (
     <Row gutter={16}>
       <Col span={12}>
         <Slider
-          min={0}
-          max={100}
+          min={sliderMin}
+          max={sliderMax}
+          step={sliderStep}
           onChange={onSliderChange}
           value={inputValue.match(/^\d*.?\d+$/) ? parseFloat(inputValue) : 0}
         />
@@ -94,7 +100,11 @@ const InputNumberWithUnit = ({
                 onChange(cssKey, `${inputValue}${value}`, id);
                 setOptionValue(value);
               }}
-              options={!ignores.includes(inputValue) ? options.map((v) => ({ value: v, label: v })) : []}
+              options={
+                !ignores.includes(inputValue)
+                  ? options.map((v) => ({ value: v, label: v }))
+                  : []
+              }
               dropdownStyle={{ zIndex: 99999, minWidth: '67px' }}
             />
           }

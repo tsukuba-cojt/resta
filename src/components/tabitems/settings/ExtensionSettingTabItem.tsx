@@ -39,23 +39,21 @@ const ExtensionSettingTabItem = () => {
   return (
     <Wrapper>
       <Title level={5} style={{ margin: '16px 0 8px' }}>
-        {t(translator.lang, 'extension_settings')}
+        {t('extension_settings')}
       </Title>
       <CollapseWrapper>
         <Collapse size="small">
-          <Panel header={t(translator.lang, 'init_all_format')} key={index++}>
-            <Description>
-              {t(translator.lang, 'init_all_format_description')}
-            </Description>
+          <Panel header={t('init_all_format')} key={index++}>
+            <Description>{t('init_all_format_description')}</Description>
             <Popconfirm
-              title={t(translator.lang, 'confirm')}
-              description={t(translator.lang, 'confirm_description')}
+              title={t('confirm')}
+              description={t('confirm_description')}
               onConfirm={onClickInitAllPageFormat}
-              okText={t(translator.lang, 'yes')}
-              cancelText={t(translator.lang, 'no')}
+              okText={t('yes')}
+              cancelText={t('no')}
               zIndex={999999}
             >
-              <Button danger>{t(translator.lang, 'execute')}</Button>
+              <Button danger>{t('execute')}</Button>
             </Popconfirm>
           </Panel>
         </Collapse>

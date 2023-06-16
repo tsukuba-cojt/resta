@@ -30,10 +30,8 @@ const ChangeStyleTabItem = ({ categoryMap }: ChangeStyleTabItemProps) => {
     }
 
     return (
-      t(translator.lang, key).includes(searchText) ||
-      elements.some((element) =>
-        t(translator.lang, element.name).includes(searchText)
-      ) ||
+      t(key).includes(searchText) ||
+      elements.some((element) => t(element.name).includes(searchText)) ||
       elements.some((element) => element.key.includes(searchText))
     );
   };
@@ -48,7 +46,7 @@ const ChangeStyleTabItem = ({ categoryMap }: ChangeStyleTabItemProps) => {
     <Wrapper>
       <InputWrapper>
         <Input
-          placeholder={t(translator.lang, 'base_search')}
+          placeholder={t('base_search')}
           prefix={<SearchOutlined />}
           onChange={(e) => setSearchText(e.currentTarget!.value)}
         />

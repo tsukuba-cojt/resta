@@ -1,10 +1,9 @@
 // @ts-ignore
 import lang from '../consts/lang.json';
 import { i18n } from 'webextension-polyfill';
-import { Language } from '../types/Language';
 
 // 引数持ち
-const t = (lang: Language, key: string, ...params: any) => {
+const t = (key: string, ...params: any) => {
   if (!lang[i18n.getUILanguage()]) {
     return `${i18n.getUILanguage()}.${key}`;
   }

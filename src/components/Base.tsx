@@ -6,10 +6,8 @@ import {
   TranslatorContext,
   useTranslator,
 } from '../contexts/TranslatorContext';
-import ChangeStyleTabItem from './tabitems/ChangeStyleTabItem';
 import ToolBar from './ToolBar';
 import {
-  IconCategory2,
   IconCode,
   IconLayoutGrid,
   IconSettings,
@@ -23,6 +21,8 @@ import {
   useElementSelectionContext,
 } from '../contexts/ElementSelectionContext';
 import ElementSelector from '../features/ElementSelector';
+import { setFormatAndPushToAry } from '../features/formatter';
+import { getAbsoluteCSSSelector } from '../utils/CSSUtils';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -60,20 +60,32 @@ interface BaseProps {
   categoryMap: ChangeStyleCategoryMap;
 }
 
-const Base = ({ categoryMap }: BaseProps) => {
+const Base = ({}: /* categoryMap */ BaseProps) => {
   const translator = useTranslator();
   const elementSelection = useElementSelectionContext();
   const tabInnerWrapperRef = useRef<HTMLDivElement>(null);
 
+  const onChange = (key: string, value: string, id: number) => {
+    if (elementSelection.selectedElement) {
+      setFormatAndPushToAry(
+        getAbsoluteCSSSelector(elementSelection.selectedElement) +
+          elementSelection.selectedPseudoClass,
+        key,
+        value,
+        id
+      );
+    }
+  };
+
   const tabs = {
-    templates: <ChangeStyleTabItem categoryMap={categoryMap} />,
-    fonts: <FontCustomizer />,
-    blocks: <BlockCustomizer />,
+    //templates: <ChangeStyleTabItem categoryMap={categoryMap} />,
+    fonts: <FontCustomizer onChange={onChange} />,
+    blocks: <BlockCustomizer onChange={onChange} />,
     settings: <PageSettingTabItem />,
   };
 
   const tabIcons: { [key: string]: React.JSX.Element } = {
-    templates: <IconCategory2 size={16} strokeWidth={1.5} />,
+    //templates: <IconCategory2 size={16} strokeWidth={1.5} />,
     fonts: <IconTypography size={16} strokeWidth={1.5} />,
     blocks: <IconLayoutGrid size={16} strokeWidth={1.5} />,
     pro: <IconCode size={16} strokeWidth={1.5} />,

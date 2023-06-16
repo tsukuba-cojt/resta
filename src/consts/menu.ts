@@ -11,4 +11,8 @@ export const pseudoClassOptions = [
     label: 'フォーカス',
     value: ':focus',
   },
+  {
+    label: '一文字目',
+    value: ':first-letter',
+  },
 ];

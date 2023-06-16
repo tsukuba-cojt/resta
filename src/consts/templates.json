@@ -1,0 +1,46 @@
+{
+  "categories": [
+    {
+      "category": "button",
+      "name": "category_button",
+      "templates": [
+        {
+          "name": "category_button_1",
+          "styles": [
+            {
+              "tags": [
+                "a"
+              ],
+              "css": {
+                "display": "block",
+                "text-align": "center",
+                "vertical-align": "middle",
+                "text-decoration": "none",
+                "width": "120px",
+                "margin": "auto",
+                "padding": "1rem 4rem",
+                "font-weight": "bold",
+                "border": "2px solid #27acd9",
+                "background": "#27acd9",
+                "color": "#ffffff",
+                "transition": "0.5s"
+              }
+            },
+            {
+              "tags": [
+                "a"
+              ],
+              "pseudo_classes": [
+                "hover"
+              ],
+              "css": {
+                "color": "27acd9",
+                "background": "#ffffff"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

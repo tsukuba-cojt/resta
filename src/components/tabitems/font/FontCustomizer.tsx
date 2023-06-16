@@ -27,7 +27,7 @@ import {
 import Section from '../common/Section';
 import SubTitle from '../common/SubTitle';
 import Flex from '../common/Flex';
-import { fontUnits } from '../../../consts/units';
+import { fontUnits, typographyUnits } from '../../../consts/units';
 import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
 import t from '../../../features/translator';
 import { Tooltip } from 'antd';
@@ -138,8 +138,11 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
               <InputNumberWithUnit
                 cssKey={'line-height'}
                 id={120}
-                options={fontUnits}
+                options={typographyUnits}
                 onChange={onChange}
+                sliderMin={0}
+                sliderMax={2}
+                sliderStep={0.1}
                 ignores={['normal', 'inherit', 'initial', 'revert', 'unset']}
               />
             </Flex>
@@ -153,8 +156,11 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
               <InputNumberWithUnit
                 cssKey={'letter-spacing'}
                 id={121}
-                options={fontUnits}
+                options={typographyUnits}
                 onChange={onChange}
+                sliderMin={0}
+                sliderMax={2}
+                sliderStep={0.1}
                 ignores={['normal', 'inherit', 'initial', 'unset']}
               />
             </Flex>
@@ -168,7 +174,7 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
               <InputNumberWithUnit
                 cssKey={'text-indent'}
                 id={122}
-                options={fontUnits}
+                options={typographyUnits}
                 onChange={onChange}
                 sliderMin={0}
                 sliderMax={2}

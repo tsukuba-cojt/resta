@@ -3,6 +3,7 @@ import React from 'react';
 import Base from '../components/Base';
 import { ChangeStyleCategoryMap } from '../types/ChangeStyleElement';
 import { setContainerActive } from '..';
+import GlobalStyle from './GlobalStyle';
 
 export const CONTAINER_ID = 'resta-root';
 
@@ -13,6 +14,7 @@ export const initContainer = (categoryMap: ChangeStyleCategoryMap) => {
 
   ReactDOM.render(
     <React.StrictMode>
+      <GlobalStyle />
       <Base categoryMap={categoryMap} />
     </React.StrictMode>,
     div

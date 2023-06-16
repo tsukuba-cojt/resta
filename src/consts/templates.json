@@ -6,11 +6,9 @@
       "templates": [
         {
           "name": "category_button_1",
+          "tags": ["button", "a"],
           "styles": [
             {
-              "tags": [
-                "a"
-              ],
               "css": {
                 "display": "block",
                 "text-align": "center",
@@ -27,14 +25,11 @@
               }
             },
             {
-              "tags": [
-                "a"
-              ],
-              "pseudo_classes": [
+              "pseudoClasses": [
                 "hover"
               ],
               "css": {
-                "color": "27acd9",
+                "color": "#27acd9",
                 "background": "#ffffff"
               }
             }

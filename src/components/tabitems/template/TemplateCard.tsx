@@ -2,10 +2,11 @@ import {Template} from "../../../types/Template";
 import {Button, Card} from "antd";
 import t from "../../../features/translator";
 import React, {useContext, useEffect, useRef} from "react";
-import {getAbsoluteCSSSelector, kebabToCamel} from "../../../utils/CSSUtils";
+import {getAbsoluteCSSSelector} from "../../../utils/CSSUtils";
 import styled from "styled-components";
 import {ElementSelectionContext} from "../../../contexts/ElementSelectionContext";
 import {setFormatsAndPushToAry} from "../../../features/formatter";
+import {getStyleSheet} from "../../../features/style_sheet";
 
 const InnerWrapper = styled.div`
   width: 100%;
@@ -23,25 +24,46 @@ interface TemplateCardProps {
 }
 
 const TemplateCard = ({template}: TemplateCardProps) => {
-  const ref = useRef<HTMLAnchorElement>(null);
+  const ref = useRef<any>(null);
   const elementSelection = useContext(ElementSelectionContext);
 
   const onUseClick = () => {
     if (elementSelection.selectedElement) {
+      template.styles.forEach((style) =>
+        (style.pseudoClasses ?? ['']).forEach((pseudoClass) =>
+          setFormatsAndPushToAry([
+            {
+              cssSelector: getAbsoluteCSSSelector(elementSelection.selectedElement!) + `${pseudoClass ? ':' : ''}${pseudoClass}`,
+              values: Object.entries(style.css).map(([key, value]) => ({key, value}))
+            }
+          ])
+        )
+      );
+
+      /*
       setFormatsAndPushToAry([
         {
           cssSelector: getAbsoluteCSSSelector(elementSelection.selectedElement),
           values: Object.entries(template.styles[0].css).map(([key, value]) => ({key, value}))
         }
       ]);
+
+       */
     }
   }
 
-  useEffect(() => {
-    Object.entries(template.styles[0].css).forEach(([key, value]) => {
-      // @ts-ignore
-      ref.current!.style[kebabToCamel(key)] = value;
+  const insertCSS = () => {
+    template.styles.forEach((style) => {
+      getStyleSheet()?.insertRule(
+        `${(style.pseudoClasses ?? ['']).map((v) => getAbsoluteCSSSelector(ref.current!) + `${v ? ':' : ''}${v}`).join(", ")} {\n`
+        + `${Object.entries(style.css).map(([key, value]) => `${key}: ${value}`).join(";\n")};\n`
+        + '}'
+      );
     });
+  }
+
+  useEffect(() => {
+    insertCSS();
   });
 
   return (
@@ -50,11 +72,10 @@ const TemplateCard = ({template}: TemplateCardProps) => {
       bordered={true}
       bodyStyle={{padding: "24px"}}
       extra={<Button type={"link"} onClick={onUseClick}>適用</Button>}>
-      {template.styles[0].tags![0] === "a" &&
-        <InnerWrapper>
-          <a ref={ref} href={"#"}>ボタン</a>
-        </InnerWrapper>
-      }
+      <InnerWrapper>
+        {template.tags[0] === "a" && <a ref={ref} href={"#"}>ボタン</a>}
+        {template.tags[0] === "button" && <button ref={ref}>ボタン</button>}
+      </InnerWrapper>
     </Card>
   );
 };

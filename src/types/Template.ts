@@ -6,11 +6,11 @@ export type TemplateCategory = {
 
 export type Template = {
   name: string;
+  tags: string[];
   styles: TemplateStyle[];
 }
 
 export type TemplateStyle = {
-  tags?: string[];
   pseudoClasses?: string[];
   css: {[key: string]: string};
 }

@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-import React, { useContext, useEffect } from 'react';
-import { TranslatorContext } from '../../../contexts/TranslatorContext';
+import React, { useContext } from 'react';
 import TextArea from '../../controls/TextArea';
 import RadioGroup from '../../controls/RadioGroup';
 import {
@@ -26,6 +25,8 @@ import SubTitle from '../common/SubTitle';
 import Flex from '../common/Flex';
 import { fontUnits } from '../../../consts/units';
 import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
+import t from '../../../features/translator';
+import { Tooltip } from 'antd';
 
 const Wrapper = styled.div``;
 
@@ -41,54 +42,57 @@ interface FontCustomizerProps {
 }
 
 const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
-  const translator = useContext(TranslatorContext);
   const elementSelection = useContext(ElementSelectionContext);
-
-  useEffect(() => {
-    console.log(translator.lang);
-  }, []);
 
   return (
     <Wrapper>
       {elementSelection.selectedElement && (
         <>
           <Section>
-            <SubTitle text={'フォント'} />
+            <SubTitle text={t('font_title_font')} />
             <Flex>
-              <IconButton
-                icon={<BoldOutlined />}
-                cssKey={'font-weight'}
-                actualValue={'700'}
-                defaultValue={'400'}
-                id={103}
-                onChange={onChange}
-              />
-              <IconButton
-                icon={<ItalicOutlined />}
-                cssKey={'font-style'}
-                actualValue={'italic'}
-                defaultValue={'normal'}
-                id={104}
-                onChange={onChange}
-              />
-              <IconButton
-                icon={<UnderlineOutlined />}
-                cssKey={'text-decoration'}
-                actualValue={'underline'}
-                defaultValue={'none'}
-                id={105}
-                onChange={onChange}
-              />
+              <Tooltip title={t('font_prop_bold')}>
+                <IconButton
+                  icon={<BoldOutlined />}
+                  cssKey={'font-weight'}
+                  actualValue={'700'}
+                  defaultValue={'400'}
+                  id={103}
+                  onChange={onChange}
+                />
+              </Tooltip>
+              <Tooltip title={t('font_prop_italic')}>
+                <IconButton
+                  icon={<ItalicOutlined />}
+                  cssKey={'font-style'}
+                  actualValue={'italic'}
+                  defaultValue={'normal'}
+                  id={104}
+                  onChange={onChange}
+                />
+              </Tooltip>
+              <Tooltip title={t('font_prop_underline')}>
+                <IconButton
+                  icon={<UnderlineOutlined />}
+                  cssKey={'text-decoration'}
+                  actualValue={'underline'}
+                  defaultValue={'none'}
+                  id={105}
+                  onChange={onChange}
+                />
+              </Tooltip>
             </Flex>
           </Section>
 
           <Section>
             <Flex>
-              <IconTypography size={16} strokeWidth={1.5} />
+              <Tooltip title={t('font_prop_font')}>
+                <IconTypography size={16} strokeWidth={1.5} />
+              </Tooltip>
               <TextArea
                 cssKey={'font-family'}
                 id={101}
-                placeHolder={'フォント'}
+                placeHolder={t('font_prop_font')}
                 onChange={onChange}
               />
             </Flex>
@@ -96,7 +100,9 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
 
           <Section>
             <Flex>
-              <FontSizeOutlined />
+              <Tooltip title={t('font_prop_size')}>
+                <FontSizeOutlined />
+              </Tooltip>
               <InputNumberWithUnit
                 cssKey={'font-size'}
                 id={106}
@@ -121,7 +127,9 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
 
           <Section>
             <Flex>
-              <LineHeightOutlined />
+              <Tooltip title={t('font_prop_line_spacing')}>
+                <LineHeightOutlined />
+              </Tooltip>
               <InputNumberWithUnit
                 cssKey={'line-height'}
                 id={120}
@@ -134,7 +142,9 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
 
           <Section>
             <Flex>
-              <IconLetterSpacing size={16} strokeWidth={1.5} />
+              <Tooltip title={t('font_prop_letter_spacing')}>
+                <IconLetterSpacing size={16} strokeWidth={1.5} />
+              </Tooltip>
               <InputNumberWithUnit
                 cssKey={'letter-spacing'}
                 id={121}
@@ -147,13 +157,15 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
 
           <Section>
             <Flex>
-              <FontColorsOutlined />
+              <Tooltip title={t('font_prop_color')}>
+                <FontColorsOutlined />
+              </Tooltip>
               <ColorPicker cssKey={'color'} id={107} onChange={onChange} />
             </Flex>
           </Section>
 
           <Section>
-            <SubTitle text={'段落'} />
+            <SubTitle text={t('font_title_paragraph')} />
             <RadioGroup
               cssKey={'text-align'}
               id={102}

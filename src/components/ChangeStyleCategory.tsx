@@ -8,9 +8,8 @@ import t from '../features/translator';
 import { setFormatAndPushToAry } from '../features/formatter';
 import InputNumberWithUnit from './controls/InputNumberWithUnit';
 import Select from './controls/Select';
-import { TranslatorContext } from '../contexts/TranslatorContext';
 import { getAbsoluteCSSSelector } from '../utils/CSSUtils';
-import {ElementSelectionContext} from "../contexts/ElementSelectionContext";
+import { ElementSelectionContext } from '../contexts/ElementSelectionContext';
 
 const Wrapper = styled.div``;
 
@@ -37,7 +36,6 @@ const ChangeStyleCategory = ({
   title,
   elements,
 }: CategoryProps) => {
-  const translator = useContext(TranslatorContext);
   const elementSelection = useContext(ElementSelectionContext);
 
   const onChange = (key: string, value: string, id: number) => {
@@ -56,8 +54,7 @@ const ChangeStyleCategory = ({
       return true;
     }
     return (
-      t(translator.lang, element.name).includes(searchText) ||
-      element.key.includes(searchText)
+      t(element.name).includes(searchText) || element.key.includes(searchText)
     );
   };
 
@@ -72,15 +69,13 @@ const ChangeStyleCategory = ({
   return (
     <Wrapper>
       <Title level={5} style={{ margin: '16px 0 8px' }}>
-        {t(translator.lang, title)}
+        {t(title)}
       </Title>
       <CollapseWrapper>
         <Collapse size="small">
           {elements.filter(filter).map((element, index) => (
-            <Panel key={index} header={t(translator.lang, element.name)}>
-              <Description>
-                {t(translator.lang, element.description)}
-              </Description>
+            <Panel key={index} header={t(element.name)}>
+              <Description>{t(element.description)}</Description>
               {isNumberWithUnit(element.parts) && (
                 <InputNumberWithUnit
                   key={index}

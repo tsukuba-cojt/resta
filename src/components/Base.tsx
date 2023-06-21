@@ -12,7 +12,7 @@ import {
   IconLayoutGrid,
   IconSettings,
   IconTypography,
-  IconTemplate,
+  IconTemplate, IconLayersSubtract,
 } from '@tabler/icons-react';
 import FontCustomizer from './tabitems/font/FontCustomizer';
 import PageSettingTabItem from './tabitems/settings/PageSettingTabItem';
@@ -26,6 +26,7 @@ import { setFormatAndPushToAry } from '../features/formatter';
 import { getAbsoluteCSSSelector } from '../utils/CSSUtils';
 import TemplateCustomizer from "./tabitems/template/TemplateCustomizer";
 import Scrollable from "./tabitems/common/Scrollable";
+import LayerCustomizer from "./tabitems/layer/LayerCustomizer";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -80,6 +81,7 @@ const Base = ({}: /* categoryMap */ BaseProps) => {
     fonts: <FontCustomizer onChange={onChange} />,
     blocks: <BlockCustomizer onChange={onChange} />,
     templates: <TemplateCustomizer />,
+    layers: <LayerCustomizer />,
     settings: <PageSettingTabItem />,
   };
 
@@ -88,6 +90,7 @@ const Base = ({}: /* categoryMap */ BaseProps) => {
     fonts: <IconTypography size={16} strokeWidth={1.5} />,
     blocks: <IconLayoutGrid size={16} strokeWidth={1.5} />,
     templates: <IconTemplate size={16} strokeWidth={1.5} />,
+    layers: <IconLayersSubtract size={16} strokeWidth={1.5} />,
     pro: <IconCode size={16} strokeWidth={1.5} />,
     settings: <IconSettings size={16} strokeWidth={1.5} />,
   };

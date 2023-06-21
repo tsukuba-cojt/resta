@@ -55,7 +55,7 @@ const TemplateCard = ({template}: TemplateCardProps) => {
   const insertCSS = () => {
     template.styles.forEach((style) => {
       getStyleSheet()?.insertRule(
-        `${(style.pseudoClasses ?? ['']).map((v) => getAbsoluteCSSSelector(ref.current!) + `${v ? ':' : ''}${v}`).join(", ")} {\n`
+        `${(style.pseudoClasses ?? ['']).map((v) => `${getAbsoluteCSSSelector(ref.current!)}[id='${template.name}']${v ? ':' : ''}${v}`).join(", ")} {\n`
         + `${Object.entries(style.css).map(([key, value]) => `${key}: ${value}`).join(";\n")};\n`
         + '}'
       );
@@ -71,10 +71,11 @@ const TemplateCard = ({template}: TemplateCardProps) => {
       title={t(template.name)}
       bordered={true}
       bodyStyle={{padding: "24px"}}
+      style={{marginBottom: "12px"}}
       extra={<Button type={"link"} onClick={onUseClick}>適用</Button>}>
       <InnerWrapper>
-        {template.tags[0] === "a" && <a ref={ref} href={"#"}>ボタン</a>}
-        {template.tags[0] === "button" && <button ref={ref}>ボタン</button>}
+        {template.tags[0] === "a" && <a ref={ref} id={template.name} href={"#"}>ボタン</a>}
+        {template.tags[0] === "button" && <button ref={ref} id={template.name}>ボタン</button>}
       </InnerWrapper>
     </Card>
   );

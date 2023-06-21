@@ -47,9 +47,7 @@ const ElementSelector = () => {
             !newElement.closest('.ant-select-dropdown') &&
             !element!.closest('.ant-popover')
           ) {
-            if (ev.shiftKey) {
-              ev.preventDefault();
-            }
+            ev.preventDefault();
             elementSelection.selectedElement?.removeEventListener(
               'click',
               clickListener

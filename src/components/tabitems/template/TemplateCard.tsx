@@ -7,6 +7,7 @@ import styled from "styled-components";
 import {ElementSelectionContext} from "../../../contexts/ElementSelectionContext";
 import {setFormatsAndPushToAry} from "../../../features/formatter";
 import {getStyleSheet} from "../../../features/style_sheet";
+import {UIUpdaterContext} from "../../../contexts/UIUpdater";
 
 const InnerWrapper = styled.div`
   width: 100%;
@@ -26,6 +27,7 @@ interface TemplateCardProps {
 const TemplateCard = ({template}: TemplateCardProps) => {
   const ref = useRef<any>(null);
   const elementSelection = useContext(ElementSelectionContext);
+  const updater = useContext(UIUpdaterContext);
 
   const onUseClick = () => {
     if (elementSelection.selectedElement) {
@@ -40,6 +42,7 @@ const TemplateCard = ({template}: TemplateCardProps) => {
           ])
         )
       );
+      updater.formatChanged();
 
       /*
       setFormatsAndPushToAry([

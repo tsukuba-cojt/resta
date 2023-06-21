@@ -7,6 +7,21 @@ import {ElementSelectionContext} from "../../../contexts/ElementSelectionContext
 const Wrapper = styled.div`
 `;
 
+interface CardsProps {
+  templates: Template[];
+}
+
+const Cards = ({templates}: CardsProps) => {
+  const elementSelection = useContext(ElementSelectionContext);
+  return <>
+    {
+        templates
+            .filter((t) => t.tags.includes(elementSelection.selectedElement!.tagName.toLowerCase()))
+            .map((t) => <TemplateCard template={t}/>)
+    }
+  </>;
+};
+
 interface TemplateListProps {
   templates: Template[]
 }
@@ -25,11 +40,7 @@ const TemplateList = ({templates}: TemplateListProps) => {
 
   return (
     <Wrapper>
-      {elementSelection.selectedElement && length !== 0 &&
-        templates
-          .filter((t) => t.tags.includes(elementSelection.selectedElement!.tagName.toLowerCase()))
-          .map((t) => <TemplateCard template={t}/>)
-      }
+      {elementSelection.selectedElement && length !== 0 && <Cards templates={templates} /> }
       {
         length === 0 &&
         <p>この要素に適用できるテンプレートはありません</p>

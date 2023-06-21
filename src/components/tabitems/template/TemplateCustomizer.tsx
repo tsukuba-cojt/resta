@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React, {useContext, useState} from 'react';
+import React, {useCallback, useContext, useMemo, useState} from 'react';
 import {Input, Tabs} from 'antd';
 import t from '../../../features/translator';
 import { SearchOutlined } from '@ant-design/icons';
@@ -23,15 +23,15 @@ const TabWrapper = styled.div`
 const TemplateCustomizer = () => {
   const elementSelection = useContext(ElementSelectionContext);
   const [searchText, setSearchText] = useState<string>('');
-  const categoriesArray = categories.categories as TemplateCategory[];
+  const categoriesArray = useMemo<TemplateCategory[]>(() => categories.categories as TemplateCategory[], []);
 
-  const items = categoriesArray.map((category, i) => {
+  const items = useCallback(() => categoriesArray.map((category, i) => {
     return {
       label: t(category.name),
       key: i.toString(),
       children: <TemplateList templates={category.templates} />,
     };
-  });
+  }), [categoriesArray]);
 
   return (
     <Wrapper>
@@ -47,7 +47,7 @@ const TemplateCustomizer = () => {
           </InputWrapper>
           <TabWrapper>
             <Scrollable>
-              <Tabs items={items} tabBarGutter={0} />
+              <Tabs items={items()} tabBarGutter={0} />
             </Scrollable>
           </TabWrapper>
         </>

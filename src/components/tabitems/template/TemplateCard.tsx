@@ -68,9 +68,7 @@ const TemplateCard = ({template}: TemplateCardProps) => {
     });
   }
 
-  useEffect(() => {
-    insertCSS();
-  }, []);
+  useEffect(() => insertCSS(), []);
 
   return (
     <Card

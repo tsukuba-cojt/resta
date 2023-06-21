@@ -1,29 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Tabs } from 'antd';
-import { ChangeStyleCategoryMap } from '../types/ChangeStyleElement';
-import {
-  TranslatorContext,
-  useTranslator,
-} from '../contexts/TranslatorContext';
+import {Tabs} from 'antd';
+import {ChangeStyleCategoryMap} from '../types/ChangeStyleElement';
 import ToolBar from './ToolBar';
 import {
-  IconCode,
-  IconLayoutGrid,
-  IconSettings,
-  IconTypography,
-  IconTemplate, IconLayersSubtract,
+    IconCode,
+    IconLayoutGrid,
+    IconSettings,
+    IconTypography,
+    IconTemplate, IconLayersSubtract,
 } from '@tabler/icons-react';
 import FontCustomizer from './tabitems/font/FontCustomizer';
 import PageSettingTabItem from './tabitems/settings/PageSettingTabItem';
 import BlockCustomizer from './tabitems/block/BlockCustomizer';
 import {
-  ElementSelectionContext,
-  useElementSelectionContext,
+    ElementSelectionContext,
+    useElementSelectionContext,
 } from '../contexts/ElementSelectionContext';
 import ElementSelector from '../features/ElementSelector';
-import { setFormatAndPushToAry } from '../features/formatter';
-import { getAbsoluteCSSSelector } from '../utils/CSSUtils';
+import {setFormatAndPushToAry} from '../features/formatter';
+import {getAbsoluteCSSSelector} from '../utils/CSSUtils';
 import TemplateCustomizer from "./tabitems/template/TemplateCustomizer";
 import Scrollable from "./tabitems/common/Scrollable";
 import LayerCustomizer from "./tabitems/layer/LayerCustomizer";
@@ -57,67 +53,64 @@ const TabIconWrapper = styled.div`
 `;
 
 interface BaseProps {
-  categoryMap: ChangeStyleCategoryMap;
+    categoryMap: ChangeStyleCategoryMap;
 }
 
 const Base = ({}: /* categoryMap */ BaseProps) => {
-  const translator = useTranslator();
-  const elementSelection = useElementSelectionContext();
+    const elementSelection = useElementSelectionContext();
 
-  const onChange = (key: string, value: string, id: number) => {
-    if (elementSelection.selectedElement) {
-      setFormatAndPushToAry(
-        getAbsoluteCSSSelector(elementSelection.selectedElement) +
-          elementSelection.selectedPseudoClass,
-        key,
-        value,
-        id
-      );
-    }
-  };
-
-  const tabs = {
-    //templates.json: <ChangeStyleTabItem categoryMap={categoryMap} />,
-    fonts: <FontCustomizer onChange={onChange} />,
-    blocks: <BlockCustomizer onChange={onChange} />,
-    templates: <TemplateCustomizer />,
-    layers: <LayerCustomizer />,
-    settings: <PageSettingTabItem />,
-  };
-
-  const tabIcons: { [key: string]: React.JSX.Element } = {
-    //templates.json: <IconCategory2 size={16} strokeWidth={1.5} />,
-    fonts: <IconTypography size={16} strokeWidth={1.5} />,
-    blocks: <IconLayoutGrid size={16} strokeWidth={1.5} />,
-    templates: <IconTemplate size={16} strokeWidth={1.5} />,
-    layers: <IconLayersSubtract size={16} strokeWidth={1.5} />,
-    pro: <IconCode size={16} strokeWidth={1.5} />,
-    settings: <IconSettings size={16} strokeWidth={1.5} />,
-  };
-
-  const items = Object.entries(tabs).map(([key, component], i) => {
-    return {
-      label: <TabIconWrapper>{tabIcons[key]!}</TabIconWrapper>,
-      key: i.toString(),
-      children: component,
+    const onChange = (key: string, value: string, id: number) => {
+        if (elementSelection.selectedElement) {
+            setFormatAndPushToAry(
+                getAbsoluteCSSSelector(elementSelection.selectedElement) +
+                elementSelection.selectedPseudoClass,
+                key,
+                value,
+                id
+            );
+        }
     };
-  });
 
-  return (
-    <Wrapper>
-      <TranslatorContext.Provider value={translator}>
-        <ElementSelectionContext.Provider value={elementSelection}>
-          <ToolBar />
-          <TabWrapper>
-            <Scrollable>
-              <Tabs items={items} tabBarGutter={0} />
-            </Scrollable>
-          </TabWrapper>
-          <ElementSelector />
-        </ElementSelectionContext.Provider>
-      </TranslatorContext.Provider>
-    </Wrapper>
-  );
+    const tabs = {
+        //templates.json: <ChangeStyleTabItem categoryMap={categoryMap} />,
+        fonts: <FontCustomizer onChange={onChange}/>,
+        blocks: <BlockCustomizer onChange={onChange}/>,
+        templates: <TemplateCustomizer/>,
+        layers: <LayerCustomizer/>,
+        settings: <PageSettingTabItem/>,
+    };
+
+    const tabIcons: { [key: string]: React.JSX.Element } = {
+        //templates.json: <IconCategory2 size={16} strokeWidth={1.5} />,
+        fonts: <IconTypography size={16} strokeWidth={1.5}/>,
+        blocks: <IconLayoutGrid size={16} strokeWidth={1.5}/>,
+        templates: <IconTemplate size={16} strokeWidth={1.5}/>,
+        layers: <IconLayersSubtract size={16} strokeWidth={1.5}/>,
+        pro: <IconCode size={16} strokeWidth={1.5}/>,
+        settings: <IconSettings size={16} strokeWidth={1.5}/>,
+    };
+
+    const items = Object.entries(tabs).map(([key, component], i) => {
+        return {
+            label: <TabIconWrapper>{tabIcons[key]!}</TabIconWrapper>,
+            key: i.toString(),
+            children: component,
+        };
+    });
+
+    return (
+        <Wrapper>
+            <ElementSelectionContext.Provider value={elementSelection}>
+                <ToolBar/>
+                <TabWrapper>
+                    <Scrollable>
+                        <Tabs items={items} tabBarGutter={0}/>
+                    </Scrollable>
+                </TabWrapper>
+                <ElementSelector/>
+            </ElementSelectionContext.Provider>
+        </Wrapper>
+    );
 };
 
 export default Base;

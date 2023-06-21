@@ -1,13 +1,11 @@
 import styled from 'styled-components';
 import t from '../../features/translator';
 //import Title from "antd/lib/typography/Title";
-import React, { useContext, useEffect, useState } from 'react';
-import { TranslatorContext } from '../../contexts/TranslatorContext';
+import React, { useState } from 'react';
 import {
   ChangeStyleCategoryMap,
   ChangeStyleElement,
 } from '../../types/ChangeStyleElement';
-import { downloadLangJson } from '../../features/setting_downloader';
 import { Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import ChangeStyleCategory from '../ChangeStyleCategory';
@@ -21,7 +19,6 @@ interface ChangeStyleTabItemProps {
 }
 
 const ChangeStyleTabItem = ({ categoryMap }: ChangeStyleTabItemProps) => {
-  const translator = useContext(TranslatorContext);
   const [searchText, setSearchText] = useState<string>('');
 
   const filter = ([key, elements]: [string, ChangeStyleElement[]]): boolean => {
@@ -35,12 +32,6 @@ const ChangeStyleTabItem = ({ categoryMap }: ChangeStyleTabItemProps) => {
       elements.some((element) => element.key.includes(searchText))
     );
   };
-
-  useEffect(() => {
-    (async () => {
-      translator.setLanguage(await downloadLangJson());
-    })();
-  }, []);
 
   return (
     <Wrapper>

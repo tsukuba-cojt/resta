@@ -1,15 +1,17 @@
 import styled from 'styled-components';
-import React, {Key, useEffect, useState} from 'react';
+import React, {Key, useContext, useEffect, useState} from 'react';
 import Section from "../common/Section";
 import SubTitle from "../common/SubTitle";
 import { DataNode } from 'antd/es/tree';
 import {DownOutlined} from "@ant-design/icons";
 import {Tree} from "antd";
+import {UIUpdaterContext} from "../../../contexts/UIUpdater";
 
 const Wrapper = styled.div``;
 
 const LayerCustomizer = () => {
     const [tree, setTree] = useState<DataNode[]>([]);
+    const updater = useContext(UIUpdaterContext);
 
     const createTree = (): DataNode[] => {
         return []; // TODO
@@ -23,7 +25,7 @@ const LayerCustomizer = () => {
 
     useEffect(() => {
         setTree(createTree());
-    }, []);  // TODO inject deps
+    }, [updater.changeFormatObserver]);  // TODO inject deps
 
     return (
         <Wrapper>

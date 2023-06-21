@@ -23,6 +23,7 @@ import {getAbsoluteCSSSelector} from '../utils/CSSUtils';
 import TemplateCustomizer from "./tabitems/template/TemplateCustomizer";
 import Scrollable from "./tabitems/common/Scrollable";
 import LayerCustomizer from "./tabitems/layer/LayerCustomizer";
+import {UIUpdaterContext, useUIUpdater} from "../contexts/UIUpdater";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -58,6 +59,7 @@ interface BaseProps {
 
 const Base = ({}: /* categoryMap */ BaseProps) => {
     const elementSelection = useElementSelectionContext();
+    const updater = useUIUpdater();
 
     const onChange = (key: string, value: string, id: number) => {
         if (elementSelection.selectedElement) {
@@ -68,6 +70,7 @@ const Base = ({}: /* categoryMap */ BaseProps) => {
                 value,
                 id
             );
+            updater.formatChanged();
         }
     };
 
@@ -101,13 +104,15 @@ const Base = ({}: /* categoryMap */ BaseProps) => {
     return (
         <Wrapper>
             <ElementSelectionContext.Provider value={elementSelection}>
-                <ToolBar/>
-                <TabWrapper>
-                    <Scrollable>
-                        <Tabs items={items} tabBarGutter={0}/>
-                    </Scrollable>
-                </TabWrapper>
-                <ElementSelector/>
+                <UIUpdaterContext.Provider value={updater}>
+                    <ToolBar/>
+                    <TabWrapper>
+                        <Scrollable>
+                            <Tabs items={items} tabBarGutter={0}/>
+                        </Scrollable>
+                    </TabWrapper>
+                    <ElementSelector/>
+                </UIUpdaterContext.Provider>
             </ElementSelectionContext.Provider>
         </Wrapper>
     );

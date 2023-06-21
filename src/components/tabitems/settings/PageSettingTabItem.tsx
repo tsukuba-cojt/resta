@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import t from '../../../features/translator';
 import Title from 'antd/lib/typography/Title';
-import React, {ChangeEvent, useContext} from 'react';
-import {Button, Input, Popconfirm} from 'antd';
+import React, {ChangeEvent, useContext, useState} from 'react';
+import {Button, Checkbox, Input, Popconfirm} from 'antd';
 import * as prop from '../../../features/prop';
 import {saveFormat} from '../../../features/format_manager';
 import {removeAllFormats} from '../../../features/prop';
@@ -17,6 +17,10 @@ const Description = styled.p`
   font-size: 10pt;
   padding-bottom: 8px;
 `;
+
+const DeveloperTools = styled.div`
+  width: 100%;
+;`
 
 const { TextArea } = Input;
 
@@ -34,6 +38,7 @@ const PageSettingTabItem = () => {
     };
 
     const elementSelection = useContext(ElementSelectionContext);
+    const [developerToolEnabled, setDeveloperToolEnabled] = useState<boolean>(false);
 
     return (
         <Wrapper>
@@ -90,14 +95,24 @@ const PageSettingTabItem = () => {
             </Title>
 
             <Section>
-                <SubTitle text={t('get_css_selector')}/>
-                <Description>{t('get_css_selector_description')}</Description>
-                <p>
-                    {elementSelection.selectedElement
-                        ? getAbsoluteCSSSelector(elementSelection.selectedElement)
-                        : ''}
-                </p>
+                <Checkbox onChange={(e) => setDeveloperToolEnabled(e.target.checked)}>
+                    {t('show_developer_tools')}
+                </Checkbox>
             </Section>
+
+            { developerToolEnabled &&
+                <DeveloperTools>
+                    <Section>
+                        <SubTitle text={t('get_css_selector')}/>
+                        <Description>{t('get_css_selector_description')}</Description>
+                        <p>
+                            {elementSelection.selectedElement
+                                ? getAbsoluteCSSSelector(elementSelection.selectedElement)
+                                : ''}
+                        </p>
+                    </Section>
+                </DeveloperTools>
+            }
         </Wrapper>
     );
 };

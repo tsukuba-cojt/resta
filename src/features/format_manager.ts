@@ -1,5 +1,5 @@
 import * as prop from './prop';
-import { FormatBlockByURL } from '../types/FormatBlockByURL';
+import { FormatBlockByURL } from '../types/Format';
 
 /**
  * localにフォーマットを保存する

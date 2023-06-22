@@ -1,8 +1,4 @@
-import {
-  Format,
-  FormatBlockByURL,
-  FormatStyleValue,
-} from '../types/FormatBlockByURL';
+import { Format, FormatBlockByURL, FormatStyleValue } from '../types/Format';
 import { removeStyleRule, setStyleRule } from './style_sheet';
 
 // 現在のURLを格納する変数

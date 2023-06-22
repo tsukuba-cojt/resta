@@ -8,10 +8,11 @@ import {
   RestaStyle,
 } from '../types/RestaSetting';
 import { downloadUiSetting } from './setting_downloader';
+import * as resta_console from './resta_console';
 
 export const loadRestaSetting = async (): Promise<ChangeStyleCategoryMap> => {
   const styles = await downloadUiSetting();
-  console.log('uiSetting', styles);
+  resta_console.log('uiSetting', styles);
   return loadRestaSettingStyles(styles);
 };
 
@@ -42,7 +43,7 @@ const loadRestaSettingStyles = (
       key: firstCSS[0],
       parts: parts,
       onChange: (xPath, key, value) => {
-        console.log(xPath, key, value); // TODO to apply format
+        resta_console.log(xPath, key, value); // TODO to apply format
       },
     });
 
@@ -104,7 +105,7 @@ const parse = (cssValue: string): CSSParseResult => {
 
         const tmpType = CSSParseResultElementType.fromName(lexime);
         if (!tmpType) {
-          console.log(
+          resta_console.log(
             'Error(parse_to_elements.ts): Invalid input type',
             lexime
           );

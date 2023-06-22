@@ -66,7 +66,7 @@ export const setStyleRule = (styles: {
       );
     } else {
       if (!styleSheet?.rules) {
-        console.log('setStyleRule(!canInsert): invalid value');
+        resta_console.log('setStyleRule(!canInsert): invalid value');
         return;
       }
       // もしcssSelectorに対応するルールがなければ空のルールを追加する

@@ -1,5 +1,6 @@
 import { Format, FormatBlockByURL, FormatStyleValue } from '../types/Format';
 import { removeStyleRule, setStyleRule } from './style_sheet';
+import * as resta_console from './resta_console';
 
 // 現在のURLを格納する変数
 export let currentUrl: string;
@@ -13,7 +14,7 @@ export const setUrl = (url: string) => {
 // tsukuba.mast.ac.jp/* などのワイルドカードを含むURLを格納することもできる
 export let edittedUrl: string;
 export const setEdittedUrl = (url: string) => {
-  console.log('setEdittedUrl', url);
+  resta_console.log('setEdittedUrl', url);
   edittedUrl = url;
 };
 
@@ -23,7 +24,7 @@ export const setFormatsAry = (ary: Array<FormatBlockByURL>) => {
 };
 export const removeAllFormats = () => {
   formatsArray.splice(0, formatsArray.length);
-  console.log('resetFormatsAry', formatsArray);
+  resta_console.log('resetFormatsAry', formatsArray);
 };
 
 export const removeCurrentFormat = () => {
@@ -70,7 +71,7 @@ export const getDisplayFormat = (
   if (!value || value.cssValues.length === 0) {
     return false;
   }
-  console.log(
+  resta_console.log(
     'getDisplayFormat',
     value.cssValues[value.cssValues.length - 1].cssValue
   );

@@ -1,7 +1,9 @@
 import { loadFormat } from './format_manager';
 import * as prop from './prop';
-import { StyleRule, removeStyleRule, setStyleRule } from './style_sheet';
-import { UnRedoCommand, UnRedoCommands, pushLog } from './unredo';
+import { StyleRule, setStyleRule } from './style_sheet';
+import { pushLog } from './unredo';
+import { UnRedoCommand, UnRedoCommands } from '../types/UnRedoCommands';
+import * as resta_console from './resta_console';
 
 export const initStyle = async () => {
   // localからjson形式のデータを取得しparseしたものをformatsAryへ代入
@@ -14,7 +16,10 @@ export const setFormatsAndPushToAry = (rules: Array<StyleRule>) => {
   const commands: UnRedoCommands = { commands: [] };
   for (const rule of rules) {
     for (const value of rule.values) {
-      setStyleRule(rule);
+      setStyleRule({
+        cssSelector: rule.cssSelector,
+        keys: [value.key],
+      });
       const c = pushToAry(rule.cssSelector, value.key, value.value, rule.id);
       if (c) {
         commands.commands.push(c);
@@ -56,25 +61,27 @@ export const setFormatAndPushToAry = (
   value: string | null,
   id: number | string | null
 ) => {
-  console.log('setFormatAndPushToAry', cssSelector, key, value, id);
+  resta_console.log('setFormatAndPushToAry', cssSelector, key, value, id);
   if (!id) {
     id = 0;
   }
   if (!cssSelector) {
-    console.log('setFormatAndPushToAry:invalid args, cssSelector is not found');
+    resta_console.log(
+      'setFormatAndPushToAry:invalid args, cssSelector is not found'
+    );
     return;
   }
   if (!key && key !== '') {
-    console.log('setFormatAndPushToAry:invalid args, key is not found');
+    resta_console.log('setFormatAndPushToAry:invalid args, key is not found');
     return;
   }
   if (!value && value !== '') {
-    console.log('setFormatAndPushToAry:invalid args, value is not found');
+    resta_console.log('setFormatAndPushToAry:invalid args, value is not found');
     return;
   }
   setStyleRule({
     cssSelector: cssSelector,
-    values: [{ key: key, value: value }],
+    keys: [key],
   });
   const c = pushToAry(cssSelector, key, value, id);
   if (c) {
@@ -96,15 +103,15 @@ export const pushToAry = (
   id: number | string | null
 ): UnRedoCommand | null => {
   if (!cssSelector) {
-    console.log('pushToAry:invalid args, cssSelector is not found');
+    resta_console.warn('pushToAry:invalid args, cssSelector is not found');
     return null;
   }
   if (!key) {
-    console.log('pushToAry:invalid args, key is not found');
+    resta_console.warn('pushToAry:invalid args, key is not found');
     return null;
   }
   if (!value && value !== '') {
-    console.log('pushToAry:invalid args, value is not found');
+    resta_console.warn('pushToAry:invalid args, value is not found');
     return null;
   }
   if (!id) {
@@ -148,7 +155,7 @@ export const pushToAry = (
       ?.formats.find((e) => e.cssSelector === cssSelector)
       ?.changes.find((e) => e.cssKey === key)
       ?.cssValues.push({ id: id, cssValue: value });
-    // console.log('pushToAry:push', cssSelector, key, value);
+    // resta_console.log('pushToAry:push', cssSelector, key, value);
     return {
       cssSelector: cssSelector,
       cssKey: key,
@@ -169,7 +176,7 @@ export const pushToAry = (
     // その要素を削除して末尾に追加する
     const index = getIndex(cssSelector, key, id);
     if (index == undefined || index === -1) {
-      console.log('pushToAry: bug detected, index is undefined');
+      resta_console.warn('pushToAry: bug detected, index is undefined');
     }
     // idに対応する要素を取り除く
     const log = prop.formatsArray
@@ -191,7 +198,7 @@ export const pushToAry = (
       ?.formats.find((e) => e.cssSelector === cssSelector)
       ?.changes.find((e) => e.cssKey === key)
       ?.cssValues.push({ id: id, cssValue: value });
-    // console.log('pushToAry:already exists, overwrite', cssSelector, key, value);
+    // resta_console.log('pushToAry:already exists, overwrite', cssSelector, key, value);
     return {
       cssSelector: cssSelector,
       cssKey: key,
@@ -220,7 +227,7 @@ export const deleteFromAry = (
 ): UnRedoCommand | null => {
   const index = getIndex(cssSelector, key, id);
   if (index == undefined || index === -1) {
-    console.log('deleteFromAry: bug detected, index is undefined');
+    resta_console.warn('deleteFromAry: bug detected, index is undefined');
   }
   const deletedElem = prop.formatsArray
     .find((e) => e.url === prop.edittedUrl)
@@ -235,9 +242,10 @@ export const deleteFromAry = (
       1
     );
   if (!deletedElem) {
-    console.log('deleteFromAry: bug detected, deletedElem is undefined');
+    resta_console.warn('deleteFromAry: bug detected, deletedElem is undefined');
     return null;
   }
+  /*
   const style = prop.formatsArray
     .find((e) => e.url === prop.edittedUrl)
     ?.formats.find((e) => e.cssSelector === cssSelector)
@@ -248,10 +256,11 @@ export const deleteFromAry = (
     // 削除した要素を適用する
     setStyleRule({
       cssSelector: cssSelector,
-      values: [{ key: key, value: prop.getValue(style) }],
+      keys: [key],
     });
   }
-  console.log('deleteFromAry', prop.formatsArray);
+  */
+  resta_console.log('deleteFromAry', prop.formatsArray);
   return {
     cssSelector: cssSelector,
     cssKey: key,
@@ -267,20 +276,6 @@ export const deleteFromAry = (
       index: undefined,
     },
   };
-};
-
-export const reloadStyle = (cssSelector: string, key: string) => {
-  const style = prop.formatsArray
-    .find((e) => e.url === prop.edittedUrl)
-    ?.formats.find((e) => e.cssSelector === cssSelector)
-    ?.changes.find((e) => e.cssKey === key)?.cssValues;
-  if (!style) {
-    return;
-  }
-  setStyleRule({
-    cssSelector: cssSelector,
-    values: [{ key: key, value: prop.getValue(style) }],
-  });
 };
 
 /**
@@ -305,46 +300,19 @@ const getIndex = (
  */
 export const applyFormats = () => {
   const formats = prop.formatsArray.filter((e) =>
-    matchUrl(prop.currentUrl, e.url)
+    prop.matchUrl(prop.currentUrl, e.url)
   );
-  console.log('start:applyFormats', formats);
+  resta_console.log('start:applyFormats', formats);
   for (const f of formats) {
-    // console.log(f);
+    // resta_console.log(f);
     for (const format of f.formats) {
       const cssSelector = format.cssSelector;
       setStyleRule({
         cssSelector: cssSelector,
-        values: format.changes
-          .map((e) => {
-            if (e.cssValues.length !== 0) {
-              return {
-                key: e.cssKey,
-                value: e.cssValues[e.cssValues.length - 1].cssValue,
-              };
-            } else {
-              return { key: '', value: '' };
-            }
-          })
-          .filter((e) => e.key !== '' && e.value !== ''),
+        keys: format.changes
+          .filter((e) => e.cssKey !== '' && e.cssValues.length !== 0)
+          .map((e) => e.cssKey),
       });
     }
-  }
-};
-
-export const matchUrl = (url: string, matchUrl: string) => {
-  if (!matchUrl || !url) {
-    return false;
-  }
-  let hasWildcard = false;
-  let compareUrl = '';
-  // 最後の文字が*ならワイルドカードとして扱う
-  if (matchUrl[matchUrl.length - 1] === '*') {
-    hasWildcard = true;
-    compareUrl = matchUrl.slice(0, -1);
-  }
-  if (hasWildcard) {
-    return url === compareUrl || url.startsWith(compareUrl);
-  } else {
-    return url === matchUrl;
   }
 };

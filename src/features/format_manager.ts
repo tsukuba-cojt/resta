@@ -1,4 +1,5 @@
 import * as prop from './prop';
+import { FormatBlockByURL } from '../types/FormatBlockByURL';
 
 /**
  * localにフォーマットを保存する
@@ -10,6 +11,7 @@ export const saveFormat = () => {
     .then(() => {
       console.log('save', prop.currentUrl, prop.formatsArray);
     });
+  prop.sortFormats();
 };
 /**
  * localからフォーマットを読み込む
@@ -24,7 +26,7 @@ export const loadFormat = async () => {
       console.log('load', prop.currentUrl, JSON.parse(result.formats));
       if (JSON.parse(result.formats))
         prop.setFormatsAry(
-          JSON.parse(result.formats) as Array<prop.FormatBlockByURL>
+          JSON.parse(result.formats) as Array<FormatBlockByURL>
         );
       return;
     }

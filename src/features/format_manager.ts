@@ -1,5 +1,6 @@
 import * as prop from './prop';
 import { FormatBlockByURL } from '../types/Format';
+import * as resta_console from './resta_console';
 
 /**
  * localにフォーマットを保存する
@@ -9,7 +10,7 @@ export const saveFormat = () => {
   chrome.storage.local
     .set({ formats: JSON.stringify(prop.formatsArray) })
     .then(() => {
-      console.log('save', prop.currentUrl, prop.formatsArray);
+      resta_console.log('save', prop.currentUrl, prop.formatsArray);
     });
   prop.sortFormats();
 };
@@ -20,10 +21,10 @@ export const saveFormat = () => {
 export const loadFormat = async () => {
   await chrome.storage.local.get(['formats']).then((result) => {
     if (!result.formats) {
-      console.log('load:no format', prop.currentUrl);
+      resta_console.log('load:no format', prop.currentUrl);
       return;
     } else {
-      console.log('load', prop.currentUrl, JSON.parse(result.formats));
+      resta_console.log('load', prop.currentUrl, JSON.parse(result.formats));
       if (JSON.parse(result.formats))
         prop.setFormatsAry(
           JSON.parse(result.formats) as Array<FormatBlockByURL>

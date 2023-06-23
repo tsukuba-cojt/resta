@@ -20,10 +20,9 @@ const ColorPicker = ({cssKey, id, onChange}: ColorPickerProps) => {
     [colorHex],
   );
 
-  const onColorChange = (color: Color | string) => {
-    setColorHex(color);
+  useEffect(() => {
     onChange(cssKey, hexString, id);
-  }
+  }, [hexString]);
 
   useEffect(() => {
     if (elementSelection.selectedElement) {
@@ -38,7 +37,7 @@ const ColorPicker = ({cssKey, id, onChange}: ColorPickerProps) => {
       <AntdColorPicker
         format={formatHex}
         value={colorHex}
-        onChange={onColorChange}
+        onChange={setColorHex}
         onFormatChange={setFormatHex}
       />
       <span>{hexString}</span>

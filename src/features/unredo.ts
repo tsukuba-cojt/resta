@@ -1,5 +1,12 @@
+import {
+  UnRedoCommands,
+  UnRedoCommand,
+  Command,
+} from '../types/UnRedoCommands';
 import { saveFormat } from './format_manager';
-import { deleteFromAry, pushToAry, reloadStyle } from './formatter';
+import { deleteFromAry, pushToAry } from './formatter';
+import { updateFormat } from './prop';
+import * as resta_console from './resta_console';
 
 const UNREDO_MAX_LENGTH = 32;
 const unRedoStack: Array<UnRedoCommands> = [];
@@ -74,29 +81,8 @@ export const pushLog = (changes: UnRedoCommands) => {
     unRedoStack.shift();
   }
   index = unRedoStack.length;
-  console.log('pushLog', unRedoStack);
+  resta_console.log('pushLog', unRedoStack);
   saveFormat();
-};
-
-export type UnRedoCommands = {
-  commands: Array<UnRedoCommand>;
-};
-
-export type UnRedoCommand = {
-  cssSelector: string;
-  cssKey: string;
-  id: number | string;
-  undo: Command;
-  redo: Command;
-};
-
-export type Command = {
-  type: ChangeType;
-  cssValue: string;
-  /**
-   * create, rewriteのときのみ。undefinedのときは末尾に追加
-   */
-  index: number | undefined;
 };
 
 /**
@@ -144,7 +130,7 @@ const margeCommands = (
             },
           });
         } else {
-          console.log('margeCommands: bug detected, create -> create');
+          resta_console.log('margeCommands: bug detected, create -> create');
           return { commands: [] };
         }
         break;
@@ -166,12 +152,12 @@ const margeCommands = (
             },
           });
         } else {
-          console.log('margeCommands: bug detected, rewrite -> create');
+          resta_console.log('margeCommands: bug detected, rewrite -> create');
           return { commands: [] };
         }
         break;
       default:
-        console.log('margeCommands: bug detected, try to marge delete');
+        resta_console.log('margeCommands: bug detected, try to marge delete');
         return { commands: [] };
     }
   }
@@ -185,12 +171,14 @@ const applyUndoCommands = (changes: UnRedoCommands) => {
   for (const command of changes.commands) {
     applyCommand(command.cssSelector, command.cssKey, command.id, command.undo);
   }
+  saveFormat();
 };
 
 const applyRedoCommands = (changes: UnRedoCommands) => {
   for (const command of changes.commands) {
     applyCommand(command.cssSelector, command.cssKey, command.id, command.redo);
   }
+  saveFormat();
 };
 
 export const applyCommand = (
@@ -199,7 +187,7 @@ export const applyCommand = (
   id: number | string,
   change: Command
 ) => {
-  console.log('applyCommand', cssSelector, cssKey, id, change);
+  resta_console.log('applyCommand', cssSelector, cssKey, id, change);
   switch (change.type) {
     case 'create':
       pushToAry(cssSelector, cssKey, change.cssValue, id);
@@ -211,6 +199,5 @@ export const applyCommand = (
       pushToAry(cssSelector, cssKey, change.cssValue, id);
       break;
   }
-  reloadStyle(cssSelector, cssKey);
-  saveFormat();
+  updateFormat(cssSelector, cssKey);
 };

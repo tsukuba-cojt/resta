@@ -1,4 +1,7 @@
-var styleSheet: CSSStyleSheet | null = null;
+import { getDisplayFormat } from './prop';
+import * as resta_console from './resta_console';
+
+let styleSheet: CSSStyleSheet | null = null;
 /**
  * CSSStyleSheetを取得する
  * シングルトンのような構造になっている
@@ -13,50 +16,89 @@ export const getStyleSheet = () => {
   return styleSheet;
 };
 
+/**
+ * CssSelectorとcssKeyの配列を渡すと、スタイルを適用する
+ * valueはいらない
+ */
 export const setStyleRule = (styles: {
   cssSelector: string;
-  values: Array<StyleValue>;
+  keys: Array<string>;
 }) => {
-  if (!styles.values || !styles.cssSelector) {
-    console.log('setStyleRule: invalid value');
+  if (!styles.keys || !styles.cssSelector) {
+    resta_console.log('setStyleRule: invalid value');
     return;
   }
   const styleSheet = getStyleSheet();
   const canInsert = styleSheet?.insertRule;
-  for (const style of styles.values) {
+  for (const key of styles.keys) {
     if (canInsert) {
       // もしcssSelectorに対応するルールがなければ空のルールを追加する
       for (let i = 0; i < styleSheet?.cssRules.length; i++) {
         const rule = styleSheet?.cssRules[i];
         if (rule instanceof CSSStyleRule) {
           if (rule.selectorText === styles.cssSelector) {
-            rule.style.setProperty(style.key, style.value);
+            const value = getDisplayFormat(styles.cssSelector, key);
+            if (!value) {
+              resta_console.error(
+                'style_sheet.setStyleRule0: getDisplayFormat is false'
+              );
+              removeStyleRule(styles.cssSelector, key);
+              continue;
+            }
+            resta_console.log('setProperty');
+            rule.style.setProperty(key, value);
             continue;
           }
         }
       }
+      const value = getDisplayFormat(styles.cssSelector, key);
+      if (!value) {
+        resta_console.error(
+          'style_sheet.setStyleRule1: getDisplayFormat is false'
+        );
+        removeStyleRule(styles.cssSelector, key);
+        continue;
+      }
+      resta_console.log('insertRule');
       styleSheet?.insertRule(
-        `${styles.cssSelector}{${style.key}:${style.value}}`,
+        `${styles.cssSelector}{${key}:${value}}`,
         styleSheet.cssRules.length
       );
     } else {
       if (!styleSheet?.rules) {
-        console.log('setStyleRule(!canInsert): invalid value');
+        resta_console.log('setStyleRule(!canInsert): invalid value');
         return;
       }
       // もしcssSelectorに対応するルールがなければ空のルールを追加する
       for (let i = 0; i < styleSheet?.rules.length; i++) {
         const rule = styleSheet?.rules[i];
-        if (rule instanceof CSSStyleRule) {
-          if (rule.selectorText === styles.cssSelector) {
-            rule.style.setProperty(style.key, style.value);
+        if (
+          rule instanceof CSSStyleRule &&
+          rule.selectorText === styles.cssSelector
+        ) {
+          const value = getDisplayFormat(styles.cssSelector, key);
+          if (!value) {
+            resta_console.error(
+              'style_sheet.setStyleRule2: getDisplayFormat is false'
+            );
+            removeStyleRule(styles.cssSelector, key);
             continue;
           }
+          rule.style.setProperty(key, value);
+          continue;
         }
+      }
+      const value = getDisplayFormat(styles.cssSelector, key);
+      if (!value) {
+        resta_console.error(
+          'style_sheet.setStyleRule3: getDisplayFormat is false'
+        );
+        removeStyleRule(styles.cssSelector, key);
+        continue;
       }
       styleSheet?.addRule(
         styles.cssSelector,
-        `${style.key}:${style.value}`,
+        `${key}:${value}`,
         styleSheet.rules.length
       );
     }
@@ -72,8 +114,10 @@ export const removeStyleRule = (cssSelector: string, cssKey: string) => {
     const rule = styleSheet?.cssRules[i];
     if (rule instanceof CSSStyleRule) {
       if (rule.selectorText === cssSelector) {
-        rule.style.removeProperty(cssKey);
-        return;
+        const removed = rule.style.removeProperty(cssKey);
+        resta_console.log('removeStyleRule', cssSelector, cssKey);
+        resta_console.log('removed value:', removed);
+        resta_console.log('rule.style:', styleSheet.rules);
       }
     }
   }

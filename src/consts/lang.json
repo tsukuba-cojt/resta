@@ -60,6 +60,7 @@
     "developer_tools": "開発者ツール",
     "get_css_selector": "CSSセレクタ取得",
     "get_css_selector_description": "現在選択されているCSSセレクタを取得します。",
+    "show_developer_tools": "開発者ツールを表示",
 
     "extension_settings": "ReSta設定",
     "init_all_format": "全デザイン初期化",

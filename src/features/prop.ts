@@ -90,8 +90,8 @@ export const updateFormat = (cssSelector: string, cssKey: string) => {
   });
 };
 
-export const matchUrl = (url: string, matchUrl: string) => {
-  if (!matchUrl || !url) {
+export const matchUrl = (currentUrl: string, matchUrl: string) => {
+  if (!matchUrl || !currentUrl) {
     return false;
   }
   let hasWildcard = false;
@@ -102,8 +102,8 @@ export const matchUrl = (url: string, matchUrl: string) => {
     compareUrl = matchUrl.slice(0, -1);
   }
   if (hasWildcard) {
-    return url === compareUrl || url.startsWith(compareUrl);
+    return currentUrl === compareUrl || currentUrl.startsWith(compareUrl);
   } else {
-    return url === matchUrl;
+    return currentUrl === matchUrl;
   }
 };

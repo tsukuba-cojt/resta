@@ -45,6 +45,7 @@ export const setStyleRule = (styles: {
               removeStyleRule(styles.cssSelector, key);
               continue;
             }
+            if (rule.style.getPropertyValue(key) === value) continue;
             resta_console.log('setProperty');
             rule.style.setProperty(key, value);
             continue;
@@ -84,6 +85,7 @@ export const setStyleRule = (styles: {
             removeStyleRule(styles.cssSelector, key);
             continue;
           }
+          if (rule.style.getPropertyValue(key) === value) continue;
           rule.style.setProperty(key, value);
           continue;
         }

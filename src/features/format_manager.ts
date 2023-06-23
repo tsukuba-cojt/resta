@@ -27,7 +27,9 @@ export const loadFormat = async () => {
       resta_console.log('load', prop.currentUrl, JSON.parse(result.formats));
       if (JSON.parse(result.formats))
         prop.setFormatsAry(
-          JSON.parse(result.formats) as Array<FormatBlockByURL>
+          (JSON.parse(result.formats) as Array<FormatBlockByURL>)
+            .filter((e) => e.formats.length !== 0)
+            .filter((e) => prop.matchUrl(prop.currentUrl, e.url))
         );
       return;
     }

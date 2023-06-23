@@ -9,7 +9,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["js/main.js"]
+      "js": ["js/main.js", "sharing_page_index.js"]
     }
   ],
   "background": {

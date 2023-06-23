@@ -12,7 +12,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "18.x"
-      - run: npm ci
+      - run: npm i
       - name: Build Project #ステージング用のビルドを行うステップ
         if: github.event_name == 'push' #pushイベントのときだけ実行
         run: npm run build-react #ビルド実行

@@ -1,12 +1,16 @@
 import * as prop from './prop';
 import { FormatBlockByURL } from '../types/Format';
 import * as resta_console from './resta_console';
-
+import { debounce } from './debounce';
 /**
  * localにフォーマットを保存する
  */
 
-export const saveFormat = () => {
+export const saveFormat = async () => {
+  const debounceSave = debounce(save() as any, 1000);
+  debounceSave();
+};
+const save = (): void => {
   chrome.storage.local
     .set({ formats: JSON.stringify(prop.formatsArray) })
     .then(() => {
@@ -17,7 +21,6 @@ export const saveFormat = () => {
 /**
  * localからフォーマットを読み込む
  */
-
 export const loadFormat = async () => {
   await chrome.storage.local.get(['formats']).then((result) => {
     if (!result.formats) {

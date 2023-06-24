@@ -34,19 +34,15 @@ export const removeCurrentFormat = () => {
   }
 };
 
-export const getValue = (cssValues: Array<FormatStyleValue> | undefined) => {
-  if (!cssValues || cssValues.length === 0) {
-    return '';
-  }
-  return cssValues[cssValues.length - 1].cssValue || '';
-};
-
 export const sortFormats = () => {
   setFormatsAry(
     formatsArray
       .filter((e) => e.formats.length !== 0)
-      .sort((e) => (e.url.match(/\//g) || []).length)
-      .sort((e) => (e.url[e.url.length - 1] === '*' ? -1 : 1))
+      .sort(
+        (e) =>
+          (e.url.match(/\//g) || []).length &&
+          (e.url[e.url.length - 1] === '*' ? -1 : 1)
+      )
   );
 };
 
@@ -55,16 +51,15 @@ export const sortFormats = () => {
  * 見つからない場合はfalseを返す
  */
 export const getDisplayFormat = (
-  cssSelector: string,
+  formatsArray: (Format | undefined)[],
   cssKey: string
 ): string | false => {
-  const format: (Format | undefined)[] = formatsArray
-    .filter((e) => matchUrl(currentUrl, e.url))
-    .map((e) => e.formats)
-    .filter((e) => e !== undefined)
-    .map((e) => e.find((e) => e.cssSelector === cssSelector))
-    .filter((e) => e !== undefined)
-    .filter((e) => e?.changes.find((l) => l.cssKey === cssKey));
+  if (!formatsArray || formatsArray.length === 0) {
+    return false;
+  }
+  const format: (Format | undefined)[] = formatsArray.filter((e) =>
+    e?.changes.find((l) => l.cssKey === cssKey)
+  );
   const value = format[format.length - 1]?.changes.find(
     (e) => e.cssKey === cssKey
   );
@@ -79,7 +74,14 @@ export const getDisplayFormat = (
 };
 
 export const updateFormat = (cssSelector: string, cssKey: string) => {
-  const value = getDisplayFormat(cssSelector, cssKey);
+  const value = getDisplayFormat(
+    formatsArray
+      .map((e) => e.formats)
+      .filter((e) => e !== undefined)
+      .map((e) => e.find((e) => e.cssSelector === cssSelector))
+      .filter((e) => e !== undefined),
+    cssKey
+  );
   if (!value) {
     removeStyleRule(cssSelector, cssKey);
     return;

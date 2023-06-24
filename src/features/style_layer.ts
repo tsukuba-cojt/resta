@@ -5,12 +5,8 @@ export const getStyleLayer = (cssSelector: string): StyleLayer => {
   if (!cssSelector) {
     return { key: '', children: [] };
   }
-  const formats = prop.formatsArray.filter((format) => {
-    prop.matchUrl(prop.currentUrl, format.url);
-  });
-  resta_console.log('formats:', formats);
   const styleLayerValue: StyleLayerValue[] = [];
-  for (const format of formats.reverse()) {
+  for (const format of prop.formatsArray.reverse()) {
     const formatChange = format.formats.find((format) => {
       return format.cssSelector === cssSelector;
     });

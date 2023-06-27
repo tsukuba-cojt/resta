@@ -10,7 +10,7 @@ export const setContainerActive = (value: boolean) => {
 };
 
 window.addEventListener('load', () => {
-  console.log('OnUpdated');
+  resta_console.log('OnUpdated');
 
   prop.setUrl(window.location.href);
 

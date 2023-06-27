@@ -7,17 +7,34 @@ import { debounce } from './debounce';
  */
 
 export const saveFormat = async () => {
-  const debounceSave = debounce(save() as any, 1000);
-  debounceSave();
+  const debounceSave = debounce(save, 1000);
+  debounceSave(new Date());
 };
-const save = (): void => {
+
+let lastSaveTime = new Date();
+
+const save = (date: Date): void => {
+  if (lastSaveTime.getTime() + 1000 > date.getTime()) {
+    return;
+  }
+  lastSaveTime = date;
+  prop.sortFormats();
   chrome.storage.local
     .set({ formats: JSON.stringify(prop.formatsArray) })
     .then(() => {
       resta_console.log('save', prop.currentUrl, prop.formatsArray);
     });
-  prop.sortFormats();
 };
+
+export const saveFormatImmediately = async () => {
+  prop.sortFormats();
+  chrome.storage.local
+    .set({ formats: JSON.stringify(prop.formatsArray) })
+    .then(() => {
+      resta_console.log('save', prop.currentUrl, prop.formatsArray);
+    });
+};
+
 /**
  * localからフォーマットを読み込む
  */

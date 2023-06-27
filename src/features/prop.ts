@@ -1,4 +1,4 @@
-import { Format, FormatBlockByURL, FormatStyleValue } from '../types/Format';
+import { Format, FormatBlockByURL } from '../types/Format';
 import { removeStyleRule, setStyleRule } from './style_sheet';
 import * as resta_console from './resta_console';
 

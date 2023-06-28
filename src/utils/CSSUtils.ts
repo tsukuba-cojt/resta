@@ -38,7 +38,7 @@ const createSelector = (element: HTMLElement): string => {
   }
 
   const returnWithAttr = (attrName: string): string => {
-    return `${tag}[${attrName}*="${element.getAttribute(attrName)!.trim()}"]`;
+    return `${tag}[${attrName}*="${element.getAttribute(attrName)!.trim().replace(/"$/, '')}"]`;
   };
 
   if (element.getAttribute('href')) {

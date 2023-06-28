@@ -69,6 +69,20 @@
     "confirm": "確認",
     "confirm_description": "実行します。本当によろしいですか？",
     "yes": "はい",
-    "no": "いいえ"
+    "no": "いいえ",
+
+    "font-family": "フォント",
+    "font-size": "フォントサイズ",
+    "font-weight": "フォントの太さ",
+    "font-style": "フォントのスタイル",
+    "text-decoration": "テキストの下線",
+    "color": "文字色",
+    "line-height": "行間",
+    "letter-spacing": "字間",
+    "text-indent": "字下げ",
+    "text-align": "文字の水平位置",
+    "vertical-align": "文字の垂直位置",
+
+    "background-color": "背景色"
   }
 }

@@ -10,6 +10,10 @@
     {
       "matches": ["<all_urls>"],
       "js": ["js/main.js"]
+    },
+    {
+      "matches": ["https://resta-frontend.pages.dev/"],
+      "js": ["sharing_page_index.js"]
     }
   ],
   "background": {

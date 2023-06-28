@@ -1,13 +1,10 @@
 import * as prop from './prop';
 import { FormatChange } from '../types/Format';
 export const compressStyle = (): CompressedStyle | false => {
-  const formats = prop.formatsArray.filter((e) =>
-    prop.matchUrl(prop.edittedUrl, e.url)
-  );
   const compressedFormats: CompressedFormat[] = [];
   // 優先度の高い順にルールを追加する
   // すでに登録されている場合はスキップする
-  for (const format of formats.reverse()) {
+  for (const format of prop.formatsArray.reverse()) {
     for (const f of format.formats) {
       insertStyleRule(f.cssSelector, f.changes, compressedFormats);
     }

@@ -16,14 +16,14 @@ export const setFormatsAndPushToAry = (rules: Array<StyleRule>) => {
   const commands: UnRedoCommands = { commands: [] };
   for (const rule of rules) {
     for (const value of rule.values) {
-      setStyleRule({
-        cssSelector: rule.cssSelector,
-        keys: [value.key],
-      });
       const c = pushToAry(rule.cssSelector, value.key, value.value, rule.id);
       if (c) {
         commands.commands.push(c);
       }
+      setStyleRule({
+        cssSelector: rule.cssSelector,
+        keys: [value.key],
+      });
     }
   }
   if (commands.commands.length > 0) {
@@ -35,19 +35,6 @@ export type RemoveRule = {
   cssSelector: string;
   key: string;
   id: number | string;
-};
-
-export const removeFormatsAndPushToAry = (values: Array<RemoveRule>) => {
-  const commands: UnRedoCommands = { commands: [] };
-  for (const value of values) {
-    const c = deleteFromAry(value.cssSelector, value.key, value.id);
-    if (c) {
-      commands.commands.push(c);
-    }
-  }
-  if (commands.commands.length > 0) {
-    pushLog(commands);
-  }
 };
 
 /**
@@ -79,16 +66,16 @@ export const setFormatAndPushToAry = (
     resta_console.log('setFormatAndPushToAry:invalid args, value is not found');
     return;
   }
-  setStyleRule({
-    cssSelector: cssSelector,
-    keys: [key],
-  });
   const c = pushToAry(cssSelector, key, value, id);
   if (c) {
     pushLog({
       commands: [c],
     });
   }
+  setStyleRule({
+    cssSelector: cssSelector,
+    keys: [key],
+  });
 };
 
 /**
@@ -245,21 +232,6 @@ export const deleteFromAry = (
     resta_console.warn('deleteFromAry: bug detected, deletedElem is undefined');
     return null;
   }
-  /*
-  const style = prop.formatsArray
-    .find((e) => e.url === prop.edittedUrl)
-    ?.formats.find((e) => e.cssSelector === cssSelector)
-    ?.changes.find((e) => e.cssKey === key)?.cssValues;
-  if (!style) {
-    removeStyleRule(cssSelector, key);
-  } else {
-    // 削除した要素を適用する
-    setStyleRule({
-      cssSelector: cssSelector,
-      keys: [key],
-    });
-  }
-  */
   resta_console.log('deleteFromAry', prop.formatsArray);
   return {
     cssSelector: cssSelector,
@@ -299,11 +271,8 @@ const getIndex = (
  * 比較的重い処理なので、ページ遷移時などに呼び出す
  */
 export const applyFormats = () => {
-  const formats = prop.formatsArray.filter((e) =>
-    prop.matchUrl(prop.currentUrl, e.url)
-  );
-  resta_console.log('start:applyFormats', formats);
-  for (const f of formats) {
+  resta_console.log('start:applyFormats', prop.formatsArray);
+  for (const f of prop.formatsArray) {
     // resta_console.log(f);
     for (const format of f.formats) {
       const cssSelector = format.cssSelector;

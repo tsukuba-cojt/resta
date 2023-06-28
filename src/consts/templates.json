@@ -25,9 +25,7 @@
               }
             },
             {
-              "pseudoClasses": [
-                "hover"
-              ],
+              "pseudoClass": "hover",
               "css": {
                 "color": "#27acd9",
                 "background": "#ffffff"
@@ -56,9 +54,7 @@
               }
             },
             {
-              "pseudoClasses": [
-                "hover"
-              ],
+              "pseudoClass": "hover",
               "css": {
                 "color": "#ffffff",
                 "background": "linear-gradient(to left, #27acd9 0%, #b4e12b 100%)"

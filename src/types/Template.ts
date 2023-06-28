@@ -11,6 +11,6 @@ export type Template = {
 }
 
 export type TemplateStyle = {
-  pseudoClasses?: string[];
+  pseudoClass?: string;
   css: {[key: string]: string};
 }

@@ -8,6 +8,7 @@ import {ElementSelectionContext} from "../../../contexts/ElementSelectionContext
 import {setFormatsAndPushToAry} from "../../../features/formatter";
 import {getStyleSheet} from "../../../features/style_sheet";
 import {UIUpdaterContext} from "../../../contexts/UIUpdater";
+import {createId} from "../../../utils/IDUtils";
 
 const InnerWrapper = styled.div`
   width: 100%;
@@ -31,37 +32,20 @@ const TemplateCard = ({template}: TemplateCardProps) => {
 
   const onUseClick = () => {
     if (elementSelection.selectedElement) {
-      template.styles.forEach((style) =>
-        (style.pseudoClasses ?? ['']).forEach((pseudoClass) =>
-          setFormatsAndPushToAry([
-            {
-              id: getId(`${pseudoClass ? ':' : ''}${pseudoClass}`),
-              cssSelector: getAbsoluteCSSSelector(elementSelection.selectedElement!) + `${pseudoClass ? ':' : ''}${pseudoClass}`,
-              values: Object.entries(style.css).map(([key, value]) => ({key, value}))
-            }
-          ])
-        )
-      );
+      setFormatsAndPushToAry(template.styles.map((style) => ({
+        id: createId(),
+        cssSelector: getAbsoluteCSSSelector(elementSelection.selectedElement!) + (style.pseudoClass ? `:${style.pseudoClass}` : ''),
+        values: Object.entries(style.css).map(([key, value]) => ({key, value}))
+      })));
+
       updater.formatChanged();
-
-      /*
-      setFormatsAndPushToAry([
-        {
-          cssSelector: getAbsoluteCSSSelector(elementSelection.selectedElement),
-          values: Object.entries(template.styles[0].css).map(([key, value]) => ({key, value}))
-        }
-      ]);
-
-       */
     }
   }
-
-  const getId = (additional: string = '') => Array.from(template.name + additional).map((v) => v.charCodeAt(0)).reduce((s, e) => s + e, 0);
 
   const insertCSS = () => {
     template.styles.forEach((style) => {
       getStyleSheet()?.insertRule(
-        `${(style.pseudoClasses ?? ['']).map((v) => `${getAbsoluteCSSSelector(ref.current!)}[id='${template.name}']${v ? ':' : ''}${v}`).join(", ")} {\n`
+        `${getAbsoluteCSSSelector(ref.current!)}[id='${template.name}']${style.pseudoClass ? `:${style.pseudoClass}` : ''} {\n`
         + `${Object.entries(style.css).map(([key, value]) => `${key}: ${value}`).join(";\n")};\n`
         + '}'
       );

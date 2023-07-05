@@ -35,7 +35,7 @@ const LayerCustomizer = () => {
                 icon: <SmileOutlined />,
                 selectable: false,
 
-                children: getStyleLayer(getAbsoluteCSSSelector(elementSelection.selectedElement)).children.reverse().map((child, index) => (
+                children: getStyleLayer(getAbsoluteCSSSelector(elementSelection.selectedElement)).children.map((child, index) => (
                     {
                         title: <span>{t(child.cssKey)}<Button type={'ghost'} onClick={() => onDeleteStyle(getAbsoluteCSSSelector(elementSelection.selectedElement!), child.cssKey, child.id)} icon={<DeleteOutlined />} /></span>,
                         key: `0-${index}`,

@@ -33,6 +33,7 @@ const LayerCustomizer = () => {
                 title: '変更',
                 key: '0',
                 icon: <SmileOutlined />,
+                selectable: false,
 
                 children: getStyleLayer(getAbsoluteCSSSelector(elementSelection.selectedElement)).children.reverse().map((child, index) => (
                     {

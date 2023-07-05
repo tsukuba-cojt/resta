@@ -11,6 +11,8 @@ import {ElementSelectionContext} from "../../../contexts/ElementSelectionContext
 import {getAbsoluteCSSSelector} from "../../../utils/CSSUtils";
 import {deleteFromAry} from "../../../features/formatter";
 import t from "../../../features/translator";
+import {updateFormat} from "../../../features/prop";
+import {saveFormat} from "../../../features/format_manager";
 
 const Wrapper = styled.div``;
 
@@ -27,8 +29,6 @@ const LayerCustomizer = () => {
 
     const createTree = (): DataNode[] => {
         if (elementSelection.selectedElement) {
-            console.log(getStyleLayer(getAbsoluteCSSSelector(elementSelection.selectedElement)));
-
             return [{
                 title: '変更',
                 key: '0',
@@ -48,8 +48,12 @@ const LayerCustomizer = () => {
     }
 
     const onDeleteStyle = (selector: string, cssKey: string, id: string | number) => {
-        deleteFromAry(selector, cssKey, id);
-        updater.formatChanged();
+        (async () => {
+            deleteFromAry(selector, cssKey, id);
+            updateFormat(selector, cssKey);
+            await saveFormat();
+            updater.formatChanged();
+        })();
     }
 
     const onSelect = (_keys: Key[]) => {

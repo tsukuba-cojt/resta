@@ -18,7 +18,7 @@ import {
     useElementSelectionContext,
 } from '../contexts/ElementSelectionContext';
 import ElementSelector from '../features/ElementSelector';
-import {setFormatAndPushToAry} from '../features/formatter';
+import {setFormatsAndPushToAry} from '../features/formatter';
 import {getAbsoluteCSSSelector} from '../utils/CSSUtils';
 import TemplateCustomizer from "./tabitems/template/TemplateCustomizer";
 import Scrollable from "./tabitems/common/Scrollable";
@@ -63,13 +63,12 @@ const Base = ({}: /* categoryMap */ BaseProps) => {
 
     const onChange = (key: string, value: string, id: number) => {
         if (elementSelection.selectedElement) {
-            setFormatAndPushToAry(
-                getAbsoluteCSSSelector(elementSelection.selectedElement) +
-                elementSelection.selectedPseudoClass,
-                key,
-                value,
-                id
-            );
+            setFormatsAndPushToAry([{
+                id,
+                cssSelector: getAbsoluteCSSSelector(elementSelection.selectedElement) +
+                    elementSelection.selectedPseudoClass,
+                values: [{key, value}]
+            }]);
             updater.formatChanged();
         }
     };

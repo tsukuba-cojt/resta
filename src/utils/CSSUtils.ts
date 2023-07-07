@@ -34,7 +34,14 @@ const createSelector = (element: HTMLElement): string => {
   const tag = element.tagName.toLowerCase();
 
   if (element.getAttribute('id')) {
-    return `#${element.getAttribute('id')}`;
+    let id = element.getAttribute('id')!;
+
+    // 本来はidは数字から始まってはいけないが、その場合に備えてエスケープしておく
+    if (!isNaN(parseInt(id))) {
+      id = `\\3${id.charAt(0)}${id.length > 1 ? ` ${id.substring(1)}` : ''}`;
+    }
+
+    return `#${id}`;
   }
 
   const returnWithAttr = (attrName: string): string => {

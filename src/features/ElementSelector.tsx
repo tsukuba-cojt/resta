@@ -11,16 +11,21 @@ const ElementSelector = () => {
      */
 
   const elementSelection = useContext(ElementSelectionContext);
-  const ignores = ['#resta-root', '.ant-select-dropdown', '.ant-popover', '.ant-modal-root'];
+  const ignores = [
+    '#resta-root',
+    '.ant-select-dropdown',
+    '.ant-popover',
+    '.ant-modal-root',
+  ];
 
   const checkIgnores = (element: HTMLElement): boolean => {
     for (const ignore of ignores) {
       if (element.closest(ignore)) {
-          return false;
+        return false;
       }
     }
     return true;
-  }
+  };
 
   useLayoutEffect(() => {
     const updateElement = (event: MouseEvent) => {
@@ -34,7 +39,10 @@ const ElementSelector = () => {
         return;
       }
 
-      if (element !== elementSelection.hoveredElement && checkIgnores(element!)) {
+      if (
+        element !== elementSelection.hoveredElement &&
+        checkIgnores(element!)
+      ) {
         elementSelection.setHoveredElement(element);
 
         const previousBackgroundColor = element.style.backgroundColor;
@@ -47,7 +55,7 @@ const ElementSelector = () => {
 
         const clickListener = (ev: MouseEvent) => {
           const newElement = ev.target as HTMLElement;
-          if (!newElement.closest('#resta-root') && checkIgnores(element!)) {
+          if (!newElement.closest('#resta-root') && checkIgnores(newElement!)) {
             ev.preventDefault();
             elementSelection.selectedElement?.removeEventListener(
               'click',
@@ -58,7 +66,7 @@ const ElementSelector = () => {
 
         const listener = (ev: MouseEvent) => {
           const newElement = ev.target as HTMLElement;
-          if (checkIgnores(element!)) {
+          if (checkIgnores(newElement!)) {
             elementSelection.selectedElement?.removeEventListener(
               'mousedown',
               listener

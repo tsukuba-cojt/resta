@@ -83,6 +83,11 @@
     "text-align": "文字の水平位置",
     "vertical-align": "文字の垂直位置",
 
-    "background-color": "背景色"
+    "background-color": "背景色",
+
+    "normal_class": "通常",
+    "hover_class": "ホバー",
+    "focus_class": "フォーカス",
+    "first-letter_class": "一文字目"
   }
 }

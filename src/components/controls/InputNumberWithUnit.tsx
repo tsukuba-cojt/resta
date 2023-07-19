@@ -5,9 +5,9 @@ import { ElementSelectionContext } from '../../contexts/ElementSelectionContext'
 
 interface InputNumberWithUnitProps {
   cssKey: string;
-  id: number;
+  id: number | string;
   options: string[];
-  onChange: (key: string, value: string, id: number) => void;
+  onChange: (key: string, value: string, id: number | string) => void;
   ignores?: string[];
   sliderMin?: number;
   sliderMax?: number;

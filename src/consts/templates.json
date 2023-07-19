@@ -61,6 +61,35 @@
               }
             }
           ]
+        },
+
+        {
+          "name": "category_button_3",
+          "tags": ["button", "a"],
+          "styles": [
+            {
+              "css": {
+                "display": "block",
+                "text-align": "center",
+                "vertical-align": "middle",
+                "text-decoration": "none",
+                "margin": "auto",
+                "padding": "1rem",
+                "font-weight": "bold",
+                "border-radius": "12px",
+                "background": "#ff7100",
+                "color": "#ffffff",
+                "transition": "0.5s"
+              }
+            },
+            {
+              "pseudoClass": "hover",
+              "css": {
+                "color": "#EFEFEF",
+                "background": "#FF9E50"
+              }
+            }
+          ]
         }
       ]
     }

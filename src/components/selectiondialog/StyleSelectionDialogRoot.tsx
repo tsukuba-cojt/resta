@@ -43,6 +43,7 @@ export default function () {
             <Modal
                 open={styleSelectionDialog.opened}
                 title={t('selection_dialog_title')}
+                onCancel={onCancel}
                 footer={[
                     <Button key="back" onClick={onCancel}>{t('selection_dialog_close')}</Button>,
                     <Button key="submit" loading={loading} type="primary" onClick={onSubmit}>{t('selection_dialog_submit')}</Button>,

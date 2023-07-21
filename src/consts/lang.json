@@ -38,6 +38,7 @@
     "selection_dialog_title": "スタイルを選択",
     "selection_dialog_submit": "選択する",
     "selection_dialog_close": "閉じる",
+    "selection_dialog_no_contents": "共有可能なスタイルがありません",
 
     "font_title_font": "フォント",
     "font_title_typography": "タイポグラフィ",

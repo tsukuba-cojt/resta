@@ -41,6 +41,7 @@ export default function () {
     return (
         <StyleSelectionDialogContext.Provider value={styleSelectionDialog}>
             <Modal
+                centered
                 open={styleSelectionDialog.opened}
                 title={t('selection_dialog_title')}
                 onCancel={onCancel}

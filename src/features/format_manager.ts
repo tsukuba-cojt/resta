@@ -55,3 +55,24 @@ export const loadFormat = async () => {
     }
   });
 };
+/**
+ * localからフォーマットを読み込む
+ * もしURLが指定されていなかったらすべてのフォーマットを読み込む
+ */
+export const loadFormatForOutput = async (url: string = '') => {
+  await chrome.storage.local.get(['formats']).then((result) => {
+    if (!result.formats) {
+      resta_console.log('load:no format', url);
+      return;
+    } else {
+      resta_console.log('load', url, JSON.parse(result.formats));
+      if (JSON.parse(result.formats))
+        prop.setFormatsAry(
+          (JSON.parse(result.formats) as Array<FormatBlockByURL>)
+            .filter((e) => e.formats.length !== 0)
+            .filter((e) => prop.matchUrl(url, e.url))
+        );
+      return;
+    }
+  });
+};

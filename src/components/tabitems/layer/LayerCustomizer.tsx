@@ -104,6 +104,7 @@ const LayerCustomizer = () => {
 
   useEffect(() => {
     setTree(createTree());
+    console.log(createTree());
   }, [updater.changeFormatObserver, elementSelection.selectedElement]);
 
   return (

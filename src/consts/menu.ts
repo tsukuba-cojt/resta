@@ -1,18 +1,20 @@
+import t from '../features/translator';
+
 export const pseudoClassOptions = [
   {
-    label: '通常',
+    label: t('normal_class'),
     value: '',
   },
   {
-    label: 'ホバー',
+    label: t('hover_class'),
     value: ':hover',
   },
   {
-    label: 'フォーカス',
+    label: t('focus_class'),
     value: ':focus',
   },
   {
-    label: '一文字目',
+    label: t('first-letter_class'),
     value: ':first-letter',
   },
 ];

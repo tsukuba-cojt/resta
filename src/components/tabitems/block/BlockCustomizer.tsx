@@ -20,7 +20,7 @@ const InputWrapper = styled.div`
 `;
 
 interface BlockCustomizerProps {
-  onChange: (key: string, value: string, id: number) => void;
+  onChange: (key: string, value: string, id: number | string) => void;
 }
 
 const BlockCustomizer = ({ onChange }: BlockCustomizerProps) => {

@@ -4,8 +4,8 @@ import React from 'react';
 interface SelectProps {
   cssKey: string;
   options: { [key: string]: string };
-  id: number;
-  onChange: (key: string, value: string, id: number) => void;
+  id: number | string;
+  onChange: (key: string, value: string, id: number | string) => void;
 }
 
 const Select = ({ cssKey, options, id, onChange }: SelectProps) => {

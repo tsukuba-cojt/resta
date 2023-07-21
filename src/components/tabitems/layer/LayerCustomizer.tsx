@@ -1,92 +1,129 @@
 import styled from 'styled-components';
-import React, {Key, useContext, useEffect, useState} from 'react';
-import Section from "../common/Section";
-import SubTitle from "../common/SubTitle";
+import React, { Key, useContext, useEffect, useState } from 'react';
+import Section from '../common/Section';
+import SubTitle from '../common/SubTitle';
 import { DataNode } from 'antd/es/tree';
-import {DeleteOutlined, DownOutlined, MehOutlined, SmileOutlined} from "@ant-design/icons";
-import {Tree, Button} from "antd";
-import {UIUpdaterContext} from "../../../contexts/UIUpdater";
-import {getStyleLayer} from "../../../features/style_layer";
-import {ElementSelectionContext} from "../../../contexts/ElementSelectionContext";
-import {getAbsoluteCSSSelector} from "../../../utils/CSSUtils";
-import {deleteFromAry} from "../../../features/formatter";
-import t from "../../../features/translator";
-import {updateFormat} from "../../../features/prop";
-import {saveFormat} from "../../../features/format_manager";
+import {
+  DeleteOutlined,
+  DownOutlined,
+  MehOutlined,
+  SmileOutlined,
+} from '@ant-design/icons';
+import { Tree, Button } from 'antd';
+import { UIUpdaterContext } from '../../../contexts/UIUpdater';
+import { getStyleLayer } from '../../../features/style_layer';
+import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
+import { getAbsoluteCSSSelector } from '../../../utils/CSSUtils';
+import { deleteFromAry } from '../../../features/formatter';
+import t from '../../../features/translator';
+import { updateFormat } from '../../../features/prop';
+import { saveFormat } from '../../../features/format_manager';
+import { pseudoClassOptions } from '../../../consts/menu';
 
 const Wrapper = styled.div``;
 
 const TreeWrapper = styled.div`
-    & > * {
-      background-color: transparent;
-    }
+  & > * {
+    background-color: transparent;
+  }
 `;
 
 const LayerCustomizer = () => {
-    const [tree, setTree] = useState<DataNode[]>([]);
-    const updater = useContext(UIUpdaterContext);
-    const elementSelection = useContext(ElementSelectionContext);
+  const [tree, setTree] = useState<DataNode[]>([]);
+  const updater = useContext(UIUpdaterContext);
+  const elementSelection = useContext(ElementSelectionContext);
 
-    const createTree = (): DataNode[] => {
-        if (elementSelection.selectedElement) {
-            return [{
-                title: '変更',
-                key: '0',
-                icon: <SmileOutlined />,
-                selectable: false,
-
-                children: getStyleLayer(getAbsoluteCSSSelector(elementSelection.selectedElement)).children.map((child, index) => (
-                    {
-                        title: <span>{t(child.cssKey)}<Button type={'ghost'} onClick={() => onDeleteStyle(getAbsoluteCSSSelector(elementSelection.selectedElement!), child.cssKey, child.id)} icon={<DeleteOutlined />} /></span>,
-                        key: `0-${index}`,
-                        selectable: false,
-                        icon: <MehOutlined />,
+  const createTree = (): DataNode[] => {
+    if (elementSelection.selectedElement) {
+      return (
+        (pseudoClassOptions.map(({ label, value }, i) => {
+          return {
+            title: label,
+            key: i,
+            icon: <SmileOutlined />,
+            selectable: false,
+            children: getStyleLayer(
+              getAbsoluteCSSSelector(elementSelection.selectedElement!) + value
+            ).children.map((child, index) => ({
+              title: (
+                <span>
+                  {t(child.cssKey)}
+                  <Button
+                    type={'ghost'}
+                    onClick={() =>
+                      onDeleteStyle(
+                        getAbsoluteCSSSelector(
+                          elementSelection.selectedElement!
+                        ),
+                        child.cssKey,
+                        child.id
+                      )
                     }
-                )),
-            }];
-        }
-        return []; // TODO
+                    icon={<DeleteOutlined />}
+                  />
+                </span>
+              ),
+              key: `${i}-${index}`,
+              selectable: false,
+              icon: <MehOutlined />,
+              children: [
+                {
+                  title: child.value,
+                  key: `${i}-${index}-0`,
+                  selectable: false,
+                },
+              ],
+            })),
+          };
+        }) as DataNode[]) || []
+      );
     }
+    return []; // TODO
+  };
 
-    const onDeleteStyle = (selector: string, cssKey: string, id: string | number) => {
-        (async () => {
-            deleteFromAry(selector, cssKey, id);
-            updateFormat(selector, cssKey);
-            await saveFormat();
-            updater.formatChanged();
-        })();
-    }
+  const onDeleteStyle = (
+    selector: string,
+    cssKey: string,
+    id: string | number
+  ) => {
+    (async () => {
+      deleteFromAry(selector, cssKey, id);
+      updateFormat(selector, cssKey);
+      await saveFormat();
+      updater.formatChanged();
+    })();
+  };
 
-    const onSelect = (_keys: Key[]) => {
-        const keys = _keys as string[];
-        console.log(keys);
+  const onSelect = (_keys: Key[]) => {
+    const keys = _keys as string[];
+    console.log(keys);
 
-        // TODO
-    }
+    // TODO
+  };
 
-    useEffect(() => {
-        setTree(createTree());
-    }, [updater.changeFormatObserver, elementSelection.selectedElement]);  // TODO inject deps
+  useEffect(() => {
+    setTree(createTree());
+  }, [updater.changeFormatObserver, elementSelection.selectedElement]); // TODO inject deps
 
-    return (
-        <Wrapper>
-            <Section>
-                <SubTitle text={"適用されたスタイル"} />
-                <TreeWrapper>
-                    <Tree
-                        showLine
-                        switcherIcon={<DownOutlined />}
-                        defaultExpandedKeys={['0']}
-                        defaultExpandParent={true}
-                        defaultExpandAll={true}
-                        onSelect={onSelect}
-                        treeData={tree}
-                        style={{backgroundColor: 'transparent'}}
-                    />
-                </TreeWrapper>
-            </Section>
-        </Wrapper>
-    );
+  return (
+    <Wrapper>
+      <Section>
+        <SubTitle text={'適用されたスタイル'} />
+        <TreeWrapper>
+          <Tree
+            showLine
+            switcherIcon={<DownOutlined />}
+            defaultExpandedKeys={['0']}
+            defaultExpandParent={true}
+            defaultExpandAll={true}
+            onSelect={onSelect}
+            treeData={tree}
+            style={{ backgroundColor: 'transparent' }}
+          />
+        </TreeWrapper>
+      </Section>
+    </Wrapper>
+  );
 };
 
 export default LayerCustomizer;

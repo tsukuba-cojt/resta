@@ -6,8 +6,6 @@ import { DataNode } from 'antd/es/tree';
 import {
   DeleteOutlined,
   DownOutlined,
-  MehOutlined,
-  SmileOutlined,
 } from '@ant-design/icons';
 import { Tree, Button } from 'antd';
 import { UIUpdaterContext } from '../../../contexts/UIUpdater';
@@ -26,6 +24,11 @@ const TreeWrapper = styled.div`
   & > * {
     background-color: transparent;
   }
+  
+  & .ant-tree-switcher {
+    display: flex;
+    align-items: center;
+  }
 `;
 
 const LayerCustomizer = () => {
@@ -40,7 +43,6 @@ const LayerCustomizer = () => {
           return {
             title: label,
             key: i,
-            icon: <SmileOutlined />,
             selectable: false,
             children: getStyleLayer(
               getAbsoluteCSSSelector(elementSelection.selectedElement!) + value
@@ -65,7 +67,6 @@ const LayerCustomizer = () => {
               ),
               key: `${i}-${index}`,
               selectable: false,
-              icon: <MehOutlined />,
               children: [
                 {
                   title: child.value,
@@ -103,7 +104,7 @@ const LayerCustomizer = () => {
 
   useEffect(() => {
     setTree(createTree());
-  }, [updater.changeFormatObserver, elementSelection.selectedElement]); // TODO inject deps
+  }, [updater.changeFormatObserver, elementSelection.selectedElement]);
 
   return (
     <Wrapper>
@@ -113,7 +114,6 @@ const LayerCustomizer = () => {
           <Tree
             showLine
             switcherIcon={<DownOutlined />}
-            defaultExpandedKeys={['0']}
             defaultExpandParent={true}
             defaultExpandAll={true}
             onSelect={onSelect}

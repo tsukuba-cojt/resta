@@ -56,6 +56,7 @@ export const pushLog = (changes: UnRedoCommands) => {
   // 直前の変更と同じidの場合は、直前の変更とマージする
   if (
     lastChanges &&
+    lastChanges.commands[0] &&
     lastChanges.commands[0].id !== 0 &&
     lastChanges.commands[0].id === changes.commands[0].id &&
     lastChanges.commands[0].redo.type !== 'delete' &&

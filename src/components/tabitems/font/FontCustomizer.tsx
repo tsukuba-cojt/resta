@@ -42,7 +42,7 @@ const IW = styled.span`
 `;
 
 interface FontCustomizerProps {
-  onChange: (key: string, value: string, id: number) => void;
+  onChange: (key: string, value: string, id: number | string) => void;
 }
 
 const FontCustomizer = ({ onChange }: FontCustomizerProps) => {

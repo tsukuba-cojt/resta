@@ -1,29 +1,24 @@
-import React, {useContext, useEffect, useMemo, useState} from "react";
-import {ColorPicker as AntdColorPicker, Space} from 'antd';
-import type {Color} from 'antd/es/color-picker';
-import {kebabToCamel} from "../../utils/CSSUtils";
-import {ElementSelectionContext} from "../../contexts/ElementSelectionContext";
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { ColorPicker as AntdColorPicker, Space } from 'antd';
+import type { Color } from 'antd/es/color-picker';
+import { kebabToCamel } from '../../utils/CSSUtils';
+import { ElementSelectionContext } from '../../contexts/ElementSelectionContext';
 
 interface ColorPickerProps {
   cssKey: string;
-  id: number;
-  onChange: (key: string, value: string, id: number) => void;
+  id: number | string;
+  onChange: (key: string, value: string, id: number | string) => void;
 }
 
-const ColorPicker = ({cssKey, id, onChange}: ColorPickerProps) => {
-  const [colorHex, setColorHex] = useState<Color | string>('#1677ff');
-  const [formatHex, setFormatHex] = useState<"rgb" | "hsb" | "hex">('hex');
+const ColorPicker = ({ cssKey, id, onChange }: ColorPickerProps) => {
   const elementSelection = useContext(ElementSelectionContext);
+  const [colorHex, setColorHex] = useState<Color | string>('#1677FF');
+  const [formatHex, setFormatHex] = useState<'rgb' | 'hsb' | 'hex'>('hex');
 
   const hexString = useMemo(
     () => (typeof colorHex === 'string' ? colorHex : colorHex.toHexString()),
-    [colorHex],
+    [colorHex]
   );
-
-  const onColorChange = (color: Color | string) => {
-    setColorHex(color);
-    onChange(cssKey, hexString, id);
-  }
 
   useEffect(() => {
     if (elementSelection.selectedElement) {
@@ -38,7 +33,14 @@ const ColorPicker = ({cssKey, id, onChange}: ColorPickerProps) => {
       <AntdColorPicker
         format={formatHex}
         value={colorHex}
-        onChange={onColorChange}
+        onChange={(color: Color | string) => {
+          setColorHex(color);
+          onChange(
+            cssKey,
+            typeof color === 'string' ? color : color.toHexString(),
+            id
+          );
+        }}
         onFormatChange={setFormatHex}
       />
       <span>{hexString}</span>

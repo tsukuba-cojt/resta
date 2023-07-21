@@ -11,6 +11,21 @@ const ElementSelector = () => {
      */
 
   const elementSelection = useContext(ElementSelectionContext);
+  const ignores = [
+    '#resta-root',
+    '.ant-select-dropdown',
+    '.ant-popover',
+    '.ant-modal-root',
+  ];
+
+  const checkIgnores = (element: HTMLElement): boolean => {
+    for (const ignore of ignores) {
+      if (element.closest(ignore)) {
+        return false;
+      }
+    }
+    return true;
+  };
 
   useLayoutEffect(() => {
     const updateElement = (event: MouseEvent) => {
@@ -26,9 +41,7 @@ const ElementSelector = () => {
 
       if (
         element !== elementSelection.hoveredElement &&
-        !element!.closest('#resta-root') &&
-        !element!.closest('.ant-select-dropdown') &&
-        !element!.closest('.ant-popover')
+        checkIgnores(element!)
       ) {
         elementSelection.setHoveredElement(element);
 
@@ -42,14 +55,8 @@ const ElementSelector = () => {
 
         const clickListener = (ev: MouseEvent) => {
           const newElement = ev.target as HTMLElement;
-          if (
-            !newElement.closest('#resta-root') &&
-            !newElement.closest('.ant-select-dropdown') &&
-            !element!.closest('.ant-popover')
-          ) {
-            if (ev.shiftKey) {
-              ev.preventDefault();
-            }
+          if (!newElement.closest('#resta-root') && checkIgnores(newElement!)) {
+            ev.preventDefault();
             elementSelection.selectedElement?.removeEventListener(
               'click',
               clickListener
@@ -59,11 +66,7 @@ const ElementSelector = () => {
 
         const listener = (ev: MouseEvent) => {
           const newElement = ev.target as HTMLElement;
-          if (
-            !newElement.closest('#resta-root') &&
-            !newElement.closest('.ant-select-dropdown') &&
-            !element!.closest('.ant-popover')
-          ) {
+          if (checkIgnores(newElement!)) {
             elementSelection.selectedElement?.removeEventListener(
               'mousedown',
               listener

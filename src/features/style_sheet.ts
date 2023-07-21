@@ -1,4 +1,8 @@
-var styleSheet: CSSStyleSheet | null = null;
+import { getDisplayFormat } from './prop';
+import * as resta_console from './resta_console';
+import * as prop from './prop';
+
+let styleSheet: CSSStyleSheet | null = null;
 /**
  * CSSStyleSheetを取得する
  * シングルトンのような構造になっている
@@ -10,52 +14,71 @@ export const getStyleSheet = () => {
     document.head.appendChild(styleSheetElement);
     styleSheet = styleSheetElement.sheet;
   }
-  return styleSheet;
+  return styleSheet as CSSStyleSheet;
 };
 
-export const setStyleRule = (styles: StyleRule) => {
-  if (!styles.values || !styles.cssSelector) {
-    console.log('setStyleRule: invalid value');
+/**
+ * CssSelectorとcssKeyの配列を渡すと、最新のスタイルを適用する
+ * valueはいらない
+ */
+export const setStyleRule = (styles: {
+  cssSelector: string;
+  keys: Array<string>;
+}) => {
+  if (!styles.keys || !styles.cssSelector) {
+    resta_console.log('setStyleRule: invalid value');
     return;
   }
   const styleSheet = getStyleSheet();
-  const canInsert = styleSheet?.insertRule;
-  for (const style of styles.values) {
-    if (canInsert) {
-      // もしcssSelectorに対応するルールがなければ空のルールを追加する
-      for (let i = 0; i < styleSheet?.cssRules.length; i++) {
-        const rule = styleSheet?.cssRules[i];
-        if (rule instanceof CSSStyleRule) {
-          if (rule.selectorText === styles.cssSelector) {
-            rule.style.setProperty(style.key, style.value);
-            return;
-          }
-        }
+  const canInsert = styleSheet.insertRule as
+    | ((rule: string, index?: number) => number)
+    | undefined;
+  const formats = prop.formatsArray
+    .map((e) => e.formats)
+    .filter((e) => e !== undefined)
+    .map((e) => e.find((e) => e.cssSelector === styles.cssSelector))
+    .filter((e) => e !== undefined);
+
+  const rule = Array.from(styleSheet?.cssRules).find(
+    (e) => e instanceof CSSStyleRule && e.selectorText === styles.cssSelector
+  ) as CSSStyleRule | undefined;
+
+  if (rule) {
+    for (const key of styles.keys) {
+      const value = getDisplayFormat(formats, key);
+      if (!value) {
+        resta_console.error(
+          'style_sheet.setStyleRule0: getDisplayFormat is false'
+        );
+        removeStyleRule(styles.cssSelector, key);
+        continue;
       }
-      styleSheet?.insertRule(
-        `${styles.cssSelector}{${style.key}:${style.value}}`,
-        styleSheet.cssRules.length
-      );
-    } else {
-      if (!styleSheet?.rules) {
-        console.log('setStyleRule(!canInsert): invalid value');
-        return;
+      if (rule.style.getPropertyValue(key) === value) continue;
+      resta_console.log('setProperty');
+      rule.style.setProperty(key, value);
+    }
+  } else {
+    for (const key of styles.keys) {
+      const value = getDisplayFormat(formats, key);
+      if (!value) {
+        resta_console.error(
+          'style_sheet.setStyleRule1: getDisplayFormat is false'
+        );
+        removeStyleRule(styles.cssSelector, key);
       }
-      // もしcssSelectorに対応するルールがなければ空のルールを追加する
-      for (let i = 0; i < styleSheet?.rules.length; i++) {
-        const rule = styleSheet?.rules[i];
-        if (rule instanceof CSSStyleRule) {
-          if (rule.selectorText === styles.cssSelector) {
-            rule.style.setProperty(style.key, style.value);
-            return;
-          }
-        }
+      resta_console.log('insertRule');
+      if (canInsert) {
+        styleSheet?.insertRule(
+          `${styles.cssSelector}{${key}:${value}}`,
+          styleSheet.cssRules.length
+        );
+      } else {
+        styleSheet?.addRule(
+          styles.cssSelector,
+          `${key}:${value}`,
+          styleSheet.rules.length
+        );
       }
-      styleSheet?.addRule(
-        styles.cssSelector,
-        `${style.key}:${style.value}`,
-        styleSheet.rules.length
-      );
     }
   }
 };
@@ -67,16 +90,14 @@ export const removeStyleRule = (cssSelector: string, cssKey: string) => {
   }
   for (let i = 0; i < styleSheet?.cssRules.length; i++) {
     const rule = styleSheet?.cssRules[i];
-    if (rule instanceof CSSStyleRule) {
-      if (rule.selectorText === cssSelector) {
-        rule.style.removeProperty(cssKey);
-        return;
-      }
+    if (rule instanceof CSSStyleRule && rule.selectorText === cssSelector) {
+      rule.style.removeProperty(cssKey);
     }
   }
 };
 
 export type StyleRule = {
+  id: number | string;
   cssSelector: string;
   values: Array<StyleValue>;
 };

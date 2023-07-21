@@ -67,7 +67,7 @@ const SliderWithInput = ({
 };
 
 interface BoxShadowCustomizerProps {
-  onChange: (key: string, value: string, id: number) => void;
+  onChange: (key: string, value: string, id: number | string) => void;
 }
 
 const BoxShadowCustomizer = ({ onChange }: BoxShadowCustomizerProps) => {
@@ -91,7 +91,7 @@ const BoxShadowCustomizer = ({ onChange }: BoxShadowCustomizerProps) => {
     if (enabled) {
       newValue = `${horizontalPosition}px ${value}px ${blur}px ${expansion}px ${hexString}`;
     }
-    onChange('box-shadow', newValue, createId());
+    onChange('box-shadow', newValue, createId('box-shadow'));
   };
 
   const onHorizontalPositionChange = (value: number) => {
@@ -100,7 +100,7 @@ const BoxShadowCustomizer = ({ onChange }: BoxShadowCustomizerProps) => {
     if (enabled) {
       newValue = `${value}px ${verticalPosition}px ${blur}px ${expansion}px ${hexString}`;
     }
-    onChange('box-shadow', newValue, createId());
+    onChange('box-shadow', newValue, createId('box-shadow'));
   };
 
   const onBlurChange = (value: number) => {
@@ -109,7 +109,7 @@ const BoxShadowCustomizer = ({ onChange }: BoxShadowCustomizerProps) => {
     if (enabled) {
       newValue = `${horizontalPosition}px ${verticalPosition}px ${value}px ${expansion}px ${hexString}`;
     }
-    onChange('box-shadow', newValue, createId());
+    onChange('box-shadow', newValue, createId('box-shadow'));
   };
 
   const onExpansionChange = (value: number) => {
@@ -118,7 +118,7 @@ const BoxShadowCustomizer = ({ onChange }: BoxShadowCustomizerProps) => {
     if (enabled) {
       newValue = `${horizontalPosition}px ${verticalPosition}px ${blur}px ${value}px ${hexString}`;
     }
-    onChange('box-shadow', newValue, createId());
+    onChange('box-shadow', newValue, createId('box-shadow'));
   };
 
   const onCheckboxChange = (value: boolean) => {
@@ -127,7 +127,7 @@ const BoxShadowCustomizer = ({ onChange }: BoxShadowCustomizerProps) => {
     if (value) {
       newValue = `${horizontalPosition}px ${verticalPosition}px ${blur}px ${expansion}px ${hexString}`;
     }
-    onChange('box-shadow', newValue, createId());
+    onChange('box-shadow', newValue, createId('box-shadow'));
   };
 
   const onColorChange = (value: Color | string) => {
@@ -139,7 +139,7 @@ const BoxShadowCustomizer = ({ onChange }: BoxShadowCustomizerProps) => {
       }`;
       console.log(newValue);
     }
-    onChange('box-shadow', newValue, createId());
+    onChange('box-shadow', newValue, createId('box-shadow'));
   };
 
   useEffect(() => {

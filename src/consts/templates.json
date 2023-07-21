@@ -1,0 +1,97 @@
+{
+  "categories": [
+    {
+      "category": "button",
+      "name": "category_button",
+      "templates": [
+        {
+          "name": "category_button_1",
+          "tags": ["button", "a"],
+          "styles": [
+            {
+              "css": {
+                "display": "block",
+                "text-align": "center",
+                "vertical-align": "middle",
+                "text-decoration": "none",
+                "margin": "auto",
+                "padding": "1rem",
+                "font-weight": "bold",
+                "border": "2px solid #27acd9",
+                "border-radius": "0",
+                "background": "#27acd9",
+                "color": "#ffffff",
+                "transition": "0.5s"
+              }
+            },
+            {
+              "pseudoClass": "hover",
+              "css": {
+                "color": "#27acd9",
+                "background": "#ffffff"
+              }
+            }
+          ]
+        },
+        {
+          "name": "category_button_2",
+          "tags": ["button", "a"],
+          "styles": [
+            {
+              "css": {
+                "display": "block",
+                "text-align": "center",
+                "vertical-align": "middle",
+                "text-decoration": "none",
+                "margin": "auto",
+                "padding": "1rem",
+                "font-weight": "bold",
+                "border": "2px solid #ffffff",
+                "border-radius": "100vh",
+                "background": "linear-gradient(to right, #27acd9 0%, #b4e12b 100%)",
+                "color": "#ffffff",
+                "transition": "0.5s"
+              }
+            },
+            {
+              "pseudoClass": "hover",
+              "css": {
+                "color": "#ffffff",
+                "background": "linear-gradient(to left, #27acd9 0%, #b4e12b 100%)"
+              }
+            }
+          ]
+        },
+
+        {
+          "name": "category_button_3",
+          "tags": ["button", "a"],
+          "styles": [
+            {
+              "css": {
+                "display": "block",
+                "text-align": "center",
+                "vertical-align": "middle",
+                "text-decoration": "none",
+                "margin": "auto",
+                "padding": "1rem",
+                "font-weight": "bold",
+                "border-radius": "12px",
+                "background": "#ff7100",
+                "color": "#ffffff",
+                "transition": "0.5s"
+              }
+            },
+            {
+              "pseudoClass": "hover",
+              "css": {
+                "color": "#EFEFEF",
+                "background": "#FF9E50"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -3,7 +3,7 @@ import React from 'react';
 import Base from '../components/Base';
 import { ChangeStyleCategoryMap } from '../types/ChangeStyleElement';
 import { setContainerActive } from '..';
-import GlobalStyle from './GlobalStyle';
+import StyledComponentRegistry from "./StyledComponentRegistry";
 
 export const CONTAINER_ID = 'resta-root';
 
@@ -13,10 +13,9 @@ export const initContainer = (categoryMap: ChangeStyleCategoryMap) => {
   document.body.insertAdjacentElement('beforeend', div);
 
   ReactDOM.render(
-    <React.StrictMode>
-      <GlobalStyle />
+    <StyledComponentRegistry>
       <Base categoryMap={categoryMap} />
-    </React.StrictMode>,
+    </StyledComponentRegistry>,
     div
   );
 

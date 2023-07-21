@@ -38,7 +38,7 @@ const ChangeStyleCategory = ({
 }: CategoryProps) => {
   const elementSelection = useContext(ElementSelectionContext);
 
-  const onChange = (key: string, value: string, id: number) => {
+  const onChange = (key: string, value: string, id: number | string) => {
     if (elementSelection.selectedElement) {
       setFormatAndPushToAry(
         getAbsoluteCSSSelector(elementSelection.selectedElement),

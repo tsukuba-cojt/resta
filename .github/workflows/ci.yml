@@ -1,0 +1,33 @@
+name: CI
+on:
+  push:
+    branches: [develop] #developにマージされたときに実行
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use NodeJS
+        uses: actions/setup-node@v1
+        with:
+          node-version: "18.x"
+      - run: npm i
+      - name: Build Project #ステージング用のビルドを行うステップ
+        if: github.event_name == 'push' #pushイベントのときだけ実行
+        run: npm run build-react #ビルド実行
+      - uses: actions/checkout@v2
+      - name: Cache node_modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm #キャッシュしたファイルとキーを格納する場所(OSによって異なる)
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }} #キャッシュのリストアや保存をするためのキー
+          restore-keys: | #キャッシュをリストアするためのキーのリスト
+            ${{ runner.os }}-node-
+      - name: Upload build
+        uses: actions/upload-artifact@v1 #artifactをアップロードするアクション
+        with:
+          name: extension #ダウンロード時の表示名
+          path: build #アップロードするフォルダのパス
+
+

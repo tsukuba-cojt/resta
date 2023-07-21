@@ -4,12 +4,23 @@
   "version": "1.0.0",
   "description": "CSSを変更する",
   "icons": {},
-  "action": {},
+  "action": {
+    "default_icon": {
+      "16": "images/resta_icon-16.png",
+      "32": "images/resta_icon-32.png",
+      "48": "images/resta_icon-48.png",
+      "128": "images/resta_icon-128.png"
+    }
+  },
   "permissions": ["activeTab", "tabs", "storage", "scripting"],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "js": ["js/main.js"]
+    },
+    {
+      "matches": ["https://resta-frontend.pages.dev/"],
+      "js": ["sharing_page_index.js"]
     }
   ],
   "background": {

@@ -35,6 +35,10 @@
     "base_search": "検索",
     "save_button": "保存",
 
+    "selection_dialog_title": "スタイルを選択",
+    "selection_dialog_submit": "選択する",
+    "selection_dialog_close": "閉じる",
+
     "font_title_font": "フォント",
     "font_title_typography": "タイポグラフィ",
     "font_title_paragraph": "段落",

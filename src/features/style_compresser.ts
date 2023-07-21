@@ -1,6 +1,6 @@
 import * as prop from './prop';
 import { FormatChange } from '../types/Format';
-export const compressStyle = (): CompressedStyle | false => {
+export const compressStyle = (url: string): CompressedStyle | false => {
   const compressedFormats: CompressedFormat[] = [];
   // 優先度の高い順にルールを追加する
   // すでに登録されている場合はスキップする
@@ -13,7 +13,7 @@ export const compressStyle = (): CompressedStyle | false => {
     return false;
   }
   return {
-    url: prop.edittedUrl,
+    url: url,
     format: compressedFormats,
   };
 };

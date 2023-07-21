@@ -18,7 +18,7 @@ export const useUIUpdater = (): UIUpdaterContext => {
     const [changeFormatObserver, setChangeFormatObserver] = useState<number>(0);
 
     const formatChanged = useCallback(() => {
-        setChangeFormatObserver(changeFormatObserver + 1);
+        setChangeFormatObserver((prev) => prev + 1);
     }, []);
 
     return { changeFormatObserver, formatChanged };

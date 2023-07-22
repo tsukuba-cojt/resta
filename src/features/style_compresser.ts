@@ -4,7 +4,11 @@ export const compressStyle = (url: string): CompressedStyle | false => {
   const compressedFormats: CompressedFormat[] = [];
   // 優先度の高い順にルールを追加する
   // すでに登録されている場合はスキップする
-  for (const format of prop.formatsArray.reverse()) {
+  for (const format of prop.formatsArray
+    .filter((e) => {
+      return prop.matchUrl(url, e.url);
+    })
+    .reverse()) {
     for (const f of format.formats) {
       insertStyleRule(f.cssSelector, f.changes, compressedFormats);
     }

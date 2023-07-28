@@ -57,6 +57,10 @@ const Cards = ({styles}: CardsProps) => {
 const ImportedStylesList = () => {
     const [styles, setStyles] = useState<ImportedFormatAbstract[]>([]);
 
+    const onOpenStoreClick = () => {
+        window.open("https://resta-frontend.pages.dev/style/", "_blank");
+    }
+
     useEffect(() => {
         (async () => {
             const styles = getImportedFormats();
@@ -73,7 +77,7 @@ const ImportedStylesList = () => {
                     <DescriptionWrapper>
                         <p>{t("no_imported_styles")}</p>
                     </DescriptionWrapper>
-                    <Button type="primary" block>
+                    <Button type="primary" onClick={onOpenStoreClick} block>
                         {t("open_resta_store")}
                     </Button>
                 </>

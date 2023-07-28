@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import styled from "styled-components";
-import {ImportedFormatAbstract} from "../../../features/importStyle";
+import {applyPageFormat, getImportedFormats, ImportedFormatAbstract} from "../../../features/importStyle";
 import t from "../../../features/translator";
 import {Button, Card} from "antd";
 
@@ -18,6 +18,10 @@ interface CardsProps {
 const Cards = ({styles}: CardsProps) => {
     const { Meta } = Card;
 
+    const onApplyClick = (style: ImportedFormatAbstract) => {
+        applyPageFormat(style.id);
+    }
+
     return <>
         {
             styles.map((style) =>
@@ -31,10 +35,11 @@ const Cards = ({styles}: CardsProps) => {
                         />
                     }
                     actions={[
+                        /*
                         <Button type="link" block danger>
                             破棄
-                        </Button>,
-                        <Button type="link" block>
+                        </Button>,*/
+                        <Button type="link" onClick={() => onApplyClick(style)} block>
                             適用
                         </Button>
                     ]}
@@ -53,11 +58,10 @@ const ImportedStylesList = () => {
     const [styles, setStyles] = useState<ImportedFormatAbstract[]>([]);
 
     useEffect(() => {
-        // TODO
-        setStyles([
-            {id: '1234', title: "テスト1", downloadUrl: "https://resta-frontend.dev/"},
-            {id: '5678', title: "テスト1", downloadUrl: "https://resta-frontend.dev/"},
-        ]);
+        (async () => {
+            const styles = getImportedFormats();
+            setStyles(styles);
+        })();
     }, []);
 
     return (

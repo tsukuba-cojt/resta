@@ -1,6 +1,8 @@
 {
   "ja": {
     "error": "エラー",
+    "yes": "はい",
+    "no": "いいえ",
 
     "font": "フォント",
     "name_font_family": "フォントファミリ",
@@ -65,6 +67,8 @@
     "open_resta_store": "スタイルストアを開く",
     "import_success": "インポートが完了しました",
     "import_error": "インポート中にエラーが発生しました",
+    "import_popup_title": "スタイルを削除",
+    "import_popup_description": "インポートしたスタイルを削除しますか？この操作は取り消せません。",
 
     "page_settings": "ページ設定",
     "init_page_format": "編集中のデザイン初期化",

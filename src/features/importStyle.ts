@@ -47,6 +47,16 @@ export const applyPageFormat = (id: string) => {
   setFormatsAndPushToAry(styleRule);
 };
 
+export const deleteImportedFormat = (id: string) => {
+  prop.setImportedFormat(prop.importedFormat.filter((e) => e.id !== id));
+  chrome.storage.local.set({ imported_style: prop.importedFormat });
+};
+
+export const deleteAllImportedFormat = () => {
+  prop.setImportedFormat([]);
+  chrome.storage.local.set({ imported_style: prop.importedFormat });
+};
+
 export const getImportedFormats = (
   all: boolean = false,
 ): ImportedFormatAbstract[] => {

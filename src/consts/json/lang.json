@@ -90,14 +90,34 @@
     "font-weight": "フォントの太さ",
     "font-style": "フォントのスタイル",
     "text-decoration": "テキストの下線",
+
     "color": "文字色",
+
     "line-height": "行間",
     "letter-spacing": "字間",
     "text-indent": "字下げ",
     "text-align": "文字の水平位置",
     "vertical-align": "文字の垂直位置",
 
+    "width": "幅",
+    "height": "高さ",
     "background-color": "背景色",
+    "box-shadow": "影",
+
+    "padding-top": "余白（上）",
+    "padding-right": "余白（右）",
+    "padding-bottom": "余白（下）",
+    "padding-left": "余白（左）",
+
+    "border-top": "枠線（上）",
+    "border-right": "枠線（右）",
+    "border-bottom": "枠線（下）",
+    "border-left": "枠線（左）",
+
+    "border-radius-top": "角丸（上）",
+    "border-radius-right": "角丸（右）",
+    "border-radius-bottom": "角丸（下）",
+    "border-radius-left": "角丸（左）",
 
     "normal_class": "通常",
     "hover_class": "ホバー",

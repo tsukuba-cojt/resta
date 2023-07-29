@@ -25,8 +25,11 @@ const enableButton = (id: string, onClick: VoidFunction) => {
   const mutationObserver = new MutationObserver(() => {
     const addButton = document.getElementById(id);
     if (addButton) {
-      addButton.style.display = 'block';
-      addButton.addEventListener('click', onClick);
+      let newAddButton = addButton.cloneNode(true) as HTMLButtonElement;
+      addButton.parentNode!.replaceChild(newAddButton, addButton);
+
+      newAddButton.style.display = 'block';
+      newAddButton.addEventListener('click', onClick);
       mutationObserver.disconnect();
     }
   });
@@ -80,6 +83,8 @@ export const activateRestaSubsystems = () => {
   const url = new URL(window.location.href);
 
   if (targetHosts.includes(url.hostname)) {
+    document.getElementById('resta-subsystem-root')?.remove();
+
     const insertComponent = (component: React.ReactNode) => {
       const div = document.createElement('div');
       div.setAttribute('id', 'resta-subsystem-root');

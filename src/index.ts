@@ -50,5 +50,4 @@ observer.observe(target!, {
   childList: true,
 });
 
-// ダウンローダやアップローダを起動
-activateRestaSubsystems();
+(window as any).activateRestaSubsystems = activateRestaSubsystems;

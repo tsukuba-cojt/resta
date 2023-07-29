@@ -12,20 +12,23 @@
       "128": "images/resta_icon-128.png"
     }
   },
-  "permissions": ["activeTab", "tabs", "storage", "scripting"],
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://resta-frontend.pages.dev/**/*"
+  ],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "js": ["js/main.js"]
-    },
-    {
-      "matches": ["https://resta-frontend.pages.dev/"],
-      "js": ["sharing_page_index.js"]
     }
   ],
   "background": {
-    "service_worker": "background.js",
-    "persistant": false
+    "service_worker": "background.js"
   },
   "web_accessible_resources": [
     {

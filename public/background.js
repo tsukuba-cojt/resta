@@ -9,3 +9,15 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     chrome.tabs.sendMessage(tab.id, message);
   });
 });
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.status === "complete" && tab.url.indexOf("https://resta-frontend.pages.dev") > -1) {
+    chrome.scripting.executeScript(
+      {
+        target: {tabId, allFrames: true},
+        files: ["upload_import_manager.js"],
+      },
+      () => {},
+    );
+  }
+});

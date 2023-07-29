@@ -8,6 +8,7 @@ import React from 'react';
 import StyleSelectionDialogRoot from './components/selectiondialog/StyleSelectionDialogRoot';
 import StyledComponentRegistry from './features/StyledComponentRegistry';
 import { loadFormat } from './features/format_manager';
+import StyleDownloader from "./components/utils/StyleDownloader";
 
 const RESTA_UPLOAD_HOSTS = ['resta-frontend.pages.dev', 'localhost'];
 
@@ -55,16 +56,27 @@ observer.observe(target!, {
   childList: true,
 });
 
-// Restaのアップロードサイトなら
-if (RESTA_UPLOAD_HOSTS.includes(new URL(window.location.href).hostname)) {
-  const div = document.createElement('div');
-  div.setAttribute('id', 'resta-style-selection-root');
-  document.body.insertAdjacentElement('beforeend', div);
+const url = new URL(window.location.href);
+if (RESTA_UPLOAD_HOSTS.includes(url.hostname)) {
+  const insertComponent = (component: React.ReactNode) => {
+    const div = document.createElement('div');
+    div.setAttribute('id', 'resta-subsystem-root');
+    document.body.insertAdjacentElement('beforeend', div);
 
-  ReactDOM.render(
-    <StyledComponentRegistry>
-      <StyleSelectionDialogRoot />
-    </StyledComponentRegistry>,
-    div
-  );
+    ReactDOM.render(
+        <StyledComponentRegistry>
+          {component}
+        </StyledComponentRegistry>,
+        div
+    );
+  }
+
+  // Restaのアップロードページなら
+  if (url.pathname.match(/^\/upload\/$/)) {
+    insertComponent(<StyleSelectionDialogRoot/>);
+
+    // Restaのダウンロードページなら
+  } else if (url.pathname.match(/^\/style\/.+\/$/)) {
+    insertComponent(<StyleDownloader />);
+  }
 }

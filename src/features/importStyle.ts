@@ -20,7 +20,7 @@ export const importFormat = async (
     downloadUrl: downloadUrl,
     style: JSON.parse(style) as CompressedStyle,
   });
-  chrome.storage.local.set({ imported_style: prop.importedFormat });
+  await chrome.storage.local.set({ imported_style: prop.importedFormat });
 };
 
 export const applyPageFormat = (id: string) => {

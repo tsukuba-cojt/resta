@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Button, Select, Tooltip } from 'antd';
+import { Button, Select } from 'antd';
 import {
   CloseOutlined,
   LeftOutlined,
@@ -57,19 +57,17 @@ const ToolBar = () => {
         onClick={() => setRight(toggleContainerPosition)}
       />
       <ToolBarSpace />
-      <Tooltip title={'適用対象の要素の状態を変更'} zIndex={99999}>
-        <Select
-          size={'small'}
-          bordered={false}
-          options={pseudoClassOptions}
-          defaultValue={pseudoClassOptions[0].value}
-          popupMatchSelectWidth={false}
-          dropdownStyle={{ zIndex: 99999 }}
-          placement={'bottomRight'}
-          value={elementSelection.selectedPseudoClass}
-          onChange={elementSelection.setSelectedPseudoClass}
-        />
-      </Tooltip>
+      <Select
+        size={'small'}
+        bordered={false}
+        options={pseudoClassOptions}
+        defaultValue={pseudoClassOptions[0].value}
+        popupMatchSelectWidth={false}
+        dropdownStyle={{ zIndex: 99999 }}
+        placement={'bottomRight'}
+        value={elementSelection.selectedPseudoClass}
+        onChange={elementSelection.setSelectedPseudoClass}
+      />
       <Button
         type="ghost"
         size={'small'}

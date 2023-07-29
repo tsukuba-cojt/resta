@@ -1,5 +1,5 @@
 // @ts-ignore
-import lang from '../consts/lang.json';
+import lang from '../consts/json/lang.json';
 import { i18n } from 'webextension-polyfill';
 
 // 引数持ち

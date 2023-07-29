@@ -4,7 +4,7 @@ import {Tabs} from 'antd';
 import t from '../../../features/translator';
 import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
 // @ts-ignore
-import categories from '../../../consts/templates.json';
+import categories from '../../../consts/json/templates.json';
 import {TemplateCategory} from "../../../types/Template";
 import Scrollable from "../common/Scrollable";
 import TemplateList from "./TemplateList";

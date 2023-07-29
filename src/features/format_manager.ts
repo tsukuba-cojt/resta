@@ -76,3 +76,28 @@ export const loadFormatForOutput = async (url: string = '') => {
     }
   });
 };
+
+/**
+ * localからimportしたフォーマットを読み込む
+ */
+export const loadImportedStyle = async () => {
+  await chrome.storage.local.get(['imported_style']).then((result) => {
+    if (!result.imported_style) {
+      resta_console.log('loadImportedStyle:no format');
+      return;
+    } else {
+      try {
+        resta_console.log('loadImportedStyle', result.imported_style);
+        prop.setImportedFormat(
+          (result.imported_style as Array<prop.ImportedFormat>).filter(
+            (e) => e.style.length !== 0,
+          ),
+        );
+        resta_console.log('loadImportedStyle', prop.importedFormat);
+      } catch (e) {
+        resta_console.error('loadImportedStyle', e);
+      }
+    }
+    return;
+  });
+};

@@ -1,4 +1,4 @@
-import { loadFormat } from './format_manager';
+import { loadFormat, loadImportedStyle } from './format_manager';
 import * as prop from './prop';
 import { StyleRule, setStyleRule } from './style_sheet';
 import { pushLog } from './unredo';
@@ -8,6 +8,8 @@ import * as resta_console from './resta_console';
 export const initStyle = async () => {
   // localからjson形式のデータを取得しparseしたものをformatsAryへ代入
   await loadFormat();
+  // localからjson形式のデータを取得しparseしたものをimportedFormatへ代入
+  loadImportedStyle();
   // このページに対応するフォーマットがあれば適用
   applyFormats();
 };

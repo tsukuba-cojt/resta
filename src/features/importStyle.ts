@@ -1,6 +1,6 @@
 import { CompressedStyle } from './style_compresser';
 import * as prop from './prop';
-import { error } from './resta_console';
+import { error, log } from './resta_console';
 import { StyleRule, StyleValue } from './style_sheet';
 import { setFormatsAndPushToAry } from './formatter';
 
@@ -18,9 +18,9 @@ export const importFormat = async (
     id: id,
     title: title,
     downloadUrl: downloadUrl,
-    style: JSON.parse(style) as CompressedStyle,
+    style: JSON.parse(style) as CompressedStyle[],
   });
-  chrome.storage.local.set({ imported_style: prop.importedFormat });
+  await chrome.storage.local.set({ imported_style: prop.importedFormat });
 };
 
 export const applyPageFormat = (id: string) => {
@@ -30,7 +30,7 @@ export const applyPageFormat = (id: string) => {
     return;
   }
   let styleRule: StyleRule[] = [];
-  for (const changes of format.style.format) {
+  for (const changes of format.style[0].format) {
     const styleValues: StyleValue[] = [];
     for (const change of changes.changes) {
       styleValues.push({
@@ -50,6 +50,7 @@ export const applyPageFormat = (id: string) => {
 export const getImportedFormats = (
   all: boolean = false,
 ): ImportedFormatAbstract[] => {
+  log('getImportedFormats', prop.importedFormat);
   if (all) {
     return prop.importedFormat.map((e) => {
       return {
@@ -60,7 +61,7 @@ export const getImportedFormats = (
     });
   } else {
     return prop.importedFormat
-      .filter((e) => prop.matchUrl(prop.currentUrl, e.style.url))
+      .filter((e) => prop.matchUrl(prop.currentUrl, e.style[0].url))
       .map((e) => {
         return {
           id: e.id,

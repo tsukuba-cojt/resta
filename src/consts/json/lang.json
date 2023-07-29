@@ -1,5 +1,7 @@
 {
   "ja": {
+    "error": "エラー",
+
     "font": "フォント",
     "name_font_family": "フォントファミリ",
     "block": "ブロック",
@@ -62,6 +64,7 @@
     "no_imported_styles": "このページに適用できるインポート済みスタイルはありません",
     "open_resta_store": "スタイルストアを開く",
     "import_success": "インポートが完了しました",
+    "import_error": "インポート中にエラーが発生しました",
 
     "page_settings": "ページ設定",
     "init_page_format": "編集中のデザイン初期化",

@@ -8,6 +8,7 @@ import categories from '../../../consts/templates.json';
 import {TemplateCategory} from "../../../types/Template";
 import Scrollable from "../common/Scrollable";
 import TemplateList from "./TemplateList";
+import ImportedStylesList from "./ImportedStylesList";
 
 const Wrapper = styled.div``;
 
@@ -19,6 +20,10 @@ const InputWrapper = styled.div`
 
 const TabWrapper = styled.div`
   overflow-y: hidden;
+  
+  .ant-tabs-tab {
+    padding-top: 0;
+  }
 `;
 
 const TemplateCustomizer = () => {
@@ -26,13 +31,23 @@ const TemplateCustomizer = () => {
   // const [searchText, setSearchText] = useState<string>('');
   const categoriesArray = useMemo<TemplateCategory[]>(() => categories.categories as TemplateCategory[], []);
 
-  const items = useCallback(() => categoriesArray.map((category, i) => {
-    return {
-      label: t(category.name),
-      key: i.toString(),
-      children: <TemplateList templates={category.templates} />,
-    };
-  }), [categoriesArray]);
+  const items = useCallback(() => {
+    const categories = categoriesArray.map((category, i) => (
+      {
+        label: t(category.name),
+        key: i.toString(),
+        children: <TemplateList templates={category.templates} />,
+      })
+    );
+
+    categories.push({
+      label: t('imported_styles'),
+      key: 'imported_styles',
+      children: <ImportedStylesList />,
+    });
+
+    return categories;
+  }, [categoriesArray]);
 
   return (
     <Wrapper>
@@ -50,7 +65,7 @@ const TemplateCustomizer = () => {
           */}
           <TabWrapper>
             <Scrollable>
-              <Tabs items={items()} tabBarGutter={0} />
+              <Tabs items={items()} />
             </Scrollable>
           </TabWrapper>
         </>

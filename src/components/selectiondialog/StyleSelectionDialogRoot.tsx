@@ -5,7 +5,7 @@ import t from "../../features/translator";
 import styled from "styled-components";
 import {RadioChangeEvent} from "antd/es/radio/interface";
 import {getChangedUrls} from "../../features/output_style";
-import {enableRestaAddStyleButton, injectStyleJson} from "../../features/upload_manager";
+import {enableRestaAddStyleButton, injectStyleJson} from "../../features/upload_import_manager";
 
 const RadioButtonsWrapper = styled.div`
   max-height: 200px;

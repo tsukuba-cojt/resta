@@ -69,6 +69,7 @@
     "import_error": "インポート中にエラーが発生しました",
     "import_popup_title": "スタイルを削除",
     "import_popup_description": "インポートしたスタイルを削除しますか？この操作は取り消せません。",
+    "open_style_link": "ダウンロードページを開く",
 
     "page_settings": "ページ設定",
     "init_page_format": "編集中のデザイン初期化",

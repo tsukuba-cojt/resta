@@ -14,6 +14,24 @@ const DescriptionWrapper = styled.div`
   padding-bottom: 12px;
 `;
 
+const Author = styled.p`
+  padding-bottom: 8px;
+`;
+
+const ThumbnailWrapper = styled.div`
+  width: 100%;
+  height: 150px;
+`;
+
+const Thumbnail = styled.div<{src: string}>`
+  width: 100%;
+  height: 100%;
+  background-image: ${(prop) => `url("${prop.src}")`};
+  background-size: cover;
+  background-position: center center;
+  border-radius: 8px 8px 0 0;
+`;
+
 interface CardsProps {
   styles: ImportedFormatAbstract[];
   updateFunc: () => Promise<void>;
@@ -38,10 +56,11 @@ const Cards = ({ styles, updateFunc }: CardsProps) => {
           bodyStyle={{ padding: '24px' }}
           style={{ marginBottom: '12px' }}
           cover={
-            <img
-              alt='example'
+          <ThumbnailWrapper>
+            <Thumbnail
               src={style.imageUrl ?? 'https://1.bp.blogspot.com/-ezrLFVDoMhg/Xlyf7yQWzaI/AAAAAAABXrA/utIBXYJDiPYJ4hMzRXrZSHrcZ11sW2PiACNcBGAsYHQ/s400/no_image_yoko.jpg'}
             />
+          </ThumbnailWrapper>
           }
           actions={[
             <Popconfirm
@@ -62,7 +81,12 @@ const Cards = ({ styles, updateFunc }: CardsProps) => {
         >
           <Meta
             title={style.title}
-            description={<a href={style.downloadUrl}>{style.downloadUrl}</a>}
+            description={
+            <>
+              { style.author && <Author>{style.author}</Author>}
+              <a href={style.downloadUrl} target={'_blank'}>{t('open_style_link')}</a>
+            </>
+          }
           />
         </Card>
       ))}

@@ -51,20 +51,21 @@ export const downloadFormat = async (): Promise<ImportedFormatAbstract | undefin
   const id = getValue(ID_FORMAT_ID_INPUT);
   const imageUrl = document.getElementById(ID_FORMAT_IMAGE)?.getAttribute('src') ?? undefined;
   const downloadUrl = `${DOWNLOAD_PAGE_URL}/${id}`;
-  // const author = getValue(ID_FORMAT_AUTHOR_INPUT);
+  const author = document.getElementById(ID_FORMAT_AUTHOR_INPUT)?.innerText;
 
   if (!title || !json || !id || !downloadUrl) {
     error("error: ", title, json, id);
     return undefined;
   }
 
-  await importFormat(downloadUrl, title, json, id, imageUrl);
+  await importFormat(downloadUrl, title, json, id, imageUrl, author);
 
   return {
     title,
     id,
     downloadUrl,
     imageUrl,
+    author,
   };
 };
 

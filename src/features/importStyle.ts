@@ -9,17 +9,15 @@ export const importFormat = async (
   title: string,
   style: string,
   id: string,
-  imageUrl: string | undefined
+  imageUrl: string | undefined,
+  author: string| undefined
 ) => {
   if (prop.importedFormat.find((e) => e.id === id)) {
     // すでに登録されている場合は取り出す
     prop.setImportedFormat(prop.importedFormat.filter((e) => e.id !== id));
   }
   prop.importedFormat.push({
-    id: id,
-    title: title,
-    downloadUrl: downloadUrl,
-    imageUrl: imageUrl,
+    id, title, downloadUrl, imageUrl, author,
     style: JSON.parse(style) as CompressedStyle[],
   });
   await chrome.storage.local.set({ imported_style: prop.importedFormat });
@@ -65,23 +63,13 @@ export const getImportedFormats = (
   log('getImportedFormats', prop.importedFormat);
   if (all) {
     return prop.importedFormat.map((e) => {
-      return {
-        id: e.id,
-        title: e.title,
-        downloadUrl: e.downloadUrl,
-        imageUrl: e.imageUrl,
-      };
+      return {...e};
     });
   } else {
     return prop.importedFormat
       .filter((e) => prop.matchUrl(prop.currentUrl, e.style[0].url))
       .map((e) => {
-        return {
-          id: e.id,
-          title: e.title,
-          downloadUrl: e.downloadUrl,
-          imageUrl: e.imageUrl,
-        };
+        return {...e};
       });
   }
 };
@@ -91,4 +79,5 @@ export type ImportedFormatAbstract = {
   title: string;
   downloadUrl: string;
   imageUrl?: string;
+  author?: string;
 };

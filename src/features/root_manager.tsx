@@ -3,7 +3,7 @@ import React from 'react';
 import Base from '../components/Base';
 import { ChangeStyleCategoryMap } from '../types/ChangeStyleElement';
 import { setContainerActive } from '..';
-import StyledComponentRegistry from "./StyledComponentRegistry";
+import StyledComponentRegistry from "../components/utils/StyledComponentRegistry";
 
 export const CONTAINER_ID = 'resta-root';
 

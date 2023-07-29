@@ -1,6 +1,7 @@
 import {notification} from "antd";
 import {useEffect} from "react";
 import {downloadFormat, enableRestaDownloadStyleButton} from "../../features/upload_import_manager";
+import t from "../../features/translator";
 
 const StyleDownloader = () => {
     const [api, contextHolder] = notification.useNotification();
@@ -8,10 +9,10 @@ const StyleDownloader = () => {
     useEffect(() => {
         enableRestaDownloadStyleButton(() => {
             (async () => {
-                await downloadFormat();
+                const result = await downloadFormat();
                 api.info({
-                    message: "",
-                    description: "",
+                    message: result.title,
+                    description: t("import_success"),
                     placement: "bottomRight",
                 });
             }) ();

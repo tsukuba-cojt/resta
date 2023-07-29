@@ -1,6 +1,7 @@
 import { Format, FormatBlockByURL } from '../types/Format';
 import { removeStyleRule, setStyleRule } from './style_sheet';
 import * as resta_console from './resta_console';
+import { CompressedStyle } from './style_compresser';
 
 // 現在のURLを格納する変数
 export let currentUrl: string;
@@ -108,4 +109,15 @@ export const matchUrl = (currentUrl: string, matchUrl: string) => {
   } else {
     return currentUrl === matchUrl;
   }
+};
+export let importedFormat: Array<ImportedFormat> = [];
+export const setImportedFormat = (ary: Array<ImportedFormat>) => {
+  importedFormat = ary;
+};
+
+export type ImportedFormat = {
+  id: string;
+  title: string;
+  downloadUrl: string;
+  style: CompressedStyle;
 };

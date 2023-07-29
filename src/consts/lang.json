@@ -38,6 +38,7 @@
     "selection_dialog_title": "スタイルを選択",
     "selection_dialog_submit": "選択する",
     "selection_dialog_close": "閉じる",
+    "selection_dialog_no_contents": "共有可能なスタイルがありません",
 
     "font_title_font": "フォント",
     "font_title_typography": "タイポグラフィ",
@@ -56,6 +57,10 @@
     "category_button_1": "ふつうのボタン",
     "category_button_2": "ふつうのボタン2",
     "category_button_3": "ふつうのボタン3",
+
+    "imported_styles": "インポート済み",
+    "no_imported_styles": "このページに適用できるインポート済みスタイルはありません",
+    "open_resta_store": "スタイルストアを開く",
 
     "page_settings": "ページ設定",
     "init_page_format": "編集中のデザイン初期化",

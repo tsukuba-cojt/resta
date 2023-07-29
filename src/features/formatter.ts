@@ -273,6 +273,9 @@ const getIndex = (
 export const applyFormats = () => {
   resta_console.log('start:applyFormats', prop.formatsArray);
   for (const f of prop.formatsArray) {
+    if (!prop.matchUrl(prop.edittedUrl, f.url)) {
+      continue;
+    }
     // resta_console.log(f);
     for (const format of f.formats) {
       const cssSelector = format.cssSelector;

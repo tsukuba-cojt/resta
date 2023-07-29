@@ -119,5 +119,6 @@ export type ImportedFormat = {
   id: string;
   title: string;
   downloadUrl: string;
+  imageUrl?: string;
   style: CompressedStyle[];
 };

@@ -16,9 +16,10 @@ export const ID_ADD_STYLE_BUTTON = 'resta-add-style';
 
 // ダウンロードページ
 export const ID_DOWNLOAD_STYLE_BUTTON = 'resta-add-style';
-export const ID_FORMAT_TITLE_INPUT = 'resta-style-title';
+export const ID_FORMAT_TITLE = 'resta-style-title';
 export const ID_FORMAT_JSON_INPUT = 'resta-style-json';
 export const ID_FORMAT_ID_INPUT = 'resta-style-id';
+export const ID_FORMAT_IMAGE = 'resta-style-image';
 export const ID_FORMAT_AUTHOR_INPUT = 'resta-style-author';
 
 const enableButton = (id: string, onClick: VoidFunction) => {
@@ -45,9 +46,10 @@ const getValue = (id: string) => {
 };
 
 export const downloadFormat = async (): Promise<ImportedFormatAbstract | undefined> => {
-  const title = document.getElementById(ID_FORMAT_TITLE_INPUT)?.innerText;
+  const title = document.getElementById(ID_FORMAT_TITLE)?.innerText;
   const json = getValue(ID_FORMAT_JSON_INPUT);
   const id = getValue(ID_FORMAT_ID_INPUT);
+  const imageUrl = document.getElementById(ID_FORMAT_IMAGE)?.getAttribute('src') ?? undefined;
   const downloadUrl = `${DOWNLOAD_PAGE_URL}/${id}`;
   // const author = getValue(ID_FORMAT_AUTHOR_INPUT);
 
@@ -56,12 +58,13 @@ export const downloadFormat = async (): Promise<ImportedFormatAbstract | undefin
     return undefined;
   }
 
-  await importFormat(downloadUrl, title, json, id);
+  await importFormat(downloadUrl, title, json, id, imageUrl);
 
   return {
     title,
     id,
     downloadUrl,
+    imageUrl,
   };
 };
 

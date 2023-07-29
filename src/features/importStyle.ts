@@ -9,6 +9,7 @@ export const importFormat = async (
   title: string,
   style: string,
   id: string,
+  imageUrl: string | undefined
 ) => {
   if (prop.importedFormat.find((e) => e.id === id)) {
     // すでに登録されている場合は取り出す
@@ -18,6 +19,7 @@ export const importFormat = async (
     id: id,
     title: title,
     downloadUrl: downloadUrl,
+    imageUrl: imageUrl,
     style: JSON.parse(style) as CompressedStyle[],
   });
   await chrome.storage.local.set({ imported_style: prop.importedFormat });
@@ -67,6 +69,7 @@ export const getImportedFormats = (
         id: e.id,
         title: e.title,
         downloadUrl: e.downloadUrl,
+        imageUrl: e.imageUrl,
       };
     });
   } else {
@@ -77,6 +80,7 @@ export const getImportedFormats = (
           id: e.id,
           title: e.title,
           downloadUrl: e.downloadUrl,
+          imageUrl: e.imageUrl,
         };
       });
   }
@@ -86,4 +90,5 @@ export type ImportedFormatAbstract = {
   id: string;
   title: string;
   downloadUrl: string;
+  imageUrl?: string;
 };

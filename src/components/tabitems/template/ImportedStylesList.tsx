@@ -40,7 +40,7 @@ const Cards = ({ styles, updateFunc }: CardsProps) => {
           cover={
             <img
               alt='example'
-              src='https://1.bp.blogspot.com/-ezrLFVDoMhg/Xlyf7yQWzaI/AAAAAAABXrA/utIBXYJDiPYJ4hMzRXrZSHrcZ11sW2PiACNcBGAsYHQ/s400/no_image_yoko.jpg'
+              src={style.imageUrl ?? 'https://1.bp.blogspot.com/-ezrLFVDoMhg/Xlyf7yQWzaI/AAAAAAABXrA/utIBXYJDiPYJ4hMzRXrZSHrcZ11sW2PiACNcBGAsYHQ/s400/no_image_yoko.jpg'}
             />
           }
           actions={[

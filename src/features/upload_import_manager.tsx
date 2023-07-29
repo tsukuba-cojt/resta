@@ -1,5 +1,5 @@
 import {getFormatByURL} from "./output_style";
-import {importFormat} from "./importStyle";
+import {ImportedFormatAbstract, importFormat} from "./importStyle";
 import React from "react";
 import ReactDOM from "react-dom";
 import StyledComponentRegistry from "./StyledComponentRegistry";
@@ -42,13 +42,18 @@ const getValue = (id: string) => {
     return (document.getElementById(id) as HTMLInputElement).value;
 }
 
-export const downloadFormat = async () => {
+export const downloadFormat = async (): Promise<ImportedFormatAbstract> => {
     const title = getValue(ID_FORMAT_TITLE_INPUT);
     const json = getValue(ID_FORMAT_JSON_INPUT);
     const id = getValue(ID_FORMAT_ID_INPUT);
+    const downloadUrl = `${DOWNLOAD_PAGE_URL}/${id}`;
     // const author = getValue(ID_FORMAT_AUTHOR_INPUT);
 
-    await importFormat(`${DOWNLOAD_PAGE_URL}/${id}`, title, json, id);
+    await importFormat(downloadUrl, title, json, id);
+
+    return {
+        title, id, downloadUrl
+    };
 }
 
 export const enableRestaAddStyleButton = (onClick: VoidFunction) => {

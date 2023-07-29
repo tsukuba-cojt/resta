@@ -1,12 +1,19 @@
 import {getFormatByURL} from "./output_style";
 import {importFormat} from "./importStyle";
+import React from "react";
+import ReactDOM from "react-dom";
+import StyledComponentRegistry from "./StyledComponentRegistry";
+import StyleSelectionDialogRoot from "../components/selectiondialog/StyleSelectionDialogRoot";
+import StyleDownloader from "../components/utils/StyleDownloader";
 
 const HOST = "resta-frontend.pages.dev";
 export const DOWNLOAD_PAGE_URL = `https://${HOST}/style`;
 
+// アップロードページ
 export const ID_ADD_STYLE_BUTTON = 'resta-add-style';
-export const ID_DOWNLOAD_STYLE_BUTTON = 'resta-download-style';
 
+// ダウンロードページ
+export const ID_DOWNLOAD_STYLE_BUTTON = 'resta-download-style';
 export const ID_FORMAT_TITLE_INPUT = "resta-format-title";
 export const ID_FORMAT_JSON_INPUT = "resta-format-json";
 export const ID_FORMAT_ID_INPUT = "resta-format-id";
@@ -54,4 +61,34 @@ export const enableRestaDownloadStyleButton = (onClick: () => void) => {
 
 export const injectStyleJson = async (url: string) => {
     (document.getElementById('resta-style-json') as HTMLInputElement).value = JSON.stringify(await getFormatByURL(url));
+}
+
+
+export const activateRestaSubsystems = () => {
+    const targetHosts = [HOST, 'localhost'];
+    const url = new URL(window.location.href);
+
+    if (targetHosts.includes(url.hostname)) {
+        const insertComponent = (component: React.ReactNode) => {
+            const div = document.createElement('div');
+            div.setAttribute('id', 'resta-subsystem-root');
+            document.body.insertAdjacentElement('beforeend', div);
+
+            ReactDOM.render(
+                <StyledComponentRegistry>
+                    {component}
+                </StyledComponentRegistry>,
+            div
+        );
+        }
+
+        // Restaのアップロードページなら
+        if (url.pathname.match(/^\/upload\/$/)) {
+            insertComponent(<StyleSelectionDialogRoot/>);
+
+        // Restaのダウンロードページなら
+        } else if (url.pathname.match(/^\/style\/.+\/$/)) {
+            insertComponent(<StyleDownloader />);
+        }
+    }
 }

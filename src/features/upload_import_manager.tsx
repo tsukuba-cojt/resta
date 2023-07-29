@@ -5,6 +5,7 @@ import ReactDOM from "react-dom";
 import StyledComponentRegistry from "../components/utils/StyledComponentRegistry";
 import StyleSelectionDialogRoot from "../components/utils/StyleSelectionDialogRoot";
 import StyleDownloader from "../components/utils/StyleDownloader";
+import {DEBUG_MODE} from "../consts/debug";
 
 const HOST = "resta-frontend.pages.dev";
 export const DOWNLOAD_PAGE_URL = `https://${HOST}/style`;
@@ -70,7 +71,7 @@ export const injectStyleJson = async (url: string) => {
 
 
 export const activateRestaSubsystems = () => {
-    const targetHosts = [HOST, 'localhost'];
+    const targetHosts = DEBUG_MODE ? [HOST, 'localhost'] : [HOST];
     const url = new URL(window.location.href);
 
     if (targetHosts.includes(url.hostname)) {

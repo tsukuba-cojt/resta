@@ -32,7 +32,6 @@ const IconButton = ({icon, cssKey, id, actualValue, defaultValue, onChange}: Ico
       const style = getComputedStyle(elementSelection.selectedElement);
       const value = (style as any)[kebabToCamel(cssKey)] as string;
       setValue(value);
-      console.log(cssKey, value)
     }
   }, [elementSelection.selectedElement]);
 

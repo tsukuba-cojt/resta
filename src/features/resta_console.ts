@@ -1,14 +1,7 @@
-export let logLevel = 0;
-/**
- * Set log level.(2 is suggested)
- * @param level 0:log, 1:warn, 2:error
- */
-export const setLogLevel = (level: number) => {
-  logLevel = level;
-};
+import {DEBUG_MODE, LOG_LEVEL} from "../consts/debug";
 
 export const log = (message?: any, ...optionalParams: any[]) => {
-  if (logLevel < 1) {
+  if (DEBUG_MODE && LOG_LEVEL < 1) {
     if (optionalParams.length === 0) {
       console.log(message);
     } else {
@@ -18,7 +11,7 @@ export const log = (message?: any, ...optionalParams: any[]) => {
 };
 
 export const warn = (message: any, ...optionalParams: any[]) => {
-  if (logLevel < 2) {
+  if (DEBUG_MODE && LOG_LEVEL < 2) {
     if (optionalParams.length === 0) {
       console.warn(message);
     } else {
@@ -28,7 +21,7 @@ export const warn = (message: any, ...optionalParams: any[]) => {
 };
 
 export const error = (message: any, ...optionalParams: any[]) => {
-  if (logLevel < 3) {
+  if (DEBUG_MODE && LOG_LEVEL < 3) {
     if (optionalParams.length === 0) {
       console.error(message);
     } else {

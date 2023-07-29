@@ -46,7 +46,7 @@ export const setFormatAndPushToAry = (
   cssSelector: string | null,
   key: string | null,
   value: string | null,
-  id: number | string | null
+  id: number | string | null,
 ) => {
   resta_console.log('setFormatAndPushToAry', cssSelector, key, value, id);
   if (!id) {
@@ -54,7 +54,7 @@ export const setFormatAndPushToAry = (
   }
   if (!cssSelector) {
     resta_console.log(
-      'setFormatAndPushToAry:invalid args, cssSelector is not found'
+      'setFormatAndPushToAry:invalid args, cssSelector is not found',
     );
     return;
   }
@@ -87,7 +87,7 @@ export const pushToAry = (
   cssSelector: string | null,
   key: string | null,
   value: string | null,
-  id: number | string | null
+  id: number | string | null,
 ): UnRedoCommand | null => {
   if (!cssSelector) {
     resta_console.warn('pushToAry:invalid args, cssSelector is not found');
@@ -176,7 +176,7 @@ export const pushToAry = (
           ?.formats.find((e) => e.cssSelector === cssSelector)
           ?.changes.find((e) => e.cssKey === key)
           ?.cssValues.findIndex((e) => e.id === id) || 0,
-        1
+        1,
       );
     // idに対応する要素を追加する
     // これにより、idに対応する要素が最後尾に移動する
@@ -210,7 +210,7 @@ export const pushToAry = (
 export const deleteFromAry = (
   cssSelector: string,
   key: string,
-  id: number | string
+  id: number | string,
 ): UnRedoCommand | null => {
   const index = getIndex(cssSelector, key, id);
   if (index == undefined || index === -1) {
@@ -226,7 +226,7 @@ export const deleteFromAry = (
         ?.formats.find((e) => e.cssSelector === cssSelector)
         ?.changes.find((e) => e.cssKey === key)
         ?.cssValues.findIndex((e) => e.id === id) || 0,
-      1
+      1,
     );
   if (!deletedElem) {
     resta_console.warn('deleteFromAry: bug detected, deletedElem is undefined');
@@ -257,7 +257,7 @@ export const deleteFromAry = (
 const getIndex = (
   cssSelector: string,
   key: string,
-  id: number | string
+  id: number | string,
 ): number | undefined => {
   return prop.formatsArray
     .find((e) => e.url === prop.edittedUrl)

@@ -40,7 +40,7 @@ export const setStyleRule = (styles: {
     .filter((e) => e !== undefined);
 
   const rule = Array.from(styleSheet?.cssRules).find(
-    (e) => e instanceof CSSStyleRule && e.selectorText === styles.cssSelector
+    (e) => e instanceof CSSStyleRule && e.selectorText === styles.cssSelector,
   ) as CSSStyleRule | undefined;
 
   if (rule) {
@@ -48,7 +48,7 @@ export const setStyleRule = (styles: {
       const value = getDisplayFormat(formats, key);
       if (!value) {
         resta_console.error(
-          'style_sheet.setStyleRule0: getDisplayFormat is false'
+          'style_sheet.setStyleRule0: getDisplayFormat is false',
         );
         removeStyleRule(styles.cssSelector, key);
         continue;
@@ -62,7 +62,7 @@ export const setStyleRule = (styles: {
       const value = getDisplayFormat(formats, key);
       if (!value) {
         resta_console.error(
-          'style_sheet.setStyleRule1: getDisplayFormat is false'
+          'style_sheet.setStyleRule1: getDisplayFormat is false',
         );
         removeStyleRule(styles.cssSelector, key);
       }
@@ -70,13 +70,13 @@ export const setStyleRule = (styles: {
       if (canInsert) {
         styleSheet?.insertRule(
           `${styles.cssSelector}{${key}:${value}}`,
-          styleSheet.cssRules.length
+          styleSheet.cssRules.length,
         );
       } else {
         styleSheet?.addRule(
           styles.cssSelector,
           `${key}:${value}`,
-          styleSheet.rules.length
+          styleSheet.rules.length,
         );
       }
     }

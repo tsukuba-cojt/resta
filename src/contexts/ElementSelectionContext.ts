@@ -25,10 +25,10 @@ export const ElementSelectionContext =
 
 export const useElementSelectionContext = (): ElementSelectionContext => {
   const [hoveredElement, _setHoveredElement] = useState<HTMLElement | null>(
-    null
+    null,
   );
   const [selectedElement, _setSelectedElement] = useState<HTMLElement | null>(
-    null
+    null,
   );
   const [selectedPseudoClass, _setSelectedPseudoClass] = useState<string>('');
 

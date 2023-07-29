@@ -1,4 +1,4 @@
-import {DEBUG_MODE, LOG_LEVEL} from "../consts/debug";
+import { DEBUG_MODE, LOG_LEVEL } from '../consts/debug';
 
 export const log = (message?: any, ...optionalParams: any[]) => {
   if (DEBUG_MODE && LOG_LEVEL < 1) {

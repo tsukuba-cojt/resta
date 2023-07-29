@@ -3,7 +3,7 @@ import React from 'react';
 import Base from '../components/Base';
 import { ChangeStyleCategoryMap } from '../types/ChangeStyleElement';
 import { setContainerActive } from '..';
-import StyledComponentRegistry from "../components/utils/StyledComponentRegistry";
+import StyledComponentRegistry from '../components/utils/StyledComponentRegistry';
 
 export const CONTAINER_ID = 'resta-root';
 
@@ -16,7 +16,7 @@ export const initContainer = (categoryMap: ChangeStyleCategoryMap) => {
     <StyledComponentRegistry>
       <Base categoryMap={categoryMap} />
     </StyledComponentRegistry>,
-    div
+    div,
   );
 
   let mouseDowning = false;
@@ -71,7 +71,7 @@ export const closeContainer = () => {
     () => {
       root.remove();
     },
-    { once: true }
+    { once: true },
   );
   setContainerActive(false);
 };

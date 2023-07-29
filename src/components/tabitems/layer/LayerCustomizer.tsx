@@ -3,10 +3,7 @@ import React, { Key, useContext, useEffect, useState } from 'react';
 import Section from '../common/Section';
 import SubTitle from '../common/SubTitle';
 import { DataNode } from 'antd/es/tree';
-import {
-  DeleteOutlined,
-  DownOutlined,
-} from '@ant-design/icons';
+import { DeleteOutlined, DownOutlined } from '@ant-design/icons';
 import { Tree, Button } from 'antd';
 import { UIUpdaterContext } from '../../../contexts/UIUpdater';
 import { getStyleLayer } from '../../../features/style_layer';
@@ -24,7 +21,7 @@ const TreeWrapper = styled.div`
   & > * {
     background-color: transparent;
   }
-  
+
   & .ant-tree-switcher {
     display: flex;
     align-items: center;
@@ -45,7 +42,7 @@ const LayerCustomizer = () => {
             key: i,
             selectable: false,
             children: getStyleLayer(
-              getAbsoluteCSSSelector(elementSelection.selectedElement!) + value
+              getAbsoluteCSSSelector(elementSelection.selectedElement!) + value,
             ).children.map((child, index) => ({
               title: (
                 <span>
@@ -55,10 +52,10 @@ const LayerCustomizer = () => {
                     onClick={() =>
                       onDeleteStyle(
                         getAbsoluteCSSSelector(
-                          elementSelection.selectedElement!
+                          elementSelection.selectedElement!,
                         ),
                         child.cssKey,
-                        child.id
+                        child.id,
                       )
                     }
                     icon={<DeleteOutlined />}
@@ -85,7 +82,7 @@ const LayerCustomizer = () => {
   const onDeleteStyle = (
     selector: string,
     cssKey: string,
-    id: string | number
+    id: string | number,
   ) => {
     (async () => {
       deleteFromAry(selector, cssKey, id);

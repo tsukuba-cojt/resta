@@ -48,8 +48,8 @@ export const loadFormat = async () => {
       if (JSON.parse(result.formats))
         prop.setFormatsAry(
           (JSON.parse(result.formats) as Array<FormatBlockByURL>).filter(
-            (e) => e.formats.length !== 0
-          )
+            (e) => e.formats.length !== 0,
+          ),
         );
       return;
     }
@@ -69,8 +69,8 @@ export const loadFormatForOutput = async (url: string = '') => {
       if (JSON.parse(result.formats))
         prop.setFormatsAry(
           (JSON.parse(result.formats) as Array<FormatBlockByURL>).filter(
-            (e) => e.formats.length !== 0
-          )
+            (e) => e.formats.length !== 0,
+          ),
         );
       return;
     }

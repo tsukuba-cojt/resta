@@ -1,4 +1,3 @@
-
 interface Array<T> {
   insertSorted: (value: T) => void;
 }

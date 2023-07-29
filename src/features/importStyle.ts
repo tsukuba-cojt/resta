@@ -8,7 +8,7 @@ export const importFormat = async (
   downloadUrl: string,
   title: string,
   style: string,
-  id: string
+  id: string,
 ) => {
   if (prop.importedFormat.find((e) => e.id === id)) {
     // すでに登録されている場合は取り出す
@@ -48,7 +48,7 @@ export const applyPageFormat = (id: string) => {
 };
 
 export const getImportedFormats = (
-  all: boolean = false
+  all: boolean = false,
 ): ImportedFormatAbstract[] => {
   if (all) {
     return prop.importedFormat.map((e) => {

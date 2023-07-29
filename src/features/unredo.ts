@@ -93,7 +93,7 @@ export type ChangeType = 'create' | 'delete' | 'rewrite';
 
 const margeCommands = (
   prev: UnRedoCommands,
-  next: UnRedoCommands
+  next: UnRedoCommands,
 ): UnRedoCommands => {
   const prevCommands = prev.commands;
   const nextCommands = next.commands;
@@ -104,7 +104,7 @@ const margeCommands = (
       .findIndex(
         (e) =>
           e.cssSelector === prevCommand.cssSelector &&
-          e.cssKey === prevCommand.cssKey
+          e.cssKey === prevCommand.cssKey,
       );
     if (nextCommandIndex === -1) {
       // nextCommandsにprevCommandと同じidの変更がない場合は、prevCommandをそのまま追加する
@@ -186,7 +186,7 @@ export const applyCommand = (
   cssSelector: string,
   cssKey: string,
   id: number | string,
-  change: Command
+  change: Command,
 ) => {
   resta_console.log('applyCommand', cssSelector, cssKey, id, change);
   switch (change.type) {

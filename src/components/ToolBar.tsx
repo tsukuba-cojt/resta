@@ -39,7 +39,7 @@ const ToolBar = () => {
 
   useEffect(
     () => elementSelection.setSelectedPseudoClass(''),
-    [elementSelection.selectedElement]
+    [elementSelection.selectedElement],
   );
 
   return (

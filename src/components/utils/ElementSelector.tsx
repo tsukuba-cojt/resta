@@ -1,6 +1,6 @@
 import React, { useContext, useLayoutEffect } from 'react';
-import { CONTAINER_ID } from './root_manager';
-import { ElementSelectionContext } from '../contexts/ElementSelectionContext';
+import { CONTAINER_ID } from '../../features/root_manager';
+import { ElementSelectionContext } from '../../contexts/ElementSelectionContext';
 
 const ElementSelector = () => {
   const HOVERED_BACKGROUND_COLOR = '#64B5F680';
@@ -50,7 +50,7 @@ const ElementSelector = () => {
         element.addEventListener(
           'mouseout',
           () => (element.style.backgroundColor = previousBackgroundColor),
-          { once: true }
+          { once: true },
         );
 
         const clickListener = (ev: MouseEvent) => {
@@ -59,7 +59,7 @@ const ElementSelector = () => {
             ev.preventDefault();
             elementSelection.selectedElement?.removeEventListener(
               'click',
-              clickListener
+              clickListener,
             );
           }
         };
@@ -69,7 +69,7 @@ const ElementSelector = () => {
           if (checkIgnores(newElement!)) {
             elementSelection.selectedElement?.removeEventListener(
               'mousedown',
-              listener
+              listener,
             );
             newElement.style.backgroundColor = previousBackgroundColor;
             elementSelection.setSelectedElement(newElement);

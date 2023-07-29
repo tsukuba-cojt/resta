@@ -4,8 +4,7 @@ import loadRestaSetting from './features/setting_loader';
 import { initContainer } from './features/root_manager';
 import * as resta_console from './features/resta_console';
 import { loadFormat } from './features/format_manager';
-import {activateRestaSubsystems} from "./features/upload_import_manager";
-
+import { activateRestaSubsystems } from './features/upload_import_manager';
 
 export let isContainerActive: boolean = false;
 export const setContainerActive = (value: boolean) => {

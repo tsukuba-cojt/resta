@@ -1,6 +1,6 @@
 import React, { useContext, useLayoutEffect } from 'react';
-import { CONTAINER_ID } from './root_manager';
-import { ElementSelectionContext } from '../contexts/ElementSelectionContext';
+import { CONTAINER_ID } from '../../features/root_manager';
+import { ElementSelectionContext } from '../../contexts/ElementSelectionContext';
 
 const ElementSelector = () => {
   const HOVERED_BACKGROUND_COLOR = '#64B5F680';

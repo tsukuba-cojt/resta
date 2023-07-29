@@ -3,7 +3,7 @@ import {ImportedFormatAbstract, importFormat} from "./importStyle";
 import React from "react";
 import ReactDOM from "react-dom";
 import StyledComponentRegistry from "./StyledComponentRegistry";
-import StyleSelectionDialogRoot from "../components/selectiondialog/StyleSelectionDialogRoot";
+import StyleSelectionDialogRoot from "../components/utils/StyleSelectionDialogRoot";
 import StyleDownloader from "../components/utils/StyleDownloader";
 
 const HOST = "resta-frontend.pages.dev";

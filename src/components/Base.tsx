@@ -18,7 +18,7 @@ import {
   ElementSelectionContext,
   useElementSelectionContext,
 } from '../contexts/ElementSelectionContext';
-import ElementSelector from '../features/ElementSelector';
+import ElementSelector from './utils/ElementSelector';
 import { setFormatsAndPushToAry } from '../features/formatter';
 import { getAbsoluteCSSSelector } from '../utils/CSSUtils';
 import TemplateCustomizer from './tabitems/template/TemplateCustomizer';

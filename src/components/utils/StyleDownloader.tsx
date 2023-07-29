@@ -13,11 +13,20 @@ const StyleDownloader = () => {
     enableRestaDownloadStyleButton(() => {
       (async () => {
         const result = await downloadFormat();
-        api.info({
-          message: result.title,
-          description: t('import_success'),
-          placement: 'bottomRight',
-        });
+        if (result) {
+          api.info({
+            message: result.title,
+            description: t('import_success'),
+            placement: 'bottomRight',
+          });
+
+        } else {
+          api.error({
+            message: t("error"),
+            description: t('import_error'),
+            placement: 'bottomRight',
+          });
+        }
       })();
     });
   }, []);

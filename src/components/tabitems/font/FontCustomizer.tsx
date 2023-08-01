@@ -69,7 +69,6 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
   };
 
   const addFont = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-    console.log(fontName);
     if (fontName) {
       e.preventDefault();
       setInstalledFonts([...(installedFonts ?? []), {label: fontName, value: fontName}]);
@@ -88,7 +87,6 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
     const value = selectedFonts
       .map((font) => defaultFontFamilies.includes(font) ? font : `"${font}"`)
       .join(', ');
-    console.log(value);
     onChange('font-family', value, 'font-family');
   }, [selectedFonts]);
 
@@ -175,7 +173,6 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
         .replace(/^(["'])/, '')
         .replace(/(["'])$/, '')
       );
-      console.log(fonts);
       setSelectedFonts(fonts);
     }
   }, [elementSelection.selectedElement]);

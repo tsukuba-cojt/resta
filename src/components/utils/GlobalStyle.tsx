@@ -50,6 +50,10 @@ const GlobalStyle = createGlobalStyle`
   .ant-popover {
     z-index: 99999 !important;
   }
+
+  .ant-select-dropdown {
+    z-index: 99999 !important;
+  }
 `;
 
 export default GlobalStyle;

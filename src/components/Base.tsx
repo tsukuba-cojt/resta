@@ -47,6 +47,7 @@ const Wrapper = styled.div`
 
 const TabWrapper = styled.div`
   overflow-y: hidden;
+  overflow-x: hidden;
 `;
 
 const TabIconWrapper = styled.div`

@@ -82,7 +82,7 @@ const BoxShadowCustomizer = ({ onChange }: BoxShadowCustomizerProps) => {
 
   const hexString = useMemo(
     () => (typeof colorHex === 'string' ? colorHex : colorHex.toHexString()),
-    [colorHex]
+    [colorHex],
   );
 
   const onVerticalPositionChange = (value: number) => {
@@ -157,7 +157,7 @@ const BoxShadowCustomizer = ({ onChange }: BoxShadowCustomizerProps) => {
       }
 
       const numbers = [...value.matchAll(/(-?\d+)px/g)].map((value) =>
-        parseFloat(value[1])
+        parseFloat(value[1]),
       );
 
       setEnabled(true);
@@ -169,7 +169,7 @@ const BoxShadowCustomizer = ({ onChange }: BoxShadowCustomizerProps) => {
       const rgb = value.match(/\(\d+,\s*\d+,\s*\d+(,\s*\d+)?/);
       if (rgb) {
         const hex = rgbToHexColor(
-          [...rgb[0].matchAll(/\d+/g)].map((v) => parseInt(v[0]))
+          [...rgb[0].matchAll(/\d+/g)].map((v) => parseInt(v[0])),
         );
         setColorHex(hex);
       }

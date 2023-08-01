@@ -1,5 +1,10 @@
 {
   "ja": {
+    "error": "エラー",
+    "yes": "はい",
+    "no": "いいえ",
+    "add": "追加",
+
     "font": "フォント",
     "name_font_family": "フォントファミリ",
     "block": "ブロック",
@@ -52,6 +57,7 @@
     "font_prop_letter_spacing": "字間",
     "font_prop_color": "文字色",
     "font_prop_text_indent": "字下げ",
+    "add_new_font": "フォントを追加",
 
     "category_button": "ボタン",
     "category_button_1": "ふつうのボタン",
@@ -61,6 +67,11 @@
     "imported_styles": "インポート済み",
     "no_imported_styles": "このページに適用できるインポート済みスタイルはありません",
     "open_resta_store": "スタイルストアを開く",
+    "import_success": "インポートが完了しました",
+    "import_error": "インポート中にエラーが発生しました",
+    "import_popup_title": "スタイルを削除",
+    "import_popup_description": "インポートしたスタイルを削除しますか？この操作は取り消せません。",
+    "open_style_link": "ダウンロードページを開く",
 
     "page_settings": "ページ設定",
     "init_page_format": "編集中のデザイン初期化",
@@ -86,14 +97,34 @@
     "font-weight": "フォントの太さ",
     "font-style": "フォントのスタイル",
     "text-decoration": "テキストの下線",
+
     "color": "文字色",
+
     "line-height": "行間",
     "letter-spacing": "字間",
     "text-indent": "字下げ",
     "text-align": "文字の水平位置",
     "vertical-align": "文字の垂直位置",
 
+    "width": "幅",
+    "height": "高さ",
     "background-color": "背景色",
+    "box-shadow": "影",
+
+    "padding-top": "余白（上）",
+    "padding-right": "余白（右）",
+    "padding-bottom": "余白（下）",
+    "padding-left": "余白（左）",
+
+    "border-top": "枠線（上）",
+    "border-right": "枠線（右）",
+    "border-bottom": "枠線（下）",
+    "border-left": "枠線（左）",
+
+    "border-radius-top": "角丸（上）",
+    "border-radius-right": "角丸（右）",
+    "border-radius-bottom": "角丸（下）",
+    "border-radius-left": "角丸（左）",
 
     "normal_class": "通常",
     "hover_class": "ホバー",

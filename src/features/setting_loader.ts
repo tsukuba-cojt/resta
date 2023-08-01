@@ -17,7 +17,7 @@ export const loadRestaSetting = async (): Promise<ChangeStyleCategoryMap> => {
 };
 
 const loadRestaSettingStyles = (
-  styles: RestaStyle[]
+  styles: RestaStyle[],
 ): ChangeStyleCategoryMap => {
   const categories: ChangeStyleCategoryMap = {};
 
@@ -33,7 +33,7 @@ const loadRestaSettingStyles = (
         type: parseResultElement.type,
         options: parseResultElement.options,
         text: parseResultElement.text,
-      })
+      }),
     );
 
     elements.push({
@@ -107,7 +107,7 @@ const parse = (cssValue: string): CSSParseResult => {
         if (!tmpType) {
           resta_console.log(
             'Error(parse_to_elements.ts): Invalid input type',
-            lexime
+            lexime,
           );
           break;
         }

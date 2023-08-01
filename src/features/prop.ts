@@ -2,6 +2,7 @@ import { Format, FormatBlockByURL } from '../types/Format';
 import { removeStyleRule, setStyleRule } from './style_sheet';
 import * as resta_console from './resta_console';
 import { CompressedStyle } from './style_compresser';
+import { ImportedFormatAbstract } from './importStyle';
 
 // 現在のURLを格納する変数
 export let currentUrl: string;
@@ -42,8 +43,8 @@ export const sortFormats = () => {
       .sort(
         (e) =>
           (e.url.match(/\//g) || []).length &&
-          (e.url[e.url.length - 1] === '*' ? -1 : 1)
-      )
+          (e.url[e.url.length - 1] === '*' ? -1 : 1),
+      ),
   );
 };
 
@@ -53,23 +54,23 @@ export const sortFormats = () => {
  */
 export const getDisplayFormat = (
   formatsArray: (Format | undefined)[],
-  cssKey: string
+  cssKey: string,
 ): string | false => {
   if (!formatsArray || formatsArray.length === 0) {
     return false;
   }
-  const format: (Format | undefined)[] = formatsArray.filter((e) =>
-    e?.changes.find((l) => l.cssKey === cssKey)
+  const format: (Format | undefined)[] = formatsArray.filter(
+    (e) => e?.changes.find((l) => l.cssKey === cssKey),
   );
   const value = format[format.length - 1]?.changes.find(
-    (e) => e.cssKey === cssKey
+    (e) => e.cssKey === cssKey,
   );
   if (!value || value.cssValues.length === 0) {
     return false;
   }
   resta_console.log(
     'getDisplayFormat',
-    value.cssValues[value.cssValues.length - 1].cssValue
+    value.cssValues[value.cssValues.length - 1].cssValue,
   );
   return value.cssValues[value.cssValues.length - 1].cssValue;
 };
@@ -81,7 +82,7 @@ export const updateFormat = (cssSelector: string, cssKey: string) => {
       .filter((e) => e !== undefined)
       .map((e) => e.find((e) => e.cssSelector === cssSelector))
       .filter((e) => e !== undefined),
-    cssKey
+    cssKey,
   );
   if (!value) {
     removeStyleRule(cssSelector, cssKey);
@@ -116,8 +117,5 @@ export const setImportedFormat = (ary: Array<ImportedFormat>) => {
 };
 
 export type ImportedFormat = {
-  id: string;
-  title: string;
-  downloadUrl: string;
-  style: CompressedStyle;
-};
+  style: CompressedStyle[];
+} & ImportedFormatAbstract;

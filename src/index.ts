@@ -3,9 +3,8 @@ import { initStyle } from './features/formatter';
 import loadRestaSetting from './features/setting_loader';
 import { initContainer } from './features/root_manager';
 import * as resta_console from './features/resta_console';
-import { loadFormat } from './features/format_manager';
-import {activateRestaSubsystems} from "./features/upload_import_manager";
-
+import { loadFormat, loadImportedStyle } from './features/format_manager';
+import { activateRestaSubsystems } from './features/upload_import_manager';
 
 export let isContainerActive: boolean = false;
 export const setContainerActive = (value: boolean) => {
@@ -38,6 +37,7 @@ chrome.runtime.onMessage.addListener((req) => {
     isContainerActive = true;
   } else if (req.type === 'activate') {
     loadFormat();
+    loadImportedStyle();
     resta_console.log('Activate');
   }
 });
@@ -51,5 +51,4 @@ observer.observe(target!, {
   childList: true,
 });
 
-// ダウンローダやアップローダを起動
-activateRestaSubsystems();
+(window as any).activateRestaSubsystems = activateRestaSubsystems;

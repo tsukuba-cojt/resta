@@ -1,23 +1,24 @@
 import React, { useCallback, useState } from 'react';
 
 type StyleSelectionDialogContext = {
-    opened: boolean;
-    setOpened: (value: boolean) => void;
+  opened: boolean;
+  setOpened: (value: boolean) => void;
 };
 
 export const defaultStyleSelectionDialog: StyleSelectionDialogContext = {
-    opened: false,
-    setOpened: () => {},
+  opened: false,
+  setOpened: () => {},
 };
 
-export const StyleSelectionDialogContext = React.createContext<StyleSelectionDialogContext>(defaultStyleSelectionDialog);
+export const StyleSelectionDialogContext =
+  React.createContext<StyleSelectionDialogContext>(defaultStyleSelectionDialog);
 
 export const useStyleSelectionDialog = (): StyleSelectionDialogContext => {
-    const [opened, _setOpened] = useState<boolean>(false);
+  const [opened, _setOpened] = useState<boolean>(false);
 
-    const setOpened = useCallback((value: boolean) => {
-        _setOpened(value);
-    }, []);
+  const setOpened = useCallback((value: boolean) => {
+    _setOpened(value);
+  }, []);
 
-    return { opened, setOpened };
+  return { opened, setOpened };
 };

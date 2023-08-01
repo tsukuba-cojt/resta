@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import React, { useContext } from 'react';
-import TextArea from '../../controls/TextArea';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+// import TextArea from '../../controls/TextArea';
 import RadioGroup from '../../controls/RadioGroup';
 import {
   AlignCenterOutlined,
@@ -10,11 +10,11 @@ import {
   FontColorsOutlined,
   FontSizeOutlined,
   ItalicOutlined,
-  LineHeightOutlined,
+  LineHeightOutlined, PlusOutlined,
   UnderlineOutlined,
   VerticalAlignBottomOutlined,
   VerticalAlignMiddleOutlined,
-  VerticalAlignTopOutlined,
+  VerticalAlignTopOutlined
 } from '@ant-design/icons';
 import IconButton from '../../controls/IconButton';
 import InputNumberWithUnit from '../../controls/InputNumberWithUnit';
@@ -30,7 +30,11 @@ import Flex from '../common/Flex';
 import { fontUnits, typographyUnits } from '../../../consts/units';
 import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
 import t from '../../../features/translator';
-import { Tooltip } from 'antd';
+import { Button, Divider, Input, InputRef, Select, Space, Tooltip } from 'antd';
+import type { SelectProps } from 'antd';
+import opentype from 'opentype.js';
+import { defaultFontFamilies } from '../../../consts/cssValues';
+import { kebabToCamel } from '../../../utils/CSSUtils';
 
 const Wrapper = styled.div``;
 
@@ -41,12 +45,137 @@ const IW = styled.span`
   padding: calc(100% - 6px);
 `;
 
+const FontItem = styled.span<{family: string}>`
+  font-family: ${(props) => props.family};
+`;
+
+const { Option } = Select;
+
 interface FontCustomizerProps {
   onChange: (key: string, value: string, id: number | string) => void;
 }
 
 const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
   const elementSelection = useContext(ElementSelectionContext);
+  //const [defaultFonts, setDefaultFonts] = useState<string[]>([]);
+  const [selectedFonts, setSelectedFonts] = useState<string[]>([]);
+  const [installedFonts, setInstalledFonts] = useState<SelectProps['options']>([]);
+  const [fontName, setFontName] = useState<string>('');
+
+  const inputRef = useRef<InputRef>(null);
+
+  const onFontNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFontName(event.target.value);
+  };
+
+  const addFont = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+    if (fontName) {
+      e.preventDefault();
+      setInstalledFonts([...(installedFonts ?? []), {label: fontName, value: fontName}]);
+      setFontName('');
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
+    }
+  };
+
+  const onChangeFonts = (values: string[]) => {
+    setSelectedFonts(values);
+  }
+
+  useEffect(() => {
+    const value = selectedFonts
+      .map((font) => defaultFontFamilies.includes(font) ? font : `"${font}"`)
+      .join(', ');
+    onChange('font-family', value, 'font-family');
+  }, [selectedFonts]);
+
+  useEffect(() => {
+    (async () => {
+      if (!('queryLocalFonts' in window)) {
+        return;
+      }
+
+      const result: SelectProps['options'] = [];
+
+      interface FontData {
+        family: string;
+        fullName: string;
+        postscriptName: string;
+        style: string;
+        blob: () => Promise<Blob>;
+      }
+
+      const queryLocalFonts = async (): Promise<FontData[]> => {
+        // @ts-ignore
+        return window.queryLocalFonts();
+      }
+
+      const push = (name: string) => {
+        result.push({
+          label: name,
+          value: name,
+        });
+      }
+
+      const NULL_FONT = '#@~null~@#';
+      const fonts: FontData[] = await queryLocalFonts();
+      const localCache: {[key: string]: string} = (await chrome.storage.local.get('fonts')).fonts ?? {};
+
+      for (const font of fonts) {
+        const blob = await font.blob();
+        const sfntVersion = await blob.slice(0, 4).text();
+
+        if (sfntVersion !== '\x00\x01\x00\x00'
+          && sfntVersion !== 'true'
+          && sfntVersion !== 'typ1'
+          && sfntVersion !== 'OTTO') {
+          continue;
+        }
+
+        const cache = localCache[font.postscriptName];
+        if (cache) {
+          if (cache !== NULL_FONT) {
+            push(cache);
+          }
+          continue;
+        }
+
+        try {
+          const data = opentype.parse(await blob.arrayBuffer());
+          const name = data.names.fontFamily.ja ?? data.names.fontFamily.en;
+          if (name && !result.find((r) => r.label === name)) {
+            push(name);
+            localCache[font.postscriptName] = name;
+          } else {
+            localCache[font.postscriptName] = NULL_FONT;
+          }
+        } catch {
+          continue;
+        }
+      }
+
+      await chrome.storage.local.set({'fonts': localCache});
+
+      defaultFontFamilies.forEach((font) => {
+        push(font);
+      });
+
+      setInstalledFonts(result);
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (elementSelection.selectedElement) {
+      const style = getComputedStyle(elementSelection.selectedElement);
+      const value = (style as any)[kebabToCamel('font-family')] as string;
+      const fonts = value.split(/,\s*/).map((text) => text
+        .replace(/^(["'])/, '')
+        .replace(/(["'])$/, '')
+      );
+      setSelectedFonts(fonts);
+    }
+  }, [elementSelection.selectedElement]);
 
   return (
     <Wrapper>
@@ -93,12 +222,41 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
               <Tooltip title={t('font_prop_font')}>
                 <IconTypography size={16} strokeWidth={1.5} />
               </Tooltip>
-              <TextArea
-                cssKey={'font-family'}
-                id={101}
-                placeHolder={t('font_prop_font')}
-                onChange={onChange}
-              />
+              <Select
+                mode='multiple'
+                optionLabelProp='label'
+                style={{ width: '100%' }}
+                placeholder={t('font_prop_font')}
+                tokenSeparators={[',']}
+                onChange={onChangeFonts}
+                //options={installedFonts}
+                loading={!installedFonts?.length}
+                value={installedFonts?.length ? selectedFonts : []}
+                dropdownRender={(menu) => (
+                  <>
+                    {menu}
+                    <Divider style={{ margin: '8px 0' }} />
+                    <Space style={{ padding: '0 8px 4px' }}>
+                      <Input
+                        placeholder={t('add_new_font')}
+                        ref={inputRef}
+                        value={fontName}
+                        onChange={onFontNameChange}
+                      />
+                      <Button type='text' icon={<PlusOutlined />} onClick={addFont}>
+                        {t('add')}
+                      </Button>
+                    </Space>
+                  </>
+                )}
+              >
+                { (installedFonts ?? []).map((font, index) => (
+                  <Option key={index} value={font.value} label={font.label}>
+                    <FontItem family={font.value as string}>{font.label}</FontItem>
+                  </Option>
+                ))
+                }
+              </Select>
             </Flex>
           </Section>
 

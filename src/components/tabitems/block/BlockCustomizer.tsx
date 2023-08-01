@@ -49,7 +49,7 @@ const BlockCustomizer = ({ onChange }: BlockCustomizerProps) => {
           </InputWrapper>
           {Object.entries(customizers)
             .filter((entry) =>
-              searchText ? t(entry[0]).includes(searchText) : true
+              searchText ? t(entry[0]).includes(searchText) : true,
             )
             .map(([title, element]) => (
               <Section>

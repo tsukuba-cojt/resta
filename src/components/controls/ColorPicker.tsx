@@ -17,7 +17,7 @@ const ColorPicker = ({ cssKey, id, onChange }: ColorPickerProps) => {
 
   const hexString = useMemo(
     () => (typeof colorHex === 'string' ? colorHex : colorHex.toHexString()),
-    [colorHex]
+    [colorHex],
   );
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const ColorPicker = ({ cssKey, id, onChange }: ColorPickerProps) => {
           onChange(
             cssKey,
             typeof color === 'string' ? color : color.toHexString(),
-            id
+            id,
           );
         }}
         onFormatChange={setFormatHex}

@@ -25,7 +25,7 @@ export const compressStyle = (url: string): CompressedStyle | false => {
 const insertStyleRule = (
   cssSelector: string,
   changes: FormatChange[],
-  formats: CompressedFormat[]
+  formats: CompressedFormat[],
 ) => {
   if (!changes || changes.length === 0) {
     return;

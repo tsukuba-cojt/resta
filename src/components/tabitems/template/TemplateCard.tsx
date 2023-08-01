@@ -42,7 +42,7 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
             key,
             value,
           })),
-        }))
+        })),
       );
 
       updater.formatChanged();
@@ -58,7 +58,7 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
           `${Object.entries(style.css)
             .map(([key, value]) => `${key}: ${value}`)
             .join(';\n')};\n` +
-          '}'
+          '}',
       );
     });
   };

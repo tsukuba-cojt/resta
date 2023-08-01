@@ -2,8 +2,13 @@
   "manifest_version": 3,
   "name": "ReSta",
   "version": "1.0.0",
-  "description": "CSSを変更する",
-  "icons": {},
+  "description": "ReSta is a chrome extension that allows you to change the appearance of a website with a GUI.",
+  "icons": {
+    "16": "images/resta_icon-16.png",
+    "32": "images/resta_icon-32.png",
+    "48": "images/resta_icon-48.png",
+    "128": "images/resta_icon-128.png"
+  },
   "action": {
     "default_icon": {
       "16": "images/resta_icon-16.png",
@@ -13,24 +18,14 @@
     }
   },
   "permissions": ["activeTab", "tabs", "storage", "scripting"],
+  "host_permissions": ["https://resta-frontend.pages.dev/**/*"],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "js": ["js/main.js"]
-    },
-    {
-      "matches": ["https://resta-frontend.pages.dev/"],
-      "js": ["sharing_page_index.js"]
     }
   ],
   "background": {
-    "service_worker": "background.js",
-    "persistant": false
-  },
-  "web_accessible_resources": [
-    {
-      "resources": ["js/main.js"],
-      "matches": ["https://www.mast.tsukuba.ac.jp/*"]
-    }
-  ]
+    "service_worker": "background.js"
+  }
 }

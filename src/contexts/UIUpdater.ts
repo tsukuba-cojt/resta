@@ -1,25 +1,24 @@
 import React, { useCallback, useState } from 'react';
 
 type UIUpdaterContext = {
-    changeFormatObserver: number;
-    formatChanged: () => void;
+  changeFormatObserver: number;
+  formatChanged: () => void;
 };
 
 export const defaultUIUpdater: UIUpdaterContext = {
-    changeFormatObserver: 0,
-    formatChanged: () => {},
+  changeFormatObserver: 0,
+  formatChanged: () => {},
 };
 
-export const UIUpdaterContext = React.createContext<UIUpdaterContext>(
-    defaultUIUpdater
-);
+export const UIUpdaterContext =
+  React.createContext<UIUpdaterContext>(defaultUIUpdater);
 
 export const useUIUpdater = (): UIUpdaterContext => {
-    const [changeFormatObserver, setChangeFormatObserver] = useState<number>(0);
+  const [changeFormatObserver, setChangeFormatObserver] = useState<number>(0);
 
-    const formatChanged = useCallback(() => {
-        setChangeFormatObserver((prev) => prev + 1);
-    }, []);
+  const formatChanged = useCallback(() => {
+    setChangeFormatObserver((prev) => prev + 1);
+  }, []);
 
-    return { changeFormatObserver, formatChanged };
+  return { changeFormatObserver, formatChanged };
 };

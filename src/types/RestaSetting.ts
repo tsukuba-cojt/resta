@@ -34,7 +34,7 @@ export enum CSSParseResultElementType {
 
 export namespace CSSParseResultElementType {
   export const fromName = (
-    name: string
+    name: string,
   ): CSSParseResultElementType | undefined => {
     switch (name) {
       case 'select':

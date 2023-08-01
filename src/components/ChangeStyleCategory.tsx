@@ -44,7 +44,7 @@ const ChangeStyleCategory = ({
         getAbsoluteCSSSelector(elementSelection.selectedElement),
         key,
         value,
-        id
+        id,
       );
     }
   };
@@ -104,7 +104,7 @@ const ChangeStyleCategory = ({
                           onChange(
                             element.key,
                             value.currentTarget.value,
-                            element.id
+                            element.id,
                           )
                         }
                       />
@@ -116,7 +116,7 @@ const ChangeStyleCategory = ({
                           onChange(
                             element.key,
                             value?.toString() ?? '',
-                            element.id
+                            element.id,
                           )
                         }
                       />

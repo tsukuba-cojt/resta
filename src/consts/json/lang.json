@@ -58,6 +58,8 @@
     "font_prop_color": "文字色",
     "font_prop_text_indent": "字下げ",
     "add_new_font": "フォントを追加",
+    "need_to_grant_for_access_local_font": "Restaを使用するには、このサイト上でのローカルフォントの読み取りを許可する必要があります。",
+    "grant_for_access": "読み取りを許可する",
 
     "category_button": "ボタン",
     "category_button_1": "ふつうのボタン",

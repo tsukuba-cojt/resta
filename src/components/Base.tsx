@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Tabs } from 'antd';
+import { Button, Tabs } from 'antd';
 import { ChangeStyleCategoryMap } from '../types/ChangeStyleElement';
 import ToolBar from './ToolBar';
 import {
@@ -25,6 +25,7 @@ import TemplateCustomizer from './tabitems/template/TemplateCustomizer';
 import Scrollable from './tabitems/common/Scrollable';
 import LayerCustomizer from './tabitems/layer/LayerCustomizer';
 import { UIUpdaterContext, useUIUpdater } from '../contexts/UIUpdater';
+import t from '../features/translator';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -55,6 +56,10 @@ const TabIconWrapper = styled.div`
   display: flex;
 `;
 
+const Description = styled.p`
+  font-size: 14px;
+`;
+
 interface BaseProps {
   categoryMap: ChangeStyleCategoryMap;
 }
@@ -62,6 +67,7 @@ interface BaseProps {
 const Base = ({}: /* categoryMap */ BaseProps) => {
   const elementSelection = useElementSelectionContext();
   const updater = useUIUpdater();
+  const [fontPermissionGranted, setFontPermissionGranted] = useState<boolean>(true);
 
   const onChange = (key: string, value: string, id: number | string) => {
     if (elementSelection.selectedElement) {
@@ -105,16 +111,40 @@ const Base = ({}: /* categoryMap */ BaseProps) => {
     };
   });
 
+  const checkFontPermission = async () => {
+    try {
+      // @ts-ignore
+      await window.queryLocalFonts();
+      setFontPermissionGranted(true);
+    } catch {
+      setFontPermissionGranted(false);
+    }
+  }
+
+  useEffect(() => {
+    (async () => {
+      await checkFontPermission();
+    })();
+  }, []);
+
   return (
     <Wrapper>
       <ElementSelectionContext.Provider value={elementSelection}>
         <UIUpdaterContext.Provider value={updater}>
           <ToolBar />
-          <TabWrapper>
-            <Scrollable>
-              <Tabs items={items} tabBarGutter={0} />
-            </Scrollable>
-          </TabWrapper>
+          { fontPermissionGranted &&
+            <TabWrapper>
+              <Scrollable>
+                <Tabs items={items} tabBarGutter={0} />
+              </Scrollable>
+            </TabWrapper>
+          }
+          { !fontPermissionGranted &&
+            <>
+              <Description>{t('need_to_grant_for_access_local_font')}</Description>
+              <Button block type={'primary'} onClick={checkFontPermission}>{t('grant_for_access')}</Button>
+            </>
+          }
           <ElementSelector />
         </UIUpdaterContext.Provider>
       </ElementSelectionContext.Provider>

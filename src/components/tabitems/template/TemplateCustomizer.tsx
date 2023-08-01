@@ -20,6 +20,7 @@ const InputWrapper = styled.div`
 
 const TabWrapper = styled.div`
   overflow-y: hidden;
+  overflow-x: hidden;
 
   .ant-tabs-tab {
     padding-top: 0;

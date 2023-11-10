@@ -1,7 +1,7 @@
 import React, { Dispatch, useCallback, useState } from 'react';
 import { FormatBlockByURL } from '../types/Format';
 import { ImportedFormat } from '../features/prop';
-import { CommandExecutor, useCommandExecutor } from 'react-command-lib/dist/esm';
+import useCommandExecutor, { CommandExecutor } from 'react-command-lib/dist/esm';
 
 type PropsContext = {
   /**

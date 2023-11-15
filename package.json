@@ -23,7 +23,7 @@
     "@types/webextension-polyfill": "^0.10.0",
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.48.2",
-    "antd": "^5.5.1",
+    "antd": "5.5.1",
     "axios": "^1.4.0",
     "buffer": "^6.0.3",
     "copy-webpack-plugin": "^11.0.0",

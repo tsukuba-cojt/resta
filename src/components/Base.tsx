@@ -26,7 +26,7 @@ import Scrollable from './tabitems/common/Scrollable';
 import LayerCustomizer from './tabitems/layer/LayerCustomizer';
 import { UIUpdaterContext, useUIUpdater } from '../contexts/UIUpdater';
 import t from '../features/translator';
-import usePropsContext, { PropsContext } from '../contexts/PropsContext';
+import usePropsContext, { IPropsContext } from '../contexts/PropsContext';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -69,7 +69,8 @@ const Base = ({}: /* categoryMap */ BaseProps) => {
   const elementSelection = useElementSelectionContext();
   const updater = useUIUpdater();
   const props = usePropsContext();
-  const [fontPermissionGranted, setFontPermissionGranted] = useState<boolean>(true);
+  const [fontPermissionGranted, setFontPermissionGranted] =
+    useState<boolean>(true);
 
   const onChange = (key: string, value: string, id: number | string) => {
     if (elementSelection.selectedElement) {
@@ -121,7 +122,7 @@ const Base = ({}: /* categoryMap */ BaseProps) => {
     } catch {
       setFontPermissionGranted(false);
     }
-  }
+  };
 
   useEffect(() => {
     (async () => {
@@ -135,19 +136,23 @@ const Base = ({}: /* categoryMap */ BaseProps) => {
         <ElementSelectionContext.Provider value={elementSelection}>
           <UIUpdaterContext.Provider value={updater}>
             <ToolBar />
-            { fontPermissionGranted &&
+            {fontPermissionGranted && (
               <TabWrapper>
                 <Scrollable>
                   <Tabs items={items} tabBarGutter={0} />
                 </Scrollable>
               </TabWrapper>
-            }
-            { !fontPermissionGranted &&
+            )}
+            {!fontPermissionGranted && (
               <>
-                <Description>{t('need_to_grant_for_access_local_font')}</Description>
-                <Button block type={'primary'} onClick={checkFontPermission}>{t('grant_for_access')}</Button>
+                <Description>
+                  {t('need_to_grant_for_access_local_font')}
+                </Description>
+                <Button block type={'primary'} onClick={checkFontPermission}>
+                  {t('grant_for_access')}
+                </Button>
               </>
-            }
+            )}
             <ElementSelector />
           </UIUpdaterContext.Provider>
         </ElementSelectionContext.Provider>

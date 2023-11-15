@@ -14,7 +14,7 @@ import {
 } from '../features/root_manager';
 import { pseudoClassOptions } from '../consts/menu';
 import { ElementSelectionContext } from '../contexts/ElementSelectionContext';
-import { PropsContext } from '../contexts/PropsContext';
+import { IPropsContext } from '../contexts/PropsContext';
 
 const Wrapper = styled.div`
   display: flex;
@@ -73,14 +73,26 @@ const ToolBar = () => {
         type="ghost"
         size={'small'}
         disabled={!context.executor.isUndoable}
-        icon={<UndoOutlined style={{color: context.executor.isUndoable ? "black" : "lightgray"}} />}
+        icon={
+          <UndoOutlined
+            style={{
+              color: context.executor.isUndoable ? 'black' : 'lightgray',
+            }}
+          />
+        }
         onClick={context.executor.undo}
       />
       <Button
         type="ghost"
         size={'small'}
         disabled={!context.executor.isRedoable}
-        icon={<RedoOutlined style={{color: context.executor.isRedoable ? "black" : "lightgray"}} />}
+        icon={
+          <RedoOutlined
+            style={{
+              color: context.executor.isRedoable ? 'black' : 'lightgray',
+            }}
+          />
+        }
         onClick={context.executor.redo}
       />
     </Wrapper>

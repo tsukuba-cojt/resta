@@ -12,9 +12,9 @@ import {
   closeContainer,
   toggleContainerPosition,
 } from '../features/root_manager';
-import { reDo, unDo } from '../features/unredo';
 import { pseudoClassOptions } from '../consts/menu';
 import { ElementSelectionContext } from '../contexts/ElementSelectionContext';
+import { PropsContext } from '../contexts/PropsContext';
 
 const Wrapper = styled.div`
   display: flex;
@@ -32,6 +32,7 @@ const ToolBar = () => {
   const [isRight, setRight] = useState<boolean>(true);
   const elementSelection = useContext(ElementSelectionContext);
   const getIcon = () => (isRight ? <LeftOutlined /> : <RightOutlined />);
+  const context = useContext(PropsContext);
 
   const onCloseButtonClick = () => {
     closeContainer();
@@ -71,14 +72,16 @@ const ToolBar = () => {
       <Button
         type="ghost"
         size={'small'}
-        icon={<UndoOutlined />}
-        onClick={unDo}
+        disabled={!context.executor.isUndoable}
+        icon={<UndoOutlined style={{color: context.executor.isUndoable ? "black" : "lightgray"}} />}
+        onClick={context.executor.undo}
       />
       <Button
         type="ghost"
         size={'small'}
-        icon={<RedoOutlined />}
-        onClick={reDo}
+        disabled={!context.executor.isRedoable}
+        icon={<RedoOutlined style={{color: context.executor.isRedoable ? "black" : "lightgray"}} />}
+        onClick={context.executor.redo}
       />
     </Wrapper>
   );

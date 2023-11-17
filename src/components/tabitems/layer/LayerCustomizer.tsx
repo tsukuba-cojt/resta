@@ -14,6 +14,7 @@ import t from '../../../features/translator';
 import { updateFormat } from '../../../features/prop';
 import { saveFormat } from '../../../features/format_manager';
 import { pseudoClassOptions } from '../../../consts/menu';
+import { PropsContext } from '../../../contexts/PropsContext';
 
 const Wrapper = styled.div``;
 
@@ -32,6 +33,7 @@ const LayerCustomizer = () => {
   const [tree, setTree] = useState<DataNode[]>([]);
   const updater = useContext(UIUpdaterContext);
   const elementSelection = useContext(ElementSelectionContext);
+  const prop = useContext(PropsContext);
 
   const createTree = (): DataNode[] => {
     if (elementSelection.selectedElement) {
@@ -85,7 +87,7 @@ const LayerCustomizer = () => {
     id: string | number,
   ) => {
     (async () => {
-      deleteFromAry(selector, cssKey, id);
+      deleteFromAry(selector, cssKey, id, prop);
       updateFormat(selector, cssKey);
       await saveFormat();
       updater.formatChanged();

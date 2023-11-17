@@ -1,8 +1,8 @@
 import { useCallback, useContext } from 'react';
-import { IPropsContext } from '../contexts/PropsContext';
 import { Format } from '../types/Format';
 import * as resta_console from '../features/resta_console';
 import { removeStyleRule, setStyleRule } from '../features/style_sheet';
+import { PropsContext } from '../contexts/PropsContext';
 
 type ReturnType = {
   removeAllFormats: VoidFunction;

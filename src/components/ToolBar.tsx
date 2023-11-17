@@ -14,7 +14,7 @@ import {
 } from '../features/root_manager';
 import { pseudoClassOptions } from '../consts/menu';
 import { ElementSelectionContext } from '../contexts/ElementSelectionContext';
-import { IPropsContext } from '../contexts/PropsContext';
+import { PropsContext } from '../contexts/PropsContext';
 
 const Wrapper = styled.div`
   display: flex;

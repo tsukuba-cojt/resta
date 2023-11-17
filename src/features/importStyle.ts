@@ -3,6 +3,7 @@ import * as prop from './prop';
 import { error, log } from './resta_console';
 import { StyleRule, StyleValue } from './style_sheet';
 import { setFormatsAndPushToAry } from './formatter';
+import { IPropsContext } from '../contexts/PropsContext';
 
 export const importFormat = async (
   downloadUrl: string,
@@ -10,21 +11,25 @@ export const importFormat = async (
   style: string,
   id: string,
   imageUrl: string | undefined,
-  author: string| undefined
+  author: string | undefined,
 ) => {
   if (prop.importedFormat.find((e) => e.id === id)) {
     // すでに登録されている場合は取り出す
     prop.setImportedFormat(prop.importedFormat.filter((e) => e.id !== id));
   }
   prop.importedFormat.push({
-    id, title, downloadUrl, imageUrl, author,
+    id,
+    title,
+    downloadUrl,
+    imageUrl,
+    author,
     style: JSON.parse(style) as CompressedStyle[],
   });
   await chrome.storage.local.set({ imported_style: prop.importedFormat });
 };
 
-export const applyPageFormat = (id: string) => {
-  const format = prop.importedFormat.find((e) => e.id === id);
+export const applyPageFormat = (id: string, prop: IPropsContext) => {
+  const format = prop.importedFormats.find((e) => e.id === id);
   if (!format) {
     error('applyPageFormat', 'format not found');
     return;
@@ -44,7 +49,7 @@ export const applyPageFormat = (id: string) => {
       values: styleValues,
     });
   }
-  setFormatsAndPushToAry(styleRule);
+  setFormatsAndPushToAry(styleRule, prop);
 };
 
 export const deleteImportedFormat = (id: string) => {
@@ -63,13 +68,13 @@ export const getImportedFormats = (
   log('getImportedFormats', prop.importedFormat);
   if (all) {
     return prop.importedFormat.map((e) => {
-      return {...e};
+      return { ...e };
     });
   } else {
     return prop.importedFormat
       .filter((e) => prop.matchUrl(prop.currentUrl, e.style[0].url))
       .map((e) => {
-        return {...e};
+        return { ...e };
       });
   }
 };

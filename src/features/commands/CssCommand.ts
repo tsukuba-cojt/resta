@@ -1,7 +1,7 @@
 import { AbstractCommand } from 'react-command-lib/dist/esm';
 import { IPropsContext } from '../../contexts/PropsContext';
 
-export default class CSSCommand implements AbstractCommand {
+export default class CssCommand implements AbstractCommand {
   constructor(
     props: IPropsContext,
     cssSelector: string,

@@ -1,31 +1,42 @@
-import { loadFormat, loadImportedStyle } from './format_manager';
-import * as prop from './prop';
+import { getFormatAryFromLocal } from './format_manager';
 import { StyleRule, setStyleRule } from './style_sheet';
 import { pushLog } from './unredo';
 import { UnRedoCommand, UnRedoCommands } from '../types/UnRedoCommands';
 import * as resta_console from './resta_console';
-import { Format, FormatBlockByURL, FormatChange, FormatStyleValue } from '../types/Format';
+import {
+  Format,
+  FormatBlockByURL,
+  FormatChange,
+  FormatStyleValue,
+} from '../types/Format';
+import { IPropsContext } from '../contexts/PropsContext';
+import { matchUrl } from '../utils/urlUtil';
 
 export const initStyle = async () => {
-  // localからjson形式のデータを取得しparseしたものをformatsAryへ代入
-  await loadFormat();
-  // localからjson形式のデータを取得しparseしたものをimportedFormatへ代入
-  loadImportedStyle();
   // このページに対応するフォーマットがあれば適用
-  applyFormats();
+  applyFormats(await getFormatAryFromLocal());
 };
 
-export const setFormatsAndPushToAry = (rules: Array<StyleRule>) => {
+export const setFormatsAndPushToAry = (
+  rules: Array<StyleRule>,
+  prop: IPropsContext,
+) => {
   const commands: UnRedoCommands = { commands: [] };
   for (const rule of rules) {
     for (const value of rule.values) {
-      const c = pushToAry(rule.cssSelector, value.key, value.value, rule.id);
+      const c = pushToAry(
+        rule.cssSelector,
+        value.key,
+        value.value,
+        rule.id,
+        prop,
+      );
       if (c) {
         commands.commands.push(c);
       }
       setStyleRule({
         cssSelector: rule.cssSelector,
-        keys: [value.key]
+        keys: [value.key],
       });
     }
   }
@@ -49,7 +60,8 @@ export const setFormatAndPushToAry = (
   cssSelector: string | null,
   key: string | null,
   value: string | null,
-  id: number | string | null
+  id: number | string | null,
+  prop: IPropsContext,
 ) => {
   resta_console.log('setFormatAndPushToAry', cssSelector, key, value, id);
   if (!id) {
@@ -57,7 +69,7 @@ export const setFormatAndPushToAry = (
   }
   if (!cssSelector) {
     resta_console.log(
-      'setFormatAndPushToAry:invalid args, cssSelector is not found'
+      'setFormatAndPushToAry:invalid args, cssSelector is not found',
     );
     return;
   }
@@ -69,15 +81,15 @@ export const setFormatAndPushToAry = (
     resta_console.log('setFormatAndPushToAry:invalid args, value is not found');
     return;
   }
-  const c = pushToAry(cssSelector, key, value, id);
+  const c = pushToAry(cssSelector, key, value, id, prop);
   if (c) {
     pushLog({
-      commands: [c]
+      commands: [c],
     });
   }
   setStyleRule({
     cssSelector: cssSelector,
-    keys: [key]
+    keys: [key],
   });
 };
 
@@ -90,7 +102,8 @@ export const pushToAry = (
   cssSelector: string | null,
   key: string | null,
   value: string | null,
-  id: number | string | null
+  id: number | string | null,
+  prop: IPropsContext,
 ): UnRedoCommand | null => {
   if (!cssSelector) {
     resta_console.warn('pushToAry:invalid args, cssSelector is not found');
@@ -108,34 +121,35 @@ export const pushToAry = (
     id = 0;
   }
 
-  let currentTargetFormatBlock: FormatBlockByURL | undefined = prop.formatsArray
-    .find((e) => e.url === prop.edittedUrl);
+  let currentTargetFormatBlock: FormatBlockByURL | undefined =
+    prop.formatsArray.find((e) => e.url === prop.editedUrl);
 
   // 以下のif文は、各配列が存在しない場合に配列を作成する処理
   // すでに該当箇所への変更がある場合は書き換えている
   if (currentTargetFormatBlock == null) {
-    currentTargetFormatBlock = { url: prop.edittedUrl, formats: [] };
+    currentTargetFormatBlock = { url: prop.editedUrl, formats: [] };
     prop.formatsArray.push(currentTargetFormatBlock);
   }
 
-  let currentFormat: Format | undefined = currentTargetFormatBlock
-    .formats.find((e) => e.cssSelector === cssSelector);
+  let currentFormat: Format | undefined = currentTargetFormatBlock.formats.find(
+    (e) => e.cssSelector === cssSelector,
+  );
 
   if (currentFormat == null) {
     currentFormat = { cssSelector: cssSelector, changes: [] };
     currentTargetFormatBlock.formats.push(currentFormat);
   }
 
-  let currentFormatChange: FormatChange | undefined = currentFormat
-    .changes.find((e) => e.cssKey === key);
+  let currentFormatChange: FormatChange | undefined =
+    currentFormat.changes.find((e) => e.cssKey === key);
 
   if (currentFormatChange == null) {
     currentFormatChange = { cssKey: key, cssValues: [] };
     currentFormat.changes.push({ cssKey: key, cssValues: [] });
   }
 
-  const currentFormatStyleValue: FormatStyleValue | undefined = currentFormatChange
-    .cssValues.find((e) => e.id === id);
+  const currentFormatStyleValue: FormatStyleValue | undefined =
+    currentFormatChange.cssValues.find((e) => e.id === id);
 
   if (currentFormatStyleValue == null) {
     // idに対応する要素を追加する
@@ -149,19 +163,18 @@ export const pushToAry = (
       undo: {
         type: 'delete',
         cssValue: value,
-        index: 0
+        index: 0,
       },
       redo: {
         type: 'create',
         cssValue: value,
-        index: undefined
-      }
+        index: undefined,
+      },
     };
-
   } else {
     // すでにidに対応する要素がある場合
     // その要素を削除して末尾に追加する
-    const index = getIndex(cssSelector, key, id);
+    const index = getIndex(cssSelector, key, id, prop);
     if (index == undefined || index === -1) {
       resta_console.warn('pushToAry: bug detected, index is undefined');
     }
@@ -169,7 +182,7 @@ export const pushToAry = (
     // idに対応する要素を取り除く
     const log = currentFormatChange.cssValues.splice(
       currentFormatChange.cssValues.findIndex((e) => e.id === id) || 0,
-      1
+      1,
     );
 
     // idに対応する要素を追加する
@@ -184,13 +197,13 @@ export const pushToAry = (
       undo: {
         type: 'rewrite',
         cssValue: log ? log[0].cssValue : '',
-        index: index || 0
+        index: index || 0,
       },
       redo: {
         type: 'rewrite',
         cssValue: value,
-        index: undefined
-      }
+        index: undefined,
+      },
     };
   }
 };
@@ -201,21 +214,22 @@ export const pushToAry = (
 export const deleteFromAry = (
   cssSelector: string,
   key: string,
-  id: number | string
+  id: number | string,
+  prop: IPropsContext,
 ): UnRedoCommand | null => {
-  const index = getIndex(cssSelector, key, id);
+  const index = getIndex(cssSelector, key, id, prop);
   if (index == undefined || index === -1) {
     resta_console.warn('deleteFromAry: bug detected, index is undefined');
   }
 
   const currentFormatChange = prop.formatsArray
-    .find((e) => e.url === prop.edittedUrl)
+    .find((e) => e.url === prop.editedUrl)
     ?.formats.find((e) => e.cssSelector === cssSelector)
     ?.changes.find((e) => e.cssKey === key);
 
   const deletedElem = currentFormatChange?.cssValues.splice(
     currentFormatChange?.cssValues.findIndex((e) => e.id === id) || 0,
-    1
+    1,
   );
 
   if (!deletedElem) {
@@ -232,13 +246,13 @@ export const deleteFromAry = (
     undo: {
       type: 'create',
       cssValue: deletedElem ? deletedElem[0].cssValue : '',
-      index: index || 0
+      index: index || 0,
     },
     redo: {
       type: 'delete',
       cssValue: '',
-      index: undefined
-    }
+      index: undefined,
+    },
   };
 };
 
@@ -249,10 +263,11 @@ export const deleteFromAry = (
 const getIndex = (
   cssSelector: string,
   key: string,
-  id: number | string
+  id: number | string,
+  prop: IPropsContext,
 ): number | undefined => {
   return prop.formatsArray
-    .find((e) => e.url === prop.edittedUrl)
+    .find((e) => e.url === prop.editedUrl)
     ?.formats.find((e) => e.cssSelector === cssSelector)
     ?.changes.find((e) => e.cssKey === key)
     ?.cssValues.findIndex((e) => e.id === id);
@@ -262,11 +277,11 @@ const getIndex = (
  * formatsArrayに登録されているフォーマットを適用する
  * 比較的重い処理なので、ページ遷移時などに呼び出す
  */
-export const applyFormats = () => {
+export const applyFormats = (prop: IPropsContext) => {
   resta_console.log('start:applyFormats', prop.formatsArray);
 
   for (const f of prop.formatsArray) {
-    if (!prop.matchUrl(prop.edittedUrl, f.url)) {
+    if (!matchUrl(prop.currentUrl, f.url)) {
       continue;
     }
 
@@ -277,7 +292,7 @@ export const applyFormats = () => {
         cssSelector: cssSelector,
         keys: format.changes
           .filter((e) => e.cssKey !== '' && e.cssValues.length !== 0)
-          .map((e) => e.cssKey)
+          .map((e) => e.cssKey),
       });
     }
   }

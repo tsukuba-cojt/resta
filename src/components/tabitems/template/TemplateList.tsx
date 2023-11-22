@@ -4,7 +4,30 @@ import { Template } from '../../../types/Template';
 import TemplateCard from './TemplateCard';
 import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  
+  p {
+    margin-top: 16px;
+    color: gray;
+  }
+`;
+
+const CardsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: lightgray solid 1px;
+  border-radius: 24px;
+`;
 
 interface CardsProps {
   templates: Template[];
@@ -50,12 +73,17 @@ const TemplateList = ({ templates }: TemplateListProps) => {
   }, [elementSelection.selectedElement]);
 
   return (
-    <Wrapper>
+    <>
       {elementSelection.selectedElement && length !== 0 && (
-        <Cards templates={templates} />
+        <Wrapper>
+          <CardsWrapper>
+            <Cards templates={templates} />
+          </CardsWrapper>
+          <p>ボタンをクリックすることでテンプレートを適用することができます</p>
+        </Wrapper>
       )}
       {length === 0 && <p>この要素に適用できるテンプレートはありません</p>}
-    </Wrapper>
+    </>
   );
 };
 

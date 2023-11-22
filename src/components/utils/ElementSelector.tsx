@@ -1,4 +1,4 @@
-import React, { useContext, useLayoutEffect } from 'react';
+import { useContext, useEffect, useLayoutEffect } from 'react';
 import { CONTAINER_ID } from '../../features/root_manager';
 import { ElementSelectionContext } from '../../contexts/ElementSelectionContext';
 import { isContainerActive } from '../../index';
@@ -17,6 +17,7 @@ const ElementSelector = () => {
     '.ant-select-dropdown',
     '.ant-popover',
     '.ant-modal-root',
+    '#resta-selected-element'
   ];
 
   const checkIgnores = (element: HTMLElement): boolean => {
@@ -27,6 +28,10 @@ const ElementSelector = () => {
     }
     return true;
   };
+
+  useEffect(() => {
+
+  }, [elementSelection.overlayElements]);
 
   useLayoutEffect(() => {
     const updateElement = (event: MouseEvent) => {
@@ -66,10 +71,31 @@ const ElementSelector = () => {
           const newElement = ev.target as HTMLElement;
           if (!newElement.closest('#resta-root') && checkIgnores(newElement!)) {
             ev.preventDefault();
+            ev.stopPropagation();
+            ev.stopImmediatePropagation()
             elementSelection.selectedElement?.removeEventListener(
               'click',
               clickListener,
             );
+
+            // 選択された要素を青い四角でオーバーレイする
+
+            const rect = newElement.getBoundingClientRect();
+            const div = document.createElement('div');
+            div.id = 'resta-selected-element';
+            div.style.position = 'absolute';
+            div.style.top = `${rect.y}px`;
+            div.style.left = `${rect.x}px`;
+            div.style.width = `${rect.width}px`;
+            div.style.height = `${rect.height}px`;
+            div.style.border = '2px solid blue';
+            div.style.pointerEvents = 'none';
+            elementSelection.setOverlayElements((prev) => {
+              prev.forEach((element) => document.body.removeChild(element));
+              return [div];
+            });
+
+            document.body.appendChild(div);
           }
         };
 
@@ -80,6 +106,8 @@ const ElementSelector = () => {
               'mousedown',
               listener,
             );
+            ev.stopPropagation();
+            ev.stopImmediatePropagation();
             newElement.style.backgroundColor = previousBackgroundColor;
             elementSelection.setSelectedElement(newElement);
           }
@@ -95,27 +123,7 @@ const ElementSelector = () => {
     return () => document.removeEventListener('mouseover', updateElement);
   }, []);
 
-  /*
-    現状クリック時に色を変えることがバグの温床となっているので無効化
-    useEffect(() => {
-        if (selectedElement) {
-            const previousBorder = selectedElement.style.border;
-            const previousBackgroundImage = selectedElement.style.backgroundImage;
-            const previousBackgroundClip = selectedElement.style.backgroundClip;
-
-            if (selectedElement.tagName === "IMG") {
-                selectedElement.style.border = `2px solid ${SELECTED_COLOR}`;
-
-            } else {
-                selectedElement.style.backgroundImage = `linear-gradient(to bottom, ${SELECTED_PADDING_COLOR} 0%, ${SELECTED_PADDING_COLOR} 100%), linear-gradient(to bottom, ${SELECTED_BACKGROUND_COLOR} 0%, ${SELECTED_BACKGROUND_COLOR} 100%)`;
-                selectedElement.style.backgroundClip = 'content-box, padding-box';
-            }
-        }
-    }, [selectedElement]);
-
-     */
-
-  return <></>;
+  return null;
 };
 
 export default ElementSelector;

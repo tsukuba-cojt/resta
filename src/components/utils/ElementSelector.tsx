@@ -17,7 +17,7 @@ const ElementSelector = () => {
     '.ant-select-dropdown',
     '.ant-popover',
     '.ant-modal-root',
-    '#resta-selected-element'
+    '.resta-selected-element'
   ];
 
   const checkIgnores = (element: HTMLElement): boolean => {
@@ -29,8 +29,26 @@ const ElementSelector = () => {
     return true;
   };
 
+  /**
+   * ウィンドウサイズを変更したときに、オーバーレイしている要素の位置およびサイズを更新する
+   */
   useEffect(() => {
+    const listener = () => {
+      elementSelection.overlayElements.forEach((element) => {
+        const scrollY = window.scrollY;
+        const scrollX = window.scrollX;
+        const rect = element.element.getBoundingClientRect();
+        const div = element.overlayElement;
 
+        div.style.top = `${scrollY + rect.y}px`;
+        div.style.left = `${scrollX + rect.x}px`;
+        div.style.width = `${rect.width}px`;
+        div.style.height = `${rect.height}px`;
+      });
+    }
+    window.addEventListener('resize', listener);
+
+    return () => window.removeEventListener('resize', listener);
   }, [elementSelection.overlayElements]);
 
   useLayoutEffect(() => {
@@ -79,20 +97,23 @@ const ElementSelector = () => {
             );
 
             // 選択された要素を青い四角でオーバーレイする
-
+            const scrollY = window.scrollY;
+            const scrollX = window.scrollX;
             const rect = newElement.getBoundingClientRect();
             const div = document.createElement('div');
-            div.id = 'resta-selected-element';
+
             div.style.position = 'absolute';
-            div.style.top = `${rect.y}px`;
-            div.style.left = `${rect.x}px`;
+            div.style.top = `${scrollY + rect.y}px`;
+            div.style.left = `${scrollX + rect.x}px`;
             div.style.width = `${rect.width}px`;
             div.style.height = `${rect.height}px`;
-            div.style.border = '2px solid blue';
+            div.style.border = '1.5px solid blue';
             div.style.pointerEvents = 'none';
+            div.setAttribute('class', 'resta-selected-element');
+
             elementSelection.setOverlayElements((prev) => {
-              prev.forEach((element) => document.body.removeChild(element));
-              return [div];
+              prev.forEach((element) => document.body.removeChild(element.overlayElement));
+              return [{element: newElement, overlayElement: div}];
             });
 
             document.body.appendChild(div);

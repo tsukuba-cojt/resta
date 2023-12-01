@@ -14,8 +14,8 @@ type ElementSelectionContext = {
    * 選択された要素の上にオーバーレイする四角い枠を表現するための要素
    * NOTE: 複数選択を見据えて配列にしてある
    */
-  overlayElements: HTMLElement[];
-  setOverlayElements: Dispatch<SetStateAction<HTMLElement[]>>;
+  overlayElements: SelectedElement[];
+  setOverlayElements: Dispatch<SetStateAction<SelectedElement[]>>;
 };
 
 export const defaultElementSelectionContext: ElementSelectionContext = {
@@ -40,7 +40,7 @@ export const useElementSelectionContext = (): ElementSelectionContext => {
     null,
   );
   const [selectedPseudoClass, _setSelectedPseudoClass] = useState<string>('');
-  const [overlayElements, _setOverlayElements] = useState<HTMLElement[]>([]);
+  const [overlayElements, _setOverlayElements] = useState<SelectedElement[]>([]);
 
   const setHoveredElement = useCallback((value: HTMLElement | null): void => {
     _setHoveredElement(value);
@@ -54,7 +54,7 @@ export const useElementSelectionContext = (): ElementSelectionContext => {
     _setSelectedPseudoClass(value);
   }, []);
 
-  const setOverlayElements = useCallback((value: HTMLElement[] | ((prev: HTMLElement[]) => HTMLElement[])): void => {
+  const setOverlayElements = useCallback((value: SelectedElement[] | ((prev: SelectedElement[]) => SelectedElement[])): void => {
     _setOverlayElements(value);
   }, []);
 

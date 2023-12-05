@@ -58,6 +58,8 @@ export const setStyleRule = (
       if (!value) {
         resta_console.error(
           'style_sheet.setStyleRule0: getDisplayFormat is false',
+          formats,
+          key,
         );
         removeStyleRule(styles.cssSelector, key);
         continue;
@@ -72,8 +74,11 @@ export const setStyleRule = (
       if (!value) {
         resta_console.error(
           'style_sheet.setStyleRule1: getDisplayFormat is false',
+          formats,
+          key,
         );
         removeStyleRule(styles.cssSelector, key);
+        continue;
       }
       resta_console.log('insertRule');
       if (canInsert) {

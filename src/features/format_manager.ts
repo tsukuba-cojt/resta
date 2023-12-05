@@ -8,9 +8,9 @@ import useFormatUtils from '../hooks/useFormatUtils';
  * localにフォーマットを保存する
  */
 
-export const saveFormat = async () => {
+export const saveFormat = async (prop: IPropsContext) => {
   const debounceSave = debounce(save, 1000);
-  debounceSave(new Date());
+  debounceSave(new Date(), prop);
 };
 
 let lastSaveTime = new Date();

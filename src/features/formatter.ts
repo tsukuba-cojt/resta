@@ -16,6 +16,7 @@ import { matchUrl } from '../utils/urlUtil';
 import CssCommand from './commands/CssCommand';
 import TemplateCommand from './commands/TemplateCommand';
 import { currentUrl, getDisplayedFormat } from './prop';
+import { saveFormat } from './format_manager';
 
 export const initStyle = async () => {
   // このページに対応するフォーマットがあれば適用
@@ -51,6 +52,7 @@ export const setFormatsAndPushToAry = (
   if (commands.length > 0) {
     prop.executor.execute(new TemplateCommand(...commands));
   }
+  saveFormat(prop);
 };
 
 export type RemoveRule = {
@@ -100,6 +102,7 @@ export const setFormatAndPushToAry = (
     },
     prop,
   );
+  saveFormat(prop);
 };
 
 /**
@@ -256,6 +259,8 @@ export const deleteFromAry = (
       pushToAry(cssSelector, key, deletedElem[0].cssValue, id, prop);
     },
   });
+
+  saveFormat(prop);
 };
 
 /**

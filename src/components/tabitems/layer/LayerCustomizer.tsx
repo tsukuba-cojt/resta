@@ -90,7 +90,7 @@ const LayerCustomizer = () => {
     (async () => {
       deleteFromAry(selector, cssKey, id, prop);
       updateFormat(selector, cssKey, prop);
-      await saveFormat();
+      await saveFormat(prop);
       updater.formatChanged();
     })();
   };

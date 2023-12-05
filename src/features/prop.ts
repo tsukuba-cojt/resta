@@ -13,7 +13,7 @@ export const setUrl = (url: string) => {
 };
 
 /**
- * ワイルドカード→完全一致の順にソートし、cssSelectorとcssKeyに対応するスタイルを返す
+ * Formatの配列から、cssKeyに対応するスタイルを返す
  * 見つからない場合はfalseを返す
  */
 export const getDisplayedFormat = (

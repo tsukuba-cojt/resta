@@ -3,6 +3,7 @@ import { FormatBlockByURL } from '../types/Format';
 import * as resta_console from './resta_console';
 import { debounce } from './debounce';
 import { IPropsContext } from '../contexts/PropsContext';
+import useFormatUtils from '../hooks/useFormatUtils';
 /**
  * localにフォーマットを保存する
  */
@@ -14,12 +15,26 @@ export const saveFormat = async () => {
 
 let lastSaveTime = new Date();
 
-const save = (date: Date): void => {
+/**
+ * Saves the formats to local storage.
+ *
+ * @param date - The current date.
+ */
+const save = (date: Date, prop: IPropsContext): void => {
   if (lastSaveTime.getTime() + 1000 > date.getTime()) {
     return;
   }
   lastSaveTime = date;
-  prop.sortFormats();
+  // フォーマットを詳細度の低い順にソートする
+  prop.setFormatsArray(
+    prop.formatsArray
+      .filter((e) => e.formats.length !== 0)
+      .sort(
+        (e) =>
+          (e.url.match(/\//g) || []).length &&
+          (e.url[e.url.length - 1] === '*' ? -1 : 1),
+      ),
+  );
   chrome.storage.local
     .set({ formats: JSON.stringify(prop.formatsArray) })
     .then(() => {
@@ -27,8 +42,8 @@ const save = (date: Date): void => {
     });
 };
 
-export const saveFormatImmediately = async () => {
-  prop.sortFormats();
+export const saveFormatImmediately = async (prop: IPropsContext) => {
+  useFormatUtils().sortFormats();
   chrome.storage.local
     .set({ formats: JSON.stringify(prop.formatsArray) })
     .then(() => {
@@ -63,10 +78,11 @@ export const getFormatAryFromLocal = async (): Promise<any> => {
       resta_console.log('load:no format', prop.currentUrl);
       return [];
     } else {
-      resta_console.log('load', prop.currentUrl, JSON.parse(result.formats));
-      return (JSON.parse(result.formats) as Array<FormatBlockByURL>).filter(
-        (e) => e.formats.length !== 0,
-      );
+      const ary = (
+        JSON.parse(result.formats) as Array<FormatBlockByURL>
+      ).filter((e) => e.formats.length !== 0);
+      resta_console.log('load', prop.currentUrl, ary);
+      return ary;
     }
   });
 };
@@ -75,6 +91,7 @@ export const getFormatAryFromLocal = async (): Promise<any> => {
  * localからフォーマットを読み込む
  * もしURLが指定されていなかったらすべてのフォーマットを読み込む
  */
+/*
 export const loadFormatForOutput = async (url: string = '') => {
   await chrome.storage.local.get(['formats']).then((result) => {
     if (!result.formats) {
@@ -92,6 +109,7 @@ export const loadFormatForOutput = async (url: string = '') => {
     }
   });
 };
+*/
 
 /**
  * localからimportしたフォーマットを読み込む

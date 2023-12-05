@@ -1,9 +1,9 @@
 import { CompressedStyle } from './style_compresser';
-import * as prop from './prop';
 import { error, log } from './resta_console';
 import { StyleRule, StyleValue } from './style_sheet';
 import { setFormatsAndPushToAry } from './formatter';
 import { IPropsContext } from '../contexts/PropsContext';
+import { matchUrl } from '../utils/urlUtil';
 
 export const importFormat = async (
   downloadUrl: string,
@@ -12,12 +12,13 @@ export const importFormat = async (
   id: string,
   imageUrl: string | undefined,
   author: string | undefined,
+  prop: IPropsContext,
 ) => {
-  if (prop.importedFormat.find((e) => e.id === id)) {
+  if (prop.importedFormats.find((e) => e.id === id)) {
     // すでに登録されている場合は取り出す
-    prop.setImportedFormat(prop.importedFormat.filter((e) => e.id !== id));
+    prop.setImportedFormats(prop.importedFormats.filter((e) => e.id !== id));
   }
-  prop.importedFormat.push({
+  prop.importedFormats.push({
     id,
     title,
     downloadUrl,
@@ -25,7 +26,7 @@ export const importFormat = async (
     author,
     style: JSON.parse(style) as CompressedStyle[],
   });
-  await chrome.storage.local.set({ imported_style: prop.importedFormat });
+  await chrome.storage.local.set({ imported_style: prop.importedFormats });
 };
 
 export const applyPageFormat = (id: string, prop: IPropsContext) => {
@@ -52,27 +53,28 @@ export const applyPageFormat = (id: string, prop: IPropsContext) => {
   setFormatsAndPushToAry(styleRule, prop);
 };
 
-export const deleteImportedFormat = (id: string) => {
-  prop.setImportedFormat(prop.importedFormat.filter((e) => e.id !== id));
-  chrome.storage.local.set({ imported_style: prop.importedFormat });
+export const deleteImportedFormat = (id: string, prop: IPropsContext) => {
+  prop.setImportedFormats(prop.importedFormats.filter((e) => e.id !== id));
+  chrome.storage.local.set({ imported_style: prop.importedFormats });
 };
 
-export const deleteAllImportedFormat = () => {
-  prop.setImportedFormat([]);
-  chrome.storage.local.set({ imported_style: prop.importedFormat });
+export const deleteAllImportedFormat = (prop: IPropsContext) => {
+  prop.setImportedFormats([]);
+  chrome.storage.local.set({ imported_style: prop.importedFormats });
 };
 
 export const getImportedFormats = (
+  prop: IPropsContext,
   all: boolean = false,
 ): ImportedFormatAbstract[] => {
-  log('getImportedFormats', prop.importedFormat);
+  log('getImportedFormats', prop.importedFormats);
   if (all) {
-    return prop.importedFormat.map((e) => {
+    return prop.importedFormats.map((e) => {
       return { ...e };
     });
   } else {
-    return prop.importedFormat
-      .filter((e) => prop.matchUrl(prop.currentUrl, e.style[0].url))
+    return prop.importedFormats
+      .filter((e) => matchUrl(prop.currentUrl, e.style[0].url))
       .map((e) => {
         return { ...e };
       });

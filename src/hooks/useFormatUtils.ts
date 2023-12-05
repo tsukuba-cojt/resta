@@ -87,10 +87,13 @@ export default function useFormatUtils(): ReturnType {
         removeStyleRule(cssSelector, cssKey);
         return;
       }
-      setStyleRule({
-        cssSelector: cssSelector,
-        keys: [cssKey],
-      });
+      setStyleRule(
+        {
+          cssSelector: cssSelector,
+          keys: [cssKey],
+        },
+        props,
+      );
     },
     [props.formatsArray],
   );

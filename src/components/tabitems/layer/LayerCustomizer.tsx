@@ -45,6 +45,7 @@ const LayerCustomizer = () => {
             selectable: false,
             children: getStyleLayer(
               getAbsoluteCSSSelector(elementSelection.selectedElement!) + value,
+              prop,
             ).children.map((child, index) => ({
               title: (
                 <span>
@@ -88,7 +89,7 @@ const LayerCustomizer = () => {
   ) => {
     (async () => {
       deleteFromAry(selector, cssKey, id, prop);
-      updateFormat(selector, cssKey);
+      updateFormat(selector, cssKey, prop);
       await saveFormat();
       updater.formatChanged();
     })();

@@ -1,7 +1,9 @@
-import { getFormatAryFromLocal } from './format_manager';
-import { StyleRule, setStyleRule } from './style_sheet';
-import { pushLog } from './unredo';
-import { UnRedoCommand, UnRedoCommands } from '../types/UnRedoCommands';
+import {
+  StyleRule,
+  getStyleSheet,
+  removeStyleRule,
+  setStyleRule,
+} from './style_sheet';
 import * as resta_console from './resta_console';
 import {
   Format,
@@ -11,20 +13,23 @@ import {
 } from '../types/Format';
 import { IPropsContext } from '../contexts/PropsContext';
 import { matchUrl } from '../utils/urlUtil';
+import CssCommand from './commands/CssCommand';
+import TemplateCommand from './commands/TemplateCommand';
+import { currentUrl, getDisplayedFormat } from './prop';
 
 export const initStyle = async () => {
   // このページに対応するフォーマットがあれば適用
-  applyFormats(await getFormatAryFromLocal());
+  applyFormats();
 };
 
 export const setFormatsAndPushToAry = (
   rules: Array<StyleRule>,
   prop: IPropsContext,
 ) => {
-  const commands: UnRedoCommands = { commands: [] };
+  const commands: CssCommand[] = [];
   for (const rule of rules) {
     for (const value of rule.values) {
-      const c = pushToAry(
+      const c: CssCommand | null = pushToAry(
         rule.cssSelector,
         value.key,
         value.value,
@@ -32,16 +37,19 @@ export const setFormatsAndPushToAry = (
         prop,
       );
       if (c) {
-        commands.commands.push(c);
+        commands.push(c);
       }
-      setStyleRule({
-        cssSelector: rule.cssSelector,
-        keys: [value.key],
-      });
+      setStyleRule(
+        {
+          cssSelector: rule.cssSelector,
+          keys: [value.key],
+        },
+        prop,
+      );
     }
   }
-  if (commands.commands.length > 0) {
-    pushLog(commands);
+  if (commands.length > 0) {
+    prop.executor.execute(new TemplateCommand(...commands));
   }
 };
 
@@ -83,14 +91,15 @@ export const setFormatAndPushToAry = (
   }
   const c = pushToAry(cssSelector, key, value, id, prop);
   if (c) {
-    pushLog({
-      commands: [c],
-    });
+    prop.executor.execute(c);
   }
-  setStyleRule({
-    cssSelector: cssSelector,
-    keys: [key],
-  });
+  setStyleRule(
+    {
+      cssSelector: cssSelector,
+      keys: [key],
+    },
+    prop,
+  );
 };
 
 /**
@@ -104,7 +113,7 @@ export const pushToAry = (
   value: string | null,
   id: number | string | null,
   prop: IPropsContext,
-): UnRedoCommand | null => {
+): CssCommand | null => {
   if (!cssSelector) {
     resta_console.warn('pushToAry:invalid args, cssSelector is not found');
     return null;
@@ -157,18 +166,11 @@ export const pushToAry = (
 
     // resta_console.log('pushToAry:push', cssSelector, key, value);
     return {
-      cssSelector: cssSelector,
-      cssKey: key,
-      id: id,
-      undo: {
-        type: 'delete',
-        cssValue: value,
-        index: 0,
+      execute: () => {
+        pushToAry(cssSelector, key, value, id, prop);
       },
-      redo: {
-        type: 'create',
-        cssValue: value,
-        index: undefined,
+      undo: () => {
+        deleteFromAry(cssSelector, key, 0, prop);
       },
     };
   } else {
@@ -191,19 +193,25 @@ export const pushToAry = (
 
     // resta_console.log('pushToAry:already exists, overwrite', cssSelector, key, value);
     return {
-      cssSelector: cssSelector,
-      cssKey: key,
-      id: id,
-      undo: {
-        type: 'rewrite',
-        cssValue: log ? log[0].cssValue : '',
-        index: index || 0,
+      execute: () => {
+        pushToAry(cssSelector, key, value, id, prop);
       },
-      redo: {
-        type: 'rewrite',
-        cssValue: value,
-        index: undefined,
+      undo: () => {
+        pushToAry(cssSelector, key, log ? log[0].cssValue : '', id, prop);
       },
+      // cssSelector: cssSelector,
+      // cssKey: key,
+      // id: id,
+      // undo: {
+      //   type: 'rewrite',
+      //   cssValue: log ? log[0].cssValue : '',
+      //   index: index || 0,
+      // },
+      // redo: {
+      //   type: 'rewrite',
+      //   cssValue: value,
+      //   index: undefined,
+      // },
     };
   }
 };
@@ -216,7 +224,7 @@ export const deleteFromAry = (
   key: string,
   id: number | string,
   prop: IPropsContext,
-): UnRedoCommand | null => {
+): void => {
   const index = getIndex(cssSelector, key, id, prop);
   if (index == undefined || index === -1) {
     resta_console.warn('deleteFromAry: bug detected, index is undefined');
@@ -234,26 +242,20 @@ export const deleteFromAry = (
 
   if (!deletedElem) {
     resta_console.warn('deleteFromAry: bug detected, deletedElem is undefined');
-    return null;
+    return;
   }
 
   resta_console.log('deleteFromAry', prop.formatsArray);
 
-  return {
-    cssSelector: cssSelector,
-    cssKey: key,
-    id: id,
-    undo: {
-      type: 'create',
-      cssValue: deletedElem ? deletedElem[0].cssValue : '',
-      index: index || 0,
+  // TODO: index処理どこいった？
+  prop.executor.execute({
+    execute: () => {
+      deleteFromAry(cssSelector, key, id, prop);
     },
-    redo: {
-      type: 'delete',
-      cssValue: '',
-      index: undefined,
+    undo: () => {
+      pushToAry(cssSelector, key, deletedElem[0].cssValue, id, prop);
     },
-  };
+  });
 };
 
 /**
@@ -277,23 +279,106 @@ const getIndex = (
  * formatsArrayに登録されているフォーマットを適用する
  * 比較的重い処理なので、ページ遷移時などに呼び出す
  */
-export const applyFormats = (prop: IPropsContext) => {
-  resta_console.log('start:applyFormats', prop.formatsArray);
+export const applyFormats = () => {
+  chrome.storage.local.get(['formats']).then((result) => {
+    if (!result.formats) {
+      resta_console.log('load:no format', currentUrl);
+    } else {
+      const formatsArray = (
+        JSON.parse(result.formats) as Array<FormatBlockByURL>
+      ).filter((e) => e.formats.length !== 0);
+      resta_console.log('load', currentUrl, formatsArray);
 
-  for (const f of prop.formatsArray) {
-    if (!matchUrl(prop.currentUrl, f.url)) {
-      continue;
+      for (const f of formatsArray) {
+        if (!matchUrl(currentUrl, f.url)) {
+          continue;
+        }
+
+        // resta_console.log(f);
+        for (const format of f.formats) {
+          const cssSelector = format.cssSelector;
+          setStyleRuleOnInit(
+            {
+              cssSelector: cssSelector,
+              keys: format.changes
+                .filter((e) => e.cssKey !== '' && e.cssValues.length !== 0)
+                .map((e) => e.cssKey),
+            },
+            formatsArray,
+          );
+        }
+      }
     }
+  });
+};
 
-    // resta_console.log(f);
-    for (const format of f.formats) {
-      const cssSelector = format.cssSelector;
-      setStyleRule({
-        cssSelector: cssSelector,
-        keys: format.changes
-          .filter((e) => e.cssKey !== '' && e.cssValues.length !== 0)
-          .map((e) => e.cssKey),
-      });
+/**
+ * CssSelectorとcssKeyの配列を渡すと、最新のスタイルを適用する
+ * valueはいらない
+ */
+const setStyleRuleOnInit = (
+  styles: {
+    cssSelector: string;
+    keys: Array<string>;
+  },
+  formatsArray: Array<FormatBlockByURL>,
+) => {
+  if (!styles.keys || !styles.cssSelector) {
+    resta_console.log('setStyleRule: invalid value');
+    return;
+  }
+  const styleSheet = getStyleSheet();
+  // insertRuleが使えるかどうか
+  // 使えない場合、つまり古いバージョンのChromeの場合はaddRuleを使う
+  const canInsert = styleSheet.insertRule as
+    | ((rule: string, index?: number) => number)
+    | undefined;
+  const formats = formatsArray
+    .map((e) => e.formats)
+    .filter((e) => e !== undefined)
+    .map((e) => e.find((e) => e.cssSelector === styles.cssSelector))
+    .filter((e) => e !== undefined);
+
+  const rule = Array.from(styleSheet?.cssRules).find(
+    (e) => e instanceof CSSStyleRule && e.selectorText === styles.cssSelector,
+  ) as CSSStyleRule | undefined;
+
+  if (rule) {
+    for (const key of styles.keys) {
+      const value = getDisplayedFormat(formats, key);
+      if (!value) {
+        resta_console.error(
+          'formatter.setStyleRuleOnInit0: getDisplayFormat is false',
+        );
+        removeStyleRule(styles.cssSelector, key);
+        continue;
+      }
+      if (rule.style.getPropertyValue(key) === value) continue;
+      resta_console.log('setProperty');
+      rule.style.setProperty(key, value);
+    }
+  } else {
+    for (const key of styles.keys) {
+      const value = getDisplayedFormat(formats, key);
+      if (!value) {
+        resta_console.error(
+          'formatter.setStyleRuleOnInit1: getDisplayFormat is false',
+        );
+        removeStyleRule(styles.cssSelector, key);
+      }
+      resta_console.log('insertRule');
+      if (canInsert) {
+        styleSheet?.insertRule(
+          `${styles.cssSelector}{${key}:${value}}`,
+          styleSheet.cssRules.length,
+        );
+      } else {
+        styleSheet?.addRule(
+          styles.cssSelector,
+          `${key}:${value}`,
+          styleSheet.rules.length,
+        );
+      }
     }
   }
 };

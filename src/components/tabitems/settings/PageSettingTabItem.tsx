@@ -2,13 +2,13 @@ import styled from 'styled-components';
 import t from '../../../features/translator';
 import React, { ChangeEvent, useContext, useState } from 'react';
 import { Button, Checkbox, Input, Modal, Popconfirm, Progress } from 'antd';
-import * as prop from '../../../features/prop';
 import { saveFormatImmediately } from '../../../features/format_manager';
 import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
 import { getAbsoluteCSSSelector } from '../../../utils/CSSUtils';
 import Section from '../common/Section';
 import SubTitle from '../common/SubTitle';
 import { DEBUG_MODE } from '../../../consts/debug';
+import { PropsContext } from '../../../contexts/PropsContext';
 
 const Wrapper = styled.div``;
 
@@ -24,15 +24,22 @@ const DeveloperTools = styled.div`
 const { TextArea } = Input;
 
 const PageSettingTabItem = () => {
+  const prop = useContext(PropsContext);
   const onClickInitPageFormat = () => {
-    prop.removeCurrentFormat();
-    saveFormatImmediately();
+    // editedUrlと一致するものを削除
+    prop.setFormatsArray(
+      prop.formatsArray.filter((f) => f.url !== prop.editedUrl),
+    );
+    saveFormatImmediately(prop);
     window.location.reload();
   };
 
   const onClickInitAllPageFormat = () => {
-    prop.removeAllFormats();
-    saveFormatImmediately();
+    // FormatsArrayを空にする
+    prop.setFormatsArray([]);
+    // localStorageのformatsを上書き
+    saveFormatImmediately(prop);
+    // ページをリロード
     window.location.reload();
   };
 
@@ -66,7 +73,7 @@ const PageSettingTabItem = () => {
         <Description>{t('change_eddited_url_description')}</Description>
         <TextArea
           onChange={(value: ChangeEvent<HTMLTextAreaElement>) => {
-            prop.setEdittedUrl(value.currentTarget.value);
+            prop.setEditedUrl(value.currentTarget.value);
           }}
           defaultValue={prop.currentUrl}
           autoSize={{ minRows: 1 }}
@@ -107,7 +114,7 @@ const PageSettingTabItem = () => {
             </p>
           </Section>
 
-          { DEBUG_MODE &&
+          {DEBUG_MODE && (
             <Section>
               <SubTitle text={'ストレージ内容を表示'} />
               <Description>{'拡張機能のストレージ内容を表示'}</Description>
@@ -117,7 +124,10 @@ const PageSettingTabItem = () => {
                 onClick={async () => {
                   setStorage(
                     JSON.stringify(
-                      (await chrome.storage.local.get(['formats', 'imported_style'])),
+                      await chrome.storage.local.get([
+                        'formats',
+                        'imported_style',
+                      ]),
                       null,
                       '  ',
                     ),
@@ -149,7 +159,7 @@ const PageSettingTabItem = () => {
                 />
               </Modal>
             </Section>
-          }
+          )}
         </DeveloperTools>
       )}
     </Wrapper>

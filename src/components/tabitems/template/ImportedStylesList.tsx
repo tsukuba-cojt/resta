@@ -48,7 +48,7 @@ const Cards = ({ styles, updateFunc }: CardsProps) => {
   };
 
   const onDeleteClick = (style: ImportedFormatAbstract) => {
-    deleteImportedFormat(style.id);
+    deleteImportedFormat(style.id, prop);
     void updateFunc();
   };
 
@@ -104,13 +104,14 @@ const Cards = ({ styles, updateFunc }: CardsProps) => {
 
 const ImportedStylesList = () => {
   const [styles, setStyles] = useState<ImportedFormatAbstract[]>([]);
+  const prop = useContext(PropsContext);
 
   const onOpenStoreClick = () => {
     window.open('https://resta-frontend.pages.dev/style/', '_blank');
   };
 
   const updateTree = async () => {
-    const styles = getImportedFormats();
+    const styles = getImportedFormats(prop);
     setStyles(styles);
   };
 

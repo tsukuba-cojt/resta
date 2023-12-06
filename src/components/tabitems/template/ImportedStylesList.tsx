@@ -56,11 +56,11 @@ const Cards = ({ styles, updateFunc }: CardsProps) => {
           bodyStyle={{ padding: '24px' }}
           style={{ marginBottom: '12px' }}
           cover={
-          <ThumbnailWrapper>
-            <Thumbnail
-              src={style.imageUrl ?? 'https://1.bp.blogspot.com/-ezrLFVDoMhg/Xlyf7yQWzaI/AAAAAAABXrA/utIBXYJDiPYJ4hMzRXrZSHrcZ11sW2PiACNcBGAsYHQ/s400/no_image_yoko.jpg'}
-            />
-          </ThumbnailWrapper>
+            <ThumbnailWrapper>
+              <Thumbnail
+                src={style.imageUrl ?? 'https://1.bp.blogspot.com/-ezrLFVDoMhg/Xlyf7yQWzaI/AAAAAAABXrA/utIBXYJDiPYJ4hMzRXrZSHrcZ11sW2PiACNcBGAsYHQ/s400/no_image_yoko.jpg'}
+              />
+            </ThumbnailWrapper>
           }
           actions={[
             <Popconfirm
@@ -82,11 +82,11 @@ const Cards = ({ styles, updateFunc }: CardsProps) => {
           <Meta
             title={style.title}
             description={
-            <>
-              { style.author && <Author>{style.author}</Author>}
-              <a href={style.downloadUrl} target={'_blank'}>{t('open_style_link')}</a>
-            </>
-          }
+              <>
+                { style.author && <Author>{style.author}</Author>}
+                <a href={style.downloadUrl} target={'_blank'}>{t('open_style_link')}</a>
+              </>
+            }
           />
         </Card>
       ))}

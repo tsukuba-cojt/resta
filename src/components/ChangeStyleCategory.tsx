@@ -10,6 +10,7 @@ import InputNumberWithUnit from './controls/InputNumberWithUnit';
 import Select from './controls/Select';
 import { getAbsoluteCSSSelector } from '../utils/CSSUtils';
 import { ElementSelectionContext } from '../contexts/ElementSelectionContext';
+import { PropsContext } from '../contexts/PropsContext';
 
 const Wrapper = styled.div``;
 
@@ -37,6 +38,7 @@ const ChangeStyleCategory = ({
   elements,
 }: CategoryProps) => {
   const elementSelection = useContext(ElementSelectionContext);
+  const prop = useContext(PropsContext);
 
   const onChange = (key: string, value: string, id: number | string) => {
     if (elementSelection.selectedElement) {
@@ -45,6 +47,7 @@ const ChangeStyleCategory = ({
         key,
         value,
         id,
+        prop,
       );
     }
   };

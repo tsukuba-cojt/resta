@@ -12,6 +12,10 @@ import PaddingCustomizer from './PaddingCustomizer';
 import SizeCustomizer from './SizeCustomizer';
 import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
 import BoxShadowCustomizer from './BoxShadowCustomizer';
+import { PropsContext } from '../../../contexts/PropsContext';
+import { UIUpdaterContext } from '../../../contexts/UIUpdater';
+import { setFormatsAndPushToAry } from '../../../features/formatter';
+import { getAbsoluteCSSSelector } from '../../../utils/CSSUtils';
 
 const Wrapper = styled.div``;
 
@@ -19,13 +23,29 @@ const InputWrapper = styled.div`
   padding-bottom: 12px;
 `;
 
-interface BlockCustomizerProps {
-  onChange: (key: string, value: string, id: number | string) => void;
-}
-
-const BlockCustomizer = ({ onChange }: BlockCustomizerProps) => {
+const BlockCustomizer = () => {
   const elementSelection = useContext(ElementSelectionContext);
   const [searchText, setSearchText] = useState<string>('');
+  const prop = useContext(PropsContext);
+  const updater = useContext(UIUpdaterContext);
+
+  const onChange = (key: string, value: string, id: number | string) => {
+    if (elementSelection.selectedElement) {
+      setFormatsAndPushToAry(
+        [
+          {
+            id,
+            cssSelector:
+              getAbsoluteCSSSelector(elementSelection.selectedElement) +
+              elementSelection.selectedPseudoClass,
+            values: [{ key, value }],
+          },
+        ],
+        prop,
+      );
+      updater.formatChanged();
+    }
+  };
 
   const customizers: { [key: string]: React.JSX.Element } = {
     背景色: <BackgroundColorCustomizer onChange={onChange} />,

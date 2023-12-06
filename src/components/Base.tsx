@@ -19,14 +19,13 @@ import {
   useElementSelectionContext,
 } from '../contexts/ElementSelectionContext';
 import ElementSelector from './utils/ElementSelector';
-import { setFormatsAndPushToAry } from '../features/formatter';
-import { getAbsoluteCSSSelector } from '../utils/CSSUtils';
 import TemplateCustomizer from './tabitems/template/TemplateCustomizer';
 import Scrollable from './tabitems/common/Scrollable';
 import LayerCustomizer from './tabitems/layer/LayerCustomizer';
 import { UIUpdaterContext, useUIUpdater } from '../contexts/UIUpdater';
 import t from '../features/translator';
 import usePropsContext, { PropsContext } from '../contexts/PropsContext';
+import Controller from './Controller';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -69,27 +68,13 @@ const Base = ({}: /* categoryMap */ BaseProps) => {
   const elementSelection = useElementSelectionContext();
   const updater = useUIUpdater();
   const props = usePropsContext();
-  const [fontPermissionGranted, setFontPermissionGranted] = useState<boolean>(true);
-
-  const onChange = (key: string, value: string, id: number | string) => {
-    if (elementSelection.selectedElement) {
-      setFormatsAndPushToAry([
-        {
-          id,
-          cssSelector:
-            getAbsoluteCSSSelector(elementSelection.selectedElement) +
-            elementSelection.selectedPseudoClass,
-          values: [{ key, value }],
-        },
-      ]);
-      updater.formatChanged();
-    }
-  };
+  const [fontPermissionGranted, setFontPermissionGranted] =
+    useState<boolean>(true);
 
   const tabs = {
     //templates.json: <ChangeStyleTabItem categoryMap={categoryMap} />,
-    fonts: <FontCustomizer onChange={onChange} />,
-    blocks: <BlockCustomizer onChange={onChange} />,
+    fonts: <FontCustomizer />,
+    blocks: <BlockCustomizer />,
     templates: <TemplateCustomizer />,
     layers: <LayerCustomizer />,
     settings: <PageSettingTabItem />,
@@ -121,7 +106,7 @@ const Base = ({}: /* categoryMap */ BaseProps) => {
     } catch {
       setFontPermissionGranted(false);
     }
-  }
+  };
 
   useEffect(() => {
     (async () => {
@@ -134,20 +119,25 @@ const Base = ({}: /* categoryMap */ BaseProps) => {
       <PropsContext.Provider value={props}>
         <ElementSelectionContext.Provider value={elementSelection}>
           <UIUpdaterContext.Provider value={updater}>
+            <Controller />
             <ToolBar />
-            { fontPermissionGranted &&
+            {fontPermissionGranted && (
               <TabWrapper>
                 <Scrollable>
                   <Tabs items={items} tabBarGutter={0} />
                 </Scrollable>
               </TabWrapper>
-            }
-            { !fontPermissionGranted &&
+            )}
+            {!fontPermissionGranted && (
               <>
-                <Description>{t('need_to_grant_for_access_local_font')}</Description>
-                <Button block type={'primary'} onClick={checkFontPermission}>{t('grant_for_access')}</Button>
+                <Description>
+                  {t('need_to_grant_for_access_local_font')}
+                </Description>
+                <Button block type={'primary'} onClick={checkFontPermission}>
+                  {t('grant_for_access')}
+                </Button>
               </>
-            }
+            )}
             <ElementSelector />
           </UIUpdaterContext.Provider>
         </ElementSelectionContext.Provider>

@@ -55,10 +55,10 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
         `${getAbsoluteCSSSelector(ref.current!)}[id='${template.name}']${
           style.pseudoClass ? `:${style.pseudoClass}` : ''
         } {\n` +
-          `${Object.entries(style.css)
-            .map(([key, value]) => `${key}: ${value}`)
-            .join(';\n')};\n` +
-          '}',
+        `${Object.entries(style.css)
+          .map(([key, value]) => `${key}: ${value}`)
+          .join(';\n')};\n` +
+        '}',
       );
     });
   };

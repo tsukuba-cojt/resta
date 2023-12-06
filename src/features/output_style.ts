@@ -1,4 +1,3 @@
-import { loadFormatForOutput } from './format_manager';
 import { compressStyle } from './style_compresser';
 
 export const getChangedUrls = async (): Promise<string[]> => {
@@ -7,6 +6,5 @@ export const getChangedUrls = async (): Promise<string[]> => {
 };
 
 export const getFormatByURL = async (url: string) => {
-  await loadFormatForOutput();
   return compressStyle(url);
 };

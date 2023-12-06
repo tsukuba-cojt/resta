@@ -1,13 +1,12 @@
-import { getDisplayFormat } from './prop';
+import { getDisplayedFormat } from './prop';
 import * as resta_console from './resta_console';
-import * as prop from './prop';
+import { IPropsContext } from '../contexts/PropsContext';
 
 let styleSheet: CSSStyleSheet | null = null;
 /**
  * CSSStyleSheetを取得する
  * シングルトンのような構造になっている
  */
-
 export const getStyleSheet = () => {
   if (styleSheet == null) {
     const styleSheetElement = document.createElement('style');
@@ -21,15 +20,20 @@ export const getStyleSheet = () => {
  * CssSelectorとcssKeyの配列を渡すと、最新のスタイルを適用する
  * valueはいらない
  */
-export const setStyleRule = (styles: {
-  cssSelector: string;
-  keys: Array<string>;
-}) => {
+export const setStyleRule = (
+  styles: {
+    cssSelector: string;
+    keys: Array<string>;
+  },
+  prop: IPropsContext,
+) => {
   if (!styles.keys || !styles.cssSelector) {
     resta_console.log('setStyleRule: invalid value');
     return;
   }
   const styleSheet = getStyleSheet();
+  // insertRuleが使えるかどうか
+  // 使えない場合、つまり古いバージョンのChromeの場合はaddRuleを使う
   const canInsert = styleSheet.insertRule as
     | ((rule: string, index?: number) => number)
     | undefined;
@@ -39,16 +43,23 @@ export const setStyleRule = (styles: {
     .map((e) => e.find((e) => e.cssSelector === styles.cssSelector))
     .filter((e) => e !== undefined);
 
+  if (!formats || formats.length === 0) {
+    resta_console.error('style_sheet.setStyleRule: formats is empty');
+    return;
+  }
+
   const rule = Array.from(styleSheet?.cssRules).find(
     (e) => e instanceof CSSStyleRule && e.selectorText === styles.cssSelector,
   ) as CSSStyleRule | undefined;
 
   if (rule) {
     for (const key of styles.keys) {
-      const value = getDisplayFormat(formats, key);
+      const value = getDisplayedFormat(formats, key);
       if (!value) {
         resta_console.error(
           'style_sheet.setStyleRule0: getDisplayFormat is false',
+          formats,
+          key,
         );
         removeStyleRule(styles.cssSelector, key);
         continue;
@@ -59,12 +70,15 @@ export const setStyleRule = (styles: {
     }
   } else {
     for (const key of styles.keys) {
-      const value = getDisplayFormat(formats, key);
+      const value = getDisplayedFormat(formats, key);
       if (!value) {
         resta_console.error(
           'style_sheet.setStyleRule1: getDisplayFormat is false',
+          formats,
+          key,
         );
         removeStyleRule(styles.cssSelector, key);
+        continue;
       }
       resta_console.log('insertRule');
       if (canInsert) {

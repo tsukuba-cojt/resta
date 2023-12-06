@@ -10,11 +10,12 @@ import {
   FontColorsOutlined,
   FontSizeOutlined,
   ItalicOutlined,
-  LineHeightOutlined, PlusOutlined,
+  LineHeightOutlined,
+  PlusOutlined,
   UnderlineOutlined,
   VerticalAlignBottomOutlined,
   VerticalAlignMiddleOutlined,
-  VerticalAlignTopOutlined
+  VerticalAlignTopOutlined,
 } from '@ant-design/icons';
 import IconButton from '../../controls/IconButton';
 import InputNumberWithUnit from '../../controls/InputNumberWithUnit';
@@ -34,7 +35,10 @@ import { Button, Divider, Input, InputRef, Select, Space, Tooltip } from 'antd';
 import type { SelectProps } from 'antd';
 import opentype from 'opentype.js';
 import { defaultFontFamilies } from '../../../consts/cssValues';
-import { kebabToCamel } from '../../../utils/CSSUtils';
+import { getAbsoluteCSSSelector, kebabToCamel } from '../../../utils/CSSUtils';
+import { setFormatsAndPushToAry } from '../../../features/formatter';
+import { PropsContext } from '../../../contexts/PropsContext';
+import { UIUpdaterContext } from '../../../contexts/UIUpdater';
 
 const Wrapper = styled.div``;
 
@@ -45,22 +49,22 @@ const IW = styled.span`
   padding: calc(100% - 6px);
 `;
 
-const FontItem = styled.span<{family: string}>`
+const FontItem = styled.span<{ family: string }>`
   font-family: ${(props) => props.family};
 `;
 
 const { Option } = Select;
 
-interface FontCustomizerProps {
-  onChange: (key: string, value: string, id: number | string) => void;
-}
-
-const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
+const FontCustomizer = () => {
   const elementSelection = useContext(ElementSelectionContext);
   //const [defaultFonts, setDefaultFonts] = useState<string[]>([]);
   const [selectedFonts, setSelectedFonts] = useState<string[]>([]);
-  const [installedFonts, setInstalledFonts] = useState<SelectProps['options']>([]);
+  const [installedFonts, setInstalledFonts] = useState<SelectProps['options']>(
+    [],
+  );
   const [fontName, setFontName] = useState<string>('');
+  const prop = useContext(PropsContext);
+  const updater = useContext(UIUpdaterContext);
 
   const inputRef = useRef<InputRef>(null);
 
@@ -68,10 +72,15 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
     setFontName(event.target.value);
   };
 
-  const addFont = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+  const addFont = (
+    e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>,
+  ) => {
     if (fontName) {
       e.preventDefault();
-      setInstalledFonts([...(installedFonts ?? []), {label: fontName, value: fontName}]);
+      setInstalledFonts([
+        ...(installedFonts ?? []),
+        { label: fontName, value: fontName },
+      ]);
       setFontName('');
       setTimeout(() => {
         inputRef.current?.focus();
@@ -81,11 +90,29 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
 
   const onChangeFonts = (values: string[]) => {
     setSelectedFonts(values);
-  }
+  };
+
+  const onChange = (key: string, value: string, id: number | string) => {
+    if (elementSelection.selectedElement) {
+      setFormatsAndPushToAry(
+        [
+          {
+            id,
+            cssSelector:
+              getAbsoluteCSSSelector(elementSelection.selectedElement) +
+              elementSelection.selectedPseudoClass,
+            values: [{ key, value }],
+          },
+        ],
+        prop,
+      );
+      updater.formatChanged();
+    }
+  };
 
   useEffect(() => {
     const value = selectedFonts
-      .map((font) => defaultFontFamilies.includes(font) ? font : `"${font}"`)
+      .map((font) => (defaultFontFamilies.includes(font) ? font : `"${font}"`))
       .join(', ');
     onChange('font-family', value, 'font-family');
   }, [selectedFonts]);
@@ -109,27 +136,30 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
       const queryLocalFonts = async (): Promise<FontData[]> => {
         // @ts-ignore
         return window.queryLocalFonts();
-      }
+      };
 
       const push = (name: string) => {
         result.push({
           label: name,
           value: name,
         });
-      }
+      };
 
       const NULL_FONT = '#@~null~@#';
       const fonts: FontData[] = await queryLocalFonts();
-      const localCache: {[key: string]: string} = (await chrome.storage.local.get('fonts')).fonts ?? {};
+      const localCache: { [key: string]: string } =
+        (await chrome.storage.local.get('fonts')).fonts ?? {};
 
       for (const font of fonts) {
         const blob = await font.blob();
         const sfntVersion = await blob.slice(0, 4).text();
 
-        if (sfntVersion !== '\x00\x01\x00\x00'
-          && sfntVersion !== 'true'
-          && sfntVersion !== 'typ1'
-          && sfntVersion !== 'OTTO') {
+        if (
+          sfntVersion !== '\x00\x01\x00\x00' &&
+          sfntVersion !== 'true' &&
+          sfntVersion !== 'typ1' &&
+          sfntVersion !== 'OTTO'
+        ) {
           continue;
         }
 
@@ -155,7 +185,7 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
         }
       }
 
-      await chrome.storage.local.set({'fonts': localCache});
+      await chrome.storage.local.set({ fonts: localCache });
 
       defaultFontFamilies.forEach((font) => {
         push(font);
@@ -169,10 +199,9 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
     if (elementSelection.selectedElement) {
       const style = getComputedStyle(elementSelection.selectedElement);
       const value = (style as any)[kebabToCamel('font-family')] as string;
-      const fonts = value.split(/,\s*/).map((text) => text
-        .replace(/^(["'])/, '')
-        .replace(/(["'])$/, '')
-      );
+      const fonts = value
+        .split(/,\s*/)
+        .map((text) => text.replace(/^(["'])/, '').replace(/(["'])$/, ''));
       setSelectedFonts(fonts);
     }
   }, [elementSelection.selectedElement]);
@@ -223,8 +252,8 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
                 <IconTypography size={16} strokeWidth={1.5} />
               </Tooltip>
               <Select
-                mode='multiple'
-                optionLabelProp='label'
+                mode="multiple"
+                optionLabelProp="label"
                 style={{ width: '100%' }}
                 placeholder={t('font_prop_font')}
                 tokenSeparators={[',']}
@@ -243,19 +272,24 @@ const FontCustomizer = ({ onChange }: FontCustomizerProps) => {
                         value={fontName}
                         onChange={onFontNameChange}
                       />
-                      <Button type='text' icon={<PlusOutlined />} onClick={addFont}>
+                      <Button
+                        type="text"
+                        icon={<PlusOutlined />}
+                        onClick={addFont}
+                      >
                         {t('add')}
                       </Button>
                     </Space>
                   </>
                 )}
               >
-                { (installedFonts ?? []).map((font, index) => (
+                {(installedFonts ?? []).map((font, index) => (
                   <Option key={index} value={font.value} label={font.label}>
-                    <FontItem family={font.value as string}>{font.label}</FontItem>
+                    <FontItem family={font.value as string}>
+                      {font.label}
+                    </FontItem>
                   </Option>
-                ))
-                }
+                ))}
               </Select>
             </Flex>
           </Section>

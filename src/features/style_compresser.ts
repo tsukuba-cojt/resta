@@ -1,18 +1,24 @@
 import * as prop from './prop';
-import { FormatChange } from '../types/Format';
+import { FormatBlockByURL, FormatChange } from '../types/Format';
+import { getFormatAryFromLocal } from './format_manager';
 export const compressStyle = (url: string): CompressedStyle | false => {
   const compressedFormats: CompressedFormat[] = [];
   // 優先度の高い順にルールを追加する
   // すでに登録されている場合はスキップする
-  for (const format of prop.formatsArray
-    .filter((e) => {
-      return prop.matchUrl(url, e.url);
-    })
-    .reverse()) {
-    for (const f of format.formats) {
-      insertStyleRule(f.cssSelector, f.changes, compressedFormats);
+  getFormatAryFromLocal().then((result) => {
+    if (!result) {
+      return;
     }
-  }
+    for (const format of result
+      .filter((e: FormatBlockByURL) => {
+        return prop.matchUrl(url, e.url);
+      })
+      .reverse()) {
+      for (const f of format.formats) {
+        insertStyleRule(f.cssSelector, f.changes, compressedFormats);
+      }
+    }
+  });
   if (compressedFormats.length === 0) {
     return false;
   }

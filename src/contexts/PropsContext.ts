@@ -1,9 +1,11 @@
 import React, { Dispatch, useCallback, useState } from 'react';
 import { FormatBlockByURL } from '../types/Format';
 import { ImportedFormat } from '../features/prop';
-import useCommandExecutor, { CommandExecutor } from 'react-command-lib/dist/esm';
+import useCommandExecutor, {
+  CommandExecutor,
+} from 'react-command-lib/dist/esm';
 
-type PropsContext = {
+export type IPropsContext = {
   /**
    * 現在のURL
    */
@@ -32,9 +34,9 @@ type PropsContext = {
    * コマンドマネージャ
    */
   executor: CommandExecutor;
-}
+};
 
-const defaultPropsContext: PropsContext = {
+const defaultPropsContext: IPropsContext = {
   currentUrl: '',
   setCurrentUrl: () => undefined,
   editedUrl: '',
@@ -48,27 +50,46 @@ const defaultPropsContext: PropsContext = {
     undo: () => undefined,
     redo: () => undefined,
     isRedoable: false,
-    isUndoable: false
+    isUndoable: false,
   },
 };
 
-export const PropsContext = React.createContext<PropsContext>(defaultPropsContext);
+export const PropsContext =
+  React.createContext<IPropsContext>(defaultPropsContext);
 
-function useMemoizedState<T>(defaultValue: T): [value: T, setValue: Dispatch<T>] {
+function useMemoizedState<T>(
+  defaultValue: T,
+): [value: T, setValue: Dispatch<T>] {
   const [value, _setValue] = useState<T>(defaultValue);
   const setValue = useCallback((v: T) => _setValue(v), []);
 
   return [value, setValue];
 }
 
-export default function usePropsContext(): PropsContext {
-  const [currentUrl, setCurrentUrl] = useMemoizedState<string>(defaultPropsContext.currentUrl);
-  const [editedUrl, setEditedUrl] = useMemoizedState<string>(defaultPropsContext.currentUrl);
-  const [formatsArray, setFormatsArray] = useMemoizedState<FormatBlockByURL[]>([]);
-  const [importedFormats, setImportedFormats] = useMemoizedState<ImportedFormat[]>([]);
+export default function usePropsContext(): IPropsContext {
+  const [currentUrl, setCurrentUrl] = useMemoizedState<string>(
+    defaultPropsContext.currentUrl,
+  );
+  const [editedUrl, setEditedUrl] = useMemoizedState<string>(
+    defaultPropsContext.currentUrl,
+  );
+  const [formatsArray, setFormatsArray] = useMemoizedState<FormatBlockByURL[]>(
+    [],
+  );
+  const [importedFormats, setImportedFormats] = useMemoizedState<
+    ImportedFormat[]
+  >([]);
   const executor = useCommandExecutor();
 
   return {
-    currentUrl, setCurrentUrl, editedUrl, setEditedUrl, formatsArray, setFormatsArray, importedFormats, setImportedFormats, executor
+    currentUrl,
+    setCurrentUrl,
+    editedUrl,
+    setEditedUrl,
+    formatsArray,
+    setFormatsArray,
+    importedFormats,
+    setImportedFormats,
+    executor,
   };
 }

@@ -19,32 +19,30 @@ import {
   useElementSelectionContext,
 } from '../contexts/ElementSelectionContext';
 import ElementSelector from './utils/ElementSelector';
-import { setFormatsAndPushToAry } from '../features/formatter';
-import { getAbsoluteCSSSelector } from '../utils/CSSUtils';
 import TemplateCustomizer from './tabitems/template/TemplateCustomizer';
 import Scrollable from './tabitems/common/Scrollable';
 import LayerCustomizer from './tabitems/layer/LayerCustomizer';
 import { UIUpdaterContext, useUIUpdater } from '../contexts/UIUpdater';
 import t from '../features/translator';
 import usePropsContext, { PropsContext } from '../contexts/PropsContext';
+import Controller from './Controller';
 
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   padding: 12px 16px 16px;
-  background-color: #f0f0f099;
+  background-color: #FFFFFFCC;
   box-sizing: border-box;
   cursor: default;
   display: flex;
   flex-direction: column;
-
-  border-radius: 8px;
+  
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px); /* ぼかしエフェクト */
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-right-color: rgba(255, 255, 255, 0.2);
-  border-bottom-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 0 16px 0 #f0f0f0;
+  border-radius: 8px;
+  border: none;
+  box-shadow: rgb(0, 0, 0, 0.1) 0 2px 16px 0;
+
 `;
 
 const TabWrapper = styled.div`
@@ -69,28 +67,14 @@ const Base = ({}: /* categoryMap */ BaseProps) => {
   const elementSelection = useElementSelectionContext();
   const updater = useUIUpdater();
   const props = usePropsContext();
-  const [fontPermissionGranted, setFontPermissionGranted] = useState<boolean>(true);
-
-  const onChange = (key: string, value: string, id: number | string) => {
-    if (elementSelection.selectedElement) {
-      setFormatsAndPushToAry([
-        {
-          id,
-          cssSelector:
-            getAbsoluteCSSSelector(elementSelection.selectedElement) +
-            elementSelection.selectedPseudoClass,
-          values: [{ key, value }],
-        },
-      ]);
-      updater.formatChanged();
-    }
-  };
+  const [fontPermissionGranted, setFontPermissionGranted] =
+    useState<boolean>(true);
 
   const tabs = {
     //templates.json: <ChangeStyleTabItem categoryMap={categoryMap} />,
+    templates: <TemplateCustomizer />,
     fonts: <FontCustomizer onChange={onChange} />,
     blocks: <BlockCustomizer onChange={onChange} />,
-    templates: <TemplateCustomizer />,
     layers: <LayerCustomizer />,
     settings: <PageSettingTabItem />,
   };
@@ -121,7 +105,7 @@ const Base = ({}: /* categoryMap */ BaseProps) => {
     } catch {
       setFontPermissionGranted(false);
     }
-  }
+  };
 
   useEffect(() => {
     (async () => {
@@ -134,20 +118,25 @@ const Base = ({}: /* categoryMap */ BaseProps) => {
       <PropsContext.Provider value={props}>
         <ElementSelectionContext.Provider value={elementSelection}>
           <UIUpdaterContext.Provider value={updater}>
+            <Controller />
             <ToolBar />
-            { fontPermissionGranted &&
+            {fontPermissionGranted && (
               <TabWrapper>
                 <Scrollable>
                   <Tabs items={items} tabBarGutter={0} />
                 </Scrollable>
               </TabWrapper>
-            }
-            { !fontPermissionGranted &&
+            )}
+            {!fontPermissionGranted && (
               <>
-                <Description>{t('need_to_grant_for_access_local_font')}</Description>
-                <Button block type={'primary'} onClick={checkFontPermission}>{t('grant_for_access')}</Button>
+                <Description>
+                  {t('need_to_grant_for_access_local_font')}
+                </Description>
+                <Button block type={'primary'} onClick={checkFontPermission}>
+                  {t('grant_for_access')}
+                </Button>
               </>
-            }
+            )}
             <ElementSelector />
           </UIUpdaterContext.Provider>
         </ElementSelectionContext.Provider>

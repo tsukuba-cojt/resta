@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { Dispatch, SetStateAction, useCallback, useState } from 'react';
 
 type ElementSelectionContext = {
   hoveredElement: HTMLElement | null;
@@ -9,6 +9,13 @@ type ElementSelectionContext = {
 
   selectedPseudoClass: string;
   setSelectedPseudoClass: (value: string) => void;
+
+  /**
+   * 選択された要素の上にオーバーレイする四角い枠を表現するための要素
+   * NOTE: 複数選択を見据えて配列にしてある
+   */
+  overlayElements: SelectedElement[];
+  setOverlayElements: Dispatch<SetStateAction<SelectedElement[]>>;
 };
 
 export const defaultElementSelectionContext: ElementSelectionContext = {
@@ -18,6 +25,8 @@ export const defaultElementSelectionContext: ElementSelectionContext = {
   setSelectedElement: (_) => {},
   selectedPseudoClass: '',
   setSelectedPseudoClass: (_) => {},
+  overlayElements: [],
+  setOverlayElements: () => undefined
 };
 
 export const ElementSelectionContext =
@@ -31,6 +40,7 @@ export const useElementSelectionContext = (): ElementSelectionContext => {
     null,
   );
   const [selectedPseudoClass, _setSelectedPseudoClass] = useState<string>('');
+  const [overlayElements, _setOverlayElements] = useState<SelectedElement[]>([]);
 
   const setHoveredElement = useCallback((value: HTMLElement | null): void => {
     _setHoveredElement(value);
@@ -44,6 +54,10 @@ export const useElementSelectionContext = (): ElementSelectionContext => {
     _setSelectedPseudoClass(value);
   }, []);
 
+  const setOverlayElements = useCallback((value: SelectedElement[] | ((prev: SelectedElement[]) => SelectedElement[])): void => {
+    _setOverlayElements(value);
+  }, []);
+
   return {
     hoveredElement,
     setHoveredElement,
@@ -51,5 +65,7 @@ export const useElementSelectionContext = (): ElementSelectionContext => {
     setSelectedElement,
     selectedPseudoClass,
     setSelectedPseudoClass,
+    overlayElements,
+    setOverlayElements,
   };
 };

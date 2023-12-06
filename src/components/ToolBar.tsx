@@ -73,14 +73,26 @@ const ToolBar = () => {
         type="ghost"
         size={'small'}
         disabled={!context.executor.isUndoable}
-        icon={<UndoOutlined style={{color: context.executor.isUndoable ? "black" : "lightgray"}} />}
+        icon={
+          <UndoOutlined
+            style={{
+              color: context.executor.isUndoable ? 'black' : 'lightgray',
+            }}
+          />
+        }
         onClick={context.executor.undo}
       />
       <Button
         type="ghost"
         size={'small'}
         disabled={!context.executor.isRedoable}
-        icon={<RedoOutlined style={{color: context.executor.isRedoable ? "black" : "lightgray"}} />}
+        icon={
+          <RedoOutlined
+            style={{
+              color: context.executor.isRedoable ? 'black' : 'lightgray',
+            }}
+          />
+        }
         onClick={context.executor.redo}
       />
     </Wrapper>

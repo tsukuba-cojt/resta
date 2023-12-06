@@ -3,7 +3,6 @@ import { initStyle } from './features/formatter';
 import loadRestaSetting from './features/setting_loader';
 import { initContainer } from './features/root_manager';
 import * as resta_console from './features/resta_console';
-import { loadFormat, loadImportedStyle } from './features/format_manager';
 import { activateRestaSubsystems } from './features/upload_import_manager';
 
 export let isContainerActive: boolean = false;
@@ -36,8 +35,6 @@ chrome.runtime.onMessage.addListener((req) => {
     activateContainer();
     isContainerActive = true;
   } else if (req.type === 'activate') {
-    loadFormat();
-    loadImportedStyle();
     resta_console.log('Activate');
   }
 });

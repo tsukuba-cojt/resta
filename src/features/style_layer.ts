@@ -1,7 +1,10 @@
+import { IPropsContext } from '../contexts/PropsContext';
 import { StyleLayer, StyleLayerValue } from '../types/StyleLayer';
-import * as prop from './prop';
 import * as resta_console from './resta_console';
-export const getStyleLayer = (cssSelector: string): StyleLayer => {
+export const getStyleLayer = (
+  cssSelector: string,
+  prop: IPropsContext,
+): StyleLayer => {
   if (!cssSelector) {
     return { key: '', children: [] };
   }

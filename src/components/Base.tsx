@@ -31,18 +31,17 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   padding: 12px 16px 16px;
-  background-color: #FFFFFFCC;
+  background-color: #ffffffcc;
   box-sizing: border-box;
   cursor: default;
   display: flex;
   flex-direction: column;
-  
+
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px); /* ぼかしエフェクト */
   border-radius: 8px;
   border: none;
   box-shadow: rgb(0, 0, 0, 0.1) 0 2px 16px 0;
-
 `;
 
 const TabWrapper = styled.div`
@@ -73,8 +72,8 @@ const Base = ({}: /* categoryMap */ BaseProps) => {
   const tabs = {
     //templates.json: <ChangeStyleTabItem categoryMap={categoryMap} />,
     templates: <TemplateCustomizer />,
-    fonts: <FontCustomizer onChange={onChange} />,
-    blocks: <BlockCustomizer onChange={onChange} />,
+    fonts: <FontCustomizer />,
+    blocks: <BlockCustomizer />,
     layers: <LayerCustomizer />,
     settings: <PageSettingTabItem />,
   };

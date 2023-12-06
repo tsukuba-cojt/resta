@@ -26,7 +26,7 @@ export const defaultElementSelectionContext: ElementSelectionContext = {
   selectedPseudoClass: '',
   setSelectedPseudoClass: (_) => {},
   overlayElements: [],
-  setOverlayElements: () => undefined
+  setOverlayElements: () => undefined,
 };
 
 export const ElementSelectionContext =
@@ -40,7 +40,9 @@ export const useElementSelectionContext = (): ElementSelectionContext => {
     null,
   );
   const [selectedPseudoClass, _setSelectedPseudoClass] = useState<string>('');
-  const [overlayElements, _setOverlayElements] = useState<SelectedElement[]>([]);
+  const [overlayElements, _setOverlayElements] = useState<SelectedElement[]>(
+    [],
+  );
 
   const setHoveredElement = useCallback((value: HTMLElement | null): void => {
     _setHoveredElement(value);
@@ -54,9 +56,16 @@ export const useElementSelectionContext = (): ElementSelectionContext => {
     _setSelectedPseudoClass(value);
   }, []);
 
-  const setOverlayElements = useCallback((value: SelectedElement[] | ((prev: SelectedElement[]) => SelectedElement[])): void => {
-    _setOverlayElements(value);
-  }, []);
+  const setOverlayElements = useCallback(
+    (
+      value:
+        | SelectedElement[]
+        | ((prev: SelectedElement[]) => SelectedElement[]),
+    ): void => {
+      _setOverlayElements(value);
+    },
+    [],
+  );
 
   return {
     hoveredElement,

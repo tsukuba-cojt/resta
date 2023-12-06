@@ -31,19 +31,18 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   padding: 12px 16px 16px;
-  background-color: #f0f0f099;
+  background-color: #FFFFFFCC;
   box-sizing: border-box;
   cursor: default;
   display: flex;
   flex-direction: column;
-
-  border-radius: 8px;
+  
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px); /* ぼかしエフェクト */
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-right-color: rgba(255, 255, 255, 0.2);
-  border-bottom-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 0 16px 0 #f0f0f0;
+  border-radius: 8px;
+  border: none;
+  box-shadow: rgb(0, 0, 0, 0.1) 0 2px 16px 0;
+
 `;
 
 const TabWrapper = styled.div`
@@ -73,9 +72,9 @@ const Base = ({}: /* categoryMap */ BaseProps) => {
 
   const tabs = {
     //templates.json: <ChangeStyleTabItem categoryMap={categoryMap} />,
-    fonts: <FontCustomizer />,
-    blocks: <BlockCustomizer />,
     templates: <TemplateCustomizer />,
+    fonts: <FontCustomizer onChange={onChange} />,
+    blocks: <BlockCustomizer onChange={onChange} />,
     layers: <LayerCustomizer />,
     settings: <PageSettingTabItem />,
   };

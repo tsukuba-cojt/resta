@@ -9,7 +9,6 @@ import { setFormatsAndPushToAry } from '../../../features/formatter';
 import { getStyleSheet } from '../../../features/style_sheet';
 import { UIUpdaterContext } from '../../../contexts/UIUpdater';
 import { createId } from '../../../utils/IDUtils';
-import { PropsContext } from '../../../contexts/PropsContext';
 
 const InnerWrapper = styled.div`
   width: 100%;
@@ -30,7 +29,6 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
   const ref = useRef<any>(null);
   const elementSelection = useContext(ElementSelectionContext);
   const updater = useContext(UIUpdaterContext);
-  const prop = useContext(PropsContext);
 
   const onUseClick = () => {
     if (elementSelection.selectedElement) {
@@ -45,7 +43,6 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
             value,
           })),
         })),
-        prop,
       );
 
       updater.formatChanged();
@@ -58,10 +55,10 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
         `${getAbsoluteCSSSelector(ref.current!)}[id='${template.name}']${
           style.pseudoClass ? `:${style.pseudoClass}` : ''
         } {\n` +
-          `${Object.entries(style.css)
-            .map(([key, value]) => `${key}: ${value}`)
-            .join(';\n')};\n` +
-          '}',
+        `${Object.entries(style.css)
+          .map(([key, value]) => `${key}: ${value}`)
+          .join(';\n')};\n` +
+        '}',
       );
     });
   };

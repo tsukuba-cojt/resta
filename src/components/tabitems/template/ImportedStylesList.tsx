@@ -1,14 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import {
-  applyPageFormat,
-  deleteImportedFormat,
+  applyPageFormat, deleteImportedFormat,
   getImportedFormats,
-  ImportedFormatAbstract,
+  ImportedFormatAbstract
 } from '../../../features/importStyle';
 import t from '../../../features/translator';
 import { Button, Card, Popconfirm } from 'antd';
-import { PropsContext } from '../../../contexts/PropsContext';
 
 const Wrapper = styled.div``;
 
@@ -25,7 +23,7 @@ const ThumbnailWrapper = styled.div`
   height: 150px;
 `;
 
-const Thumbnail = styled.div<{ src: string }>`
+const Thumbnail = styled.div<{src: string}>`
   width: 100%;
   height: 100%;
   background-image: ${(prop) => `url("${prop.src}")`};
@@ -41,14 +39,13 @@ interface CardsProps {
 
 const Cards = ({ styles, updateFunc }: CardsProps) => {
   const { Meta } = Card;
-  const prop = useContext(PropsContext);
 
   const onApplyClick = (style: ImportedFormatAbstract) => {
-    applyPageFormat(style.id, prop);
+    applyPageFormat(style.id);
   };
 
   const onDeleteClick = (style: ImportedFormatAbstract) => {
-    deleteImportedFormat(style.id, prop);
+    deleteImportedFormat(style.id);
     void updateFunc();
   };
 
@@ -61,10 +58,7 @@ const Cards = ({ styles, updateFunc }: CardsProps) => {
           cover={
             <ThumbnailWrapper>
               <Thumbnail
-                src={
-                  style.imageUrl ??
-                  'https://1.bp.blogspot.com/-ezrLFVDoMhg/Xlyf7yQWzaI/AAAAAAABXrA/utIBXYJDiPYJ4hMzRXrZSHrcZ11sW2PiACNcBGAsYHQ/s400/no_image_yoko.jpg'
-                }
+                src={style.imageUrl ?? 'https://1.bp.blogspot.com/-ezrLFVDoMhg/Xlyf7yQWzaI/AAAAAAABXrA/utIBXYJDiPYJ4hMzRXrZSHrcZ11sW2PiACNcBGAsYHQ/s400/no_image_yoko.jpg'}
               />
             </ThumbnailWrapper>
           }
@@ -76,11 +70,11 @@ const Cards = ({ styles, updateFunc }: CardsProps) => {
               okText={t('yes')}
               cancelText={t('no')}
             >
-              <Button type="link" block danger>
+              <Button type='link' block danger>
                 破棄
               </Button>
             </Popconfirm>,
-            <Button type="link" onClick={() => onApplyClick(style)} block>
+            <Button type='link' onClick={() => onApplyClick(style)} block>
               適用
             </Button>,
           ]}
@@ -89,10 +83,8 @@ const Cards = ({ styles, updateFunc }: CardsProps) => {
             title={style.title}
             description={
               <>
-                {style.author && <Author>{style.author}</Author>}
-                <a href={style.downloadUrl} target={'_blank'}>
-                  {t('open_style_link')}
-                </a>
+                { style.author && <Author>{style.author}</Author>}
+                <a href={style.downloadUrl} target={'_blank'}>{t('open_style_link')}</a>
               </>
             }
           />
@@ -104,16 +96,15 @@ const Cards = ({ styles, updateFunc }: CardsProps) => {
 
 const ImportedStylesList = () => {
   const [styles, setStyles] = useState<ImportedFormatAbstract[]>([]);
-  const prop = useContext(PropsContext);
 
   const onOpenStoreClick = () => {
     window.open('https://resta-frontend.pages.dev/style/', '_blank');
   };
 
   const updateTree = async () => {
-    const styles = getImportedFormats(prop);
+    const styles = getImportedFormats();
     setStyles(styles);
-  };
+  }
 
   useEffect(() => {
     void updateTree();

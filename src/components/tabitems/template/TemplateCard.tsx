@@ -4,7 +4,6 @@ import { getAbsoluteCSSSelector } from '../../../utils/CSSUtils';
 import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
 import { setFormatsAndPushToAry } from '../../../features/formatter';
 import { getStyleSheet } from '../../../features/style_sheet';
-import { UIUpdaterContext } from '../../../contexts/UIUpdater';
 import { createId } from '../../../utils/IDUtils';
 import { PropsContext } from '../../../contexts/PropsContext';
 
@@ -15,7 +14,6 @@ interface TemplateCardProps {
 const TemplateCard = ({ template }: TemplateCardProps) => {
   const ref = useRef<any>(null);
   const elementSelection = useContext(ElementSelectionContext);
-  const updater = useContext(UIUpdaterContext);
   const props = useContext(PropsContext);
 
   const onUseClick = () => {
@@ -33,8 +31,6 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
         })),
         props,
       );
-
-      updater.formatChanged();
     }
   };
 

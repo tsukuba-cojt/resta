@@ -3,52 +3,37 @@ import { FormatBlockByURL } from '../types/Format';
 import * as resta_console from './resta_console';
 import { debounce } from './debounce';
 import { IPropsContext } from '../contexts/PropsContext';
-import useFormatUtils from '../hooks/useFormatUtils';
 /**
  * localにフォーマットを保存する
  */
 
 export const saveFormat = async (prop: IPropsContext) => {
-  const debounceSave = debounce(save, 1000);
-  debounceSave(new Date(), prop);
+  const debounceSave = debounce(saveImediately, 1000);
+  debounceSave(prop);
 };
-
-let lastSaveTime = new Date();
 
 /**
  * Saves the formats to local storage.
  *
  * @param date - The current date.
  */
-const save = (date: Date, prop: IPropsContext): void => {
-  if (lastSaveTime.getTime() + 1000 > date.getTime()) {
-    return;
-  }
-  lastSaveTime = date;
+export const saveImediately = async (prop: IPropsContext): Promise<any> => {
   // フォーマットを詳細度の低い順にソートする
-  prop.setFormatsArray(
-    prop.formatsArray
-      .filter((e) => e.formats.length !== 0)
-      .sort(
-        (e) =>
-          (e.url.match(/\//g) || []).length &&
-          (e.url[e.url.length - 1] === '*' ? -1 : 1),
-      ),
-  );
-  chrome.storage.local
-    .set({ formats: JSON.stringify(prop.formatsArray) })
-    .then(() => {
-      resta_console.log('save', prop.currentUrl, prop.formatsArray);
-    });
+  const newArray = prop.formatsArray
+    .filter((e) => e.formats.length !== 0)
+    .sort(
+      (e) =>
+        (e.url.match(/\//g) || []).length &&
+        (e.url[e.url.length - 1] === '*' ? -1 : 1),
+    );
+  prop.setFormatsArray(newArray);
+  await save(newArray);
 };
 
-export const saveFormatImmediately = async (prop: IPropsContext) => {
-  useFormatUtils().sortFormats();
-  chrome.storage.local
-    .set({ formats: JSON.stringify(prop.formatsArray) })
-    .then(() => {
-      resta_console.log('save', prop.currentUrl, prop.formatsArray);
-    });
+export const save = async (ary: FormatBlockByURL[]) => {
+  await chrome.storage.local.set({ formats: JSON.stringify(ary) }).then(() => {
+    resta_console.log('save', ary);
+  });
 };
 
 /**
@@ -86,30 +71,6 @@ export const getFormatAryFromLocal = async (): Promise<any> => {
     }
   });
 };
-
-/**
- * localからフォーマットを読み込む
- * もしURLが指定されていなかったらすべてのフォーマットを読み込む
- */
-/*
-export const loadFormatForOutput = async (url: string = '') => {
-  await chrome.storage.local.get(['formats']).then((result) => {
-    if (!result.formats) {
-      resta_console.log('load:no format', url);
-      return;
-    } else {
-      resta_console.log('load', url, JSON.parse(result.formats));
-      if (JSON.parse(result.formats))
-        prop.setFormatsAry(
-          (JSON.parse(result.formats) as Array<FormatBlockByURL>).filter(
-            (e) => e.formats.length !== 0,
-          ),
-        );
-      return;
-    }
-  });
-};
-*/
 
 /**
  * localからimportしたフォーマットを読み込む

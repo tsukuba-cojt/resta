@@ -39,6 +39,14 @@ export const getDisplayedFormat = (
   return value.cssValues[value.cssValues.length - 1].cssValue;
 };
 
+/**
+ * Updates the format of a CSS property based on the provided CSS selector and key.
+ * If the value is falsy, the style rule will be removed.
+ *
+ * @param cssSelector - The CSS selector to target the element.
+ * @param cssKey - The CSS key to update.
+ * @param prop - The context object containing the formatsArray.
+ */
 export const updateFormat = (
   cssSelector: string,
   cssKey: string,

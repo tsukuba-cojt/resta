@@ -38,7 +38,6 @@ import { defaultFontFamilies } from '../../../consts/cssValues';
 import { getAbsoluteCSSSelector, kebabToCamel } from '../../../utils/CSSUtils';
 import { setFormatsAndPushToAry } from '../../../features/formatter';
 import { PropsContext } from '../../../contexts/PropsContext';
-import { UIUpdaterContext } from '../../../contexts/UIUpdater';
 
 const Wrapper = styled.div``;
 
@@ -64,7 +63,6 @@ const FontCustomizer = () => {
   );
   const [fontName, setFontName] = useState<string>('');
   const prop = useContext(PropsContext);
-  const updater = useContext(UIUpdaterContext);
 
   const inputRef = useRef<InputRef>(null);
 
@@ -106,7 +104,6 @@ const FontCustomizer = () => {
         ],
         prop,
       );
-      updater.formatChanged();
     }
   };
 

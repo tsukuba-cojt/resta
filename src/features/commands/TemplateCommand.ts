@@ -2,15 +2,15 @@ import { AbstractCommand } from 'react-command-lib/dist/esm';
 import CssCommand from './CssCommand';
 
 export default class TemplateCommand implements AbstractCommand {
-  constructor(...templates: CssCommand[]) {
+  constructor(...commands: CssCommand[]) {
     this.execute = () => {
-      templates.forEach((template) => {
-        template.execute();
+      commands.forEach((command) => {
+        command.execute();
       });
     };
     this.undo = () => {
-      templates.forEach((template) => {
-        template.undo();
+      commands.forEach((command) => {
+        command.undo();
       });
     };
   }

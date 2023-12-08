@@ -13,8 +13,8 @@ export const getStyleLayer = (
     const formatChange = format.formats.find((format) => {
       return format.cssSelector === cssSelector;
     });
-    resta_console.log('formatChange:', formatChange);
     if (!formatChange) continue;
+    resta_console.log('formatChange:', formatChange);
     for (const change of formatChange.changes.reverse()) {
       for (const cssValue of change.cssValues.reverse()) {
         styleLayerValue.push({

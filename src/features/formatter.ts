@@ -15,7 +15,7 @@ import { IPropsContext } from '../contexts/PropsContext';
 import { matchUrl } from '../utils/urlUtil';
 import CssCommand from './commands/CssCommand';
 import TemplateCommand from './commands/TemplateCommand';
-import { currentUrl, getDisplayedFormat } from './prop';
+import { currentUrl, getDisplayedFormat, updateFormat } from './prop';
 import { saveFormat } from './format_manager';
 
 export const initStyle = async () => {
@@ -37,9 +37,6 @@ export const setFormatsAndPushToAry = (
         rule.id,
         prop,
       );
-      if (c) {
-        commands.push(c);
-      }
       setStyleRule(
         {
           cssSelector: rule.cssSelector,
@@ -47,6 +44,9 @@ export const setFormatsAndPushToAry = (
         },
         prop,
       );
+      if (c) {
+        commands.push(c);
+      }
     }
   }
   if (commands.length > 0) {
@@ -91,7 +91,7 @@ export const setFormatAndPushToAry = (
     resta_console.log('setFormatAndPushToAry:invalid args, value is not found');
     return;
   }
-  const c = pushToAry(cssSelector, key, value, id, prop);
+  const c = await pushToAry(cssSelector, key, value, id, prop);
   if (c) {
     prop.executor.execute(c);
   }
@@ -171,9 +171,11 @@ export const pushToAry = (
     return {
       execute: () => {
         pushToAry(cssSelector, key, value, id, prop);
+        updateFormat(cssSelector, key, prop);
       },
       undo: () => {
         deleteFromAry(cssSelector, key, 0, prop);
+        updateFormat(cssSelector, key, prop);
       },
     };
   } else {
@@ -194,27 +196,15 @@ export const pushToAry = (
     // これにより、idに対応する要素が最後尾に移動する
     currentFormatChange.cssValues.push({ id: id, cssValue: value });
 
-    // resta_console.log('pushToAry:already exists, overwrite', cssSelector, key, value);
     return {
       execute: () => {
         pushToAry(cssSelector, key, value, id, prop);
+        updateFormat(cssSelector, key, prop);
       },
       undo: () => {
         pushToAry(cssSelector, key, log ? log[0].cssValue : '', id, prop);
+        updateFormat(cssSelector, key, prop);
       },
-      // cssSelector: cssSelector,
-      // cssKey: key,
-      // id: id,
-      // undo: {
-      //   type: 'rewrite',
-      //   cssValue: log ? log[0].cssValue : '',
-      //   index: index || 0,
-      // },
-      // redo: {
-      //   type: 'rewrite',
-      //   cssValue: value,
-      //   index: undefined,
-      // },
     };
   }
 };
@@ -230,7 +220,8 @@ export const deleteFromAry = (
 ): void => {
   const index = getIndex(cssSelector, key, id, prop);
   if (index == undefined || index === -1) {
-    resta_console.warn('deleteFromAry: bug detected, index is undefined');
+    resta_console.warn('deleteFromAry: bug detected, index is ' + index);
+    return;
   }
 
   const currentFormatChange = prop.formatsArray
@@ -254,9 +245,11 @@ export const deleteFromAry = (
   prop.executor.execute({
     execute: () => {
       deleteFromAry(cssSelector, key, id, prop);
+      updateFormat(cssSelector, key, prop);
     },
     undo: () => {
       pushToAry(cssSelector, key, deletedElem[0].cssValue, id, prop);
+      updateFormat(cssSelector, key, prop);
     },
   });
 
@@ -274,7 +267,7 @@ const getIndex = (
   prop: IPropsContext,
 ): number | undefined => {
   return prop.formatsArray
-    .find((e) => e.url === prop.editedUrl)
+    .find((e) => matchUrl(prop.editedUrl, e.url))
     ?.formats.find((e) => e.cssSelector === cssSelector)
     ?.changes.find((e) => e.cssKey === key)
     ?.cssValues.findIndex((e) => e.id === id);
@@ -371,7 +364,6 @@ const setStyleRuleOnInit = (
         );
         removeStyleRule(styles.cssSelector, key);
       }
-      resta_console.log('insertRule');
       if (canInsert) {
         styleSheet?.insertRule(
           `${styles.cssSelector}{${key}:${value}}`,

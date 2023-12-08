@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import t from '../../../features/translator';
 import React, { ChangeEvent, useContext, useState } from 'react';
 import { Button, Checkbox, Input, Modal, Popconfirm, Progress } from 'antd';
-import { saveFormatImmediately } from '../../../features/format_manager';
+import { save } from '../../../features/format_manager';
 import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
 import { getAbsoluteCSSSelector } from '../../../utils/CSSUtils';
 import Section from '../common/Section';
@@ -25,20 +25,16 @@ const { TextArea } = Input;
 
 const PageSettingTabItem = () => {
   const prop = useContext(PropsContext);
-  const onClickInitPageFormat = () => {
+  const onClickInitPageFormats = async () => {
     // editedUrlと一致するものを削除
-    prop.setFormatsArray(
-      prop.formatsArray.filter((f) => f.url !== prop.editedUrl),
-    );
-    saveFormatImmediately(prop);
+    const newAry = prop.formatsArray.filter((f) => f.url !== prop.editedUrl);
+    await save(newAry);
     window.location.reload();
   };
 
-  const onClickInitAllPageFormat = () => {
-    // FormatsArrayを空にする
-    prop.setFormatsArray([]);
+  const onClickInitAllPagesFormats = async () => {
     // localStorageのformatsを上書き
-    saveFormatImmediately(prop);
+    await save([]);
     // ページをリロード
     window.location.reload();
   };
@@ -57,7 +53,7 @@ const PageSettingTabItem = () => {
         <Popconfirm
           title={t('confirm')}
           description={t('confirm_description')}
-          onConfirm={onClickInitPageFormat}
+          onConfirm={onClickInitPageFormats}
           okText={t('yes')}
           cancelText={t('no')}
           zIndex={999999}
@@ -86,7 +82,7 @@ const PageSettingTabItem = () => {
         <Popconfirm
           title={t('confirm')}
           description={t('confirm_description')}
-          onConfirm={onClickInitAllPageFormat}
+          onConfirm={onClickInitAllPagesFormats}
           okText={t('yes')}
           cancelText={t('no')}
           zIndex={999999}

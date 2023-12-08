@@ -5,7 +5,6 @@ import SubTitle from '../common/SubTitle';
 import { DataNode } from 'antd/es/tree';
 import { DeleteOutlined, DownOutlined } from '@ant-design/icons';
 import { Tree, Button } from 'antd';
-import { UIUpdaterContext } from '../../../contexts/UIUpdater';
 import { getStyleLayer } from '../../../features/style_layer';
 import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
 import { getAbsoluteCSSSelector } from '../../../utils/CSSUtils';
@@ -31,7 +30,6 @@ const TreeWrapper = styled.div`
 
 const LayerCustomizer = () => {
   const [tree, setTree] = useState<DataNode[]>([]);
-  const updater = useContext(UIUpdaterContext);
   const elementSelection = useContext(ElementSelectionContext);
   const prop = useContext(PropsContext);
 
@@ -91,7 +89,6 @@ const LayerCustomizer = () => {
       deleteFromAry(selector, cssKey, id, prop);
       updateFormat(selector, cssKey, prop);
       await saveFormat(prop);
-      updater.formatChanged();
     })();
   };
 
@@ -105,7 +102,7 @@ const LayerCustomizer = () => {
   useEffect(() => {
     setTree(createTree());
     console.log(createTree());
-  }, [updater.changeFormatObserver, elementSelection.selectedElement]);
+  }, [elementSelection.selectedElement, prop.formatsArray]);
 
   return (
     <Wrapper>

@@ -13,7 +13,6 @@ import SizeCustomizer from './SizeCustomizer';
 import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
 import BoxShadowCustomizer from './BoxShadowCustomizer';
 import { PropsContext } from '../../../contexts/PropsContext';
-import { UIUpdaterContext } from '../../../contexts/UIUpdater';
 import { setFormatsAndPushToAry } from '../../../features/formatter';
 import { getAbsoluteCSSSelector } from '../../../utils/CSSUtils';
 
@@ -27,7 +26,6 @@ const BlockCustomizer = () => {
   const elementSelection = useContext(ElementSelectionContext);
   const [searchText, setSearchText] = useState<string>('');
   const prop = useContext(PropsContext);
-  const updater = useContext(UIUpdaterContext);
 
   const onChange = (key: string, value: string, id: number | string) => {
     if (elementSelection.selectedElement) {
@@ -43,7 +41,6 @@ const BlockCustomizer = () => {
         ],
         prop,
       );
-      updater.formatChanged();
     }
   };
 

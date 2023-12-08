@@ -1,8 +1,8 @@
-import { useCallback, useContext } from 'react';
+import { useCallback } from 'react';
 import { Format } from '../types/Format';
 import * as resta_console from '../features/resta_console';
 import { removeStyleRule, setStyleRule } from '../features/style_sheet';
-import { PropsContext } from '../contexts/PropsContext';
+import { IPropsContext } from '../contexts/PropsContext';
 
 type ReturnType = {
   removeAllFormats: VoidFunction;
@@ -16,9 +16,7 @@ type ReturnType = {
   matchUrl: (currentUrl: string, matchUrl: string) => boolean;
 };
 
-export default function useFormatUtils(): ReturnType {
-  const props = useContext(PropsContext);
-
+export default function changeFormatUtils(props: IPropsContext): ReturnType {
   const removeAllFormats = useCallback(() => {
     const newFormatsArray = props.formatsArray.splice(
       0,
@@ -38,8 +36,8 @@ export default function useFormatUtils(): ReturnType {
     }
   }, [props.formatsArray, props.currentUrl]);
 
-  const sortFormats = useCallback(() => {
-    props.setFormatsArray(
+  const sortFormats = useCallback(async () => {
+    await props.setFormatsArray(
       props.formatsArray
         .filter((e) => e.formats.length !== 0)
         .sort(

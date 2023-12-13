@@ -31,9 +31,7 @@ export const saveImediately = async (prop: IPropsContext): Promise<any> => {
 };
 
 export const save = async (ary: FormatBlockByURL[]) => {
-  await chrome.storage.local.set({ formats: JSON.stringify(ary) }).then(() => {
-    resta_console.log('save', ary);
-  });
+  await chrome.storage.local.set({ formats: JSON.stringify(ary) });
 };
 
 /**

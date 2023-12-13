@@ -1,9 +1,4 @@
-import {
-  StyleRule,
-  getStyleSheet,
-  removeStyleRule,
-  setStyleRule,
-} from './style_sheet';
+import { StyleRule, getStyleSheet, removeStyleRule } from './style_sheet';
 import * as resta_console from './resta_console';
 import {
   Format,
@@ -17,6 +12,7 @@ import CssCommand from './commands/CssCommand';
 import TemplateCommand from './commands/TemplateCommand';
 import { currentUrl, getDisplayedFormat, updateFormat } from './prop';
 import { saveFormat } from './format_manager';
+import { getIndex, getFormatValue } from './getFormatValues';
 
 export const initStyle = async () => {
   // このページに対応するフォーマットがあれば適用
@@ -30,18 +26,11 @@ export const setFormatsAndPushToAry = (
   const commands: CssCommand[] = [];
   for (const rule of rules) {
     for (const value of rule.values) {
-      const c: CssCommand | null = pushToAry(
+      const c: CssCommand | null = setCommandGenerator(
         rule.cssSelector,
         value.key,
         value.value,
         rule.id,
-        prop,
-      );
-      setStyleRule(
-        {
-          cssSelector: rule.cssSelector,
-          keys: [value.key],
-        },
         prop,
       );
       if (c) {
@@ -52,7 +41,6 @@ export const setFormatsAndPushToAry = (
   if (commands.length > 0) {
     prop.executor.execute(new TemplateCommand(...commands));
   }
-  saveFormat(prop);
 };
 
 export type RemoveRule = {
@@ -91,43 +79,41 @@ export const setFormatAndPushToAry = (
     resta_console.log('setFormatAndPushToAry:invalid args, value is not found');
     return;
   }
-  const c = await pushToAry(cssSelector, key, value, id, prop);
+  const c = setCommandGenerator(cssSelector, key, value, id, prop);
   if (c) {
     prop.executor.execute(c);
   }
-  setStyleRule(
-    {
-      cssSelector: cssSelector,
-      keys: [key],
-    },
-    prop,
-  );
-  saveFormat(prop);
 };
 
 /**
- * formatsArrayに変更内容を追加、ログにも追加する
- * すでに同じ要素がある場合は上書きし優先度レイヤーをトップにする
- * ログを返す
+ * 配列に対し、対応する要素を追加する
+ * @param cssSelector
+ * @param key
+ * @param value
+ * @param id
+ * @param prop
+ * @param index
+ * @returns
  */
-export const pushToAry = (
+export const addFormat = (
   cssSelector: string | null,
   key: string | null,
   value: string | null,
   id: number | string | null,
   prop: IPropsContext,
-): CssCommand | null => {
+  index?: number,
+): void => {
   if (!cssSelector) {
     resta_console.warn('pushToAry:invalid args, cssSelector is not found');
-    return null;
+    return;
   }
   if (!key) {
     resta_console.warn('pushToAry:invalid args, key is not found');
-    return null;
+    return;
   }
   if (!value && value !== '') {
     resta_console.warn('pushToAry:invalid args, value is not found');
-    return null;
+    return;
   }
   if (!id) {
     id = 0;
@@ -138,81 +124,178 @@ export const pushToAry = (
 
   // 以下のif文は、各配列が存在しない場合に配列を作成する処理
   // すでに該当箇所への変更がある場合は書き換えている
-  if (currentTargetFormatBlock == null) {
-    currentTargetFormatBlock = { url: prop.editedUrl, formats: [] };
-    prop.formatsArray.push(currentTargetFormatBlock);
+  if (!currentTargetFormatBlock) {
+    prop.formatsArray.push({ url: prop.editedUrl, formats: [] });
+    currentTargetFormatBlock = prop.formatsArray.find(
+      (e) => e.url === prop.editedUrl,
+    );
+
+    if (!currentTargetFormatBlock) {
+      resta_console.error('addFormat: currentTargetFormatBlock is undefined');
+      return;
+    }
   }
 
   let currentFormat: Format | undefined = currentTargetFormatBlock.formats.find(
     (e) => e.cssSelector === cssSelector,
   );
 
-  if (currentFormat == null) {
-    currentFormat = { cssSelector: cssSelector, changes: [] };
-    currentTargetFormatBlock.formats.push(currentFormat);
+  if (!currentFormat) {
+    currentTargetFormatBlock.formats.push({
+      cssSelector: cssSelector,
+      changes: [],
+    });
+    currentFormat = currentTargetFormatBlock.formats.find(
+      (e) => e.cssSelector === cssSelector,
+    );
+    if (!currentFormat) {
+      resta_console.error('addFormat: currentFormat is undefined');
+      return;
+    }
   }
 
   let currentFormatChange: FormatChange | undefined =
     currentFormat.changes.find((e) => e.cssKey === key);
 
-  if (currentFormatChange == null) {
-    currentFormatChange = { cssKey: key, cssValues: [] };
+  if (!currentFormatChange) {
     currentFormat.changes.push({ cssKey: key, cssValues: [] });
+    currentFormatChange = currentFormat.changes.find((e) => e.cssKey === key);
+    if (!currentFormatChange) {
+      resta_console.error('addFormat: currentFormatChange is undefined');
+      return;
+    }
   }
 
   const currentFormatStyleValue: FormatStyleValue | undefined =
     currentFormatChange.cssValues.find((e) => e.id === id);
 
-  if (currentFormatStyleValue == null) {
-    // idに対応する要素を追加する
-    currentFormatChange.cssValues.push({ id: id, cssValue: value });
+  // 既に要素がある場合は取り除く。
+  // この後、追加する
+  if (currentFormatStyleValue) {
+    const index = getIndex(cssSelector, key, id, prop);
+    if (!(index == undefined || index === -1))
+      currentFormatChange.cssValues.splice(index, 1);
+  }
 
-    // resta_console.log('pushToAry:push', cssSelector, key, value);
+  // currentFormatChange.cssValuesに対し、idを入れる
+  // この際、indexがあった場合はそのindexに入れる
+  if (index == undefined) {
+    currentFormatChange.cssValues.push({
+      id: id,
+      cssValue: value,
+    } as FormatStyleValue);
+  } else {
+    currentFormatChange.cssValues.splice(index, 0, {
+      id: id,
+      cssValue: value,
+    });
+  }
+
+  resta_console.log(
+    'pushToAry',
+    currentFormatChange.cssValues,
+    prop.formatsArray,
+  );
+};
+
+export const setCommandGenerator = (
+  cssSelector: string,
+  key: string,
+  value: string,
+  id: number | string,
+  prop: IPropsContext,
+): CssCommand => {
+  // indexを検索する
+  // idに対応する変更がすでにあったら、そのindexを返す
+  const index = getIndex(cssSelector, key, id, prop);
+
+  // 新しく追加する場合
+  if (index == undefined || index === -1) {
     return {
       execute: () => {
-        pushToAry(cssSelector, key, value, id, prop);
+        resta_console.log('execute:c', cssSelector, key, value, id);
+        addFormat(cssSelector, key, value, id, prop);
         updateFormat(cssSelector, key, prop);
+        saveFormat(prop);
       },
       undo: () => {
-        deleteFromAry(cssSelector, key, 0, prop);
+        resta_console.log('undo:c', cssSelector, key, value, id);
+        deleteFormat(cssSelector, key, id, prop);
         updateFormat(cssSelector, key, prop);
+        saveFormat(prop);
       },
     };
   } else {
-    // すでにidに対応する要素がある場合
-    // その要素を削除して末尾に追加する
-    const index = getIndex(cssSelector, key, id, prop);
-    if (index == undefined || index === -1) {
-      resta_console.warn('pushToAry: bug detected, index is undefined');
+    // すでにある場合、indexを指定して上書きする
+
+    const oldValue = getFormatValue(cssSelector, key, id, prop);
+    if (!oldValue) {
+      resta_console.error('setCommandGenerator: oldValue is undefined');
+      return {
+        execute: () => {
+          resta_console.log('execute:error', cssSelector, key, value, id);
+          addFormat(cssSelector, key, value, id, prop);
+          updateFormat(cssSelector, key, prop);
+          saveFormat(prop);
+        },
+        undo: () => {
+          resta_console.log('undo:error', cssSelector, key, value, id);
+          deleteFormat(cssSelector, key, id, prop);
+          updateFormat(cssSelector, key, prop);
+          saveFormat(prop);
+        },
+      };
     }
-
-    // idに対応する要素を取り除く
-    const log = currentFormatChange.cssValues.splice(
-      currentFormatChange.cssValues.findIndex((e) => e.id === id) || 0,
-      1,
-    );
-
-    // idに対応する要素を追加する
-    // これにより、idに対応する要素が最後尾に移動する
-    currentFormatChange.cssValues.push({ id: id, cssValue: value });
 
     return {
       execute: () => {
-        pushToAry(cssSelector, key, value, id, prop);
+        resta_console.log('execute:r', cssSelector, key, value, id);
+        addFormat(cssSelector, key, value, id, prop);
         updateFormat(cssSelector, key, prop);
+        saveFormat(prop);
       },
       undo: () => {
-        pushToAry(cssSelector, key, log ? log[0].cssValue : '', id, prop);
+        resta_console.log('undo:r', cssSelector, key, value, id);
+        addFormat(cssSelector, key, oldValue, id, prop, index);
         updateFormat(cssSelector, key, prop);
+        saveFormat(prop);
       },
     };
   }
 };
 
+export const deleteCssCommandGenerator = (
+  cssSelector: string,
+  key: string,
+  id: number | string,
+  prop: IPropsContext,
+): CssCommand | undefined => {
+  const index = getIndex(cssSelector, key, id, prop);
+  const oldValue = getFormatValue(cssSelector, key, id, prop);
+
+  if (!oldValue) {
+    resta_console.error('deleteCssCommandGenerator: oldValue is undefined');
+    return undefined;
+  }
+
+  return {
+    execute: () => {
+      deleteFormat(cssSelector, key, id, prop);
+      updateFormat(cssSelector, key, prop);
+      saveFormat(prop);
+    },
+    undo: () => {
+      addFormat(cssSelector, key, oldValue, id, prop, index);
+      updateFormat(cssSelector, key, prop);
+      saveFormat(prop);
+    },
+  };
+};
+
 /**
  * formatsArrayから変更内容を削除
  */
-export const deleteFromAry = (
+export const deleteFormat = (
   cssSelector: string,
   key: string,
   id: number | string,
@@ -238,39 +321,6 @@ export const deleteFromAry = (
     resta_console.warn('deleteFromAry: bug detected, deletedElem is undefined');
     return;
   }
-
-  resta_console.log('deleteFromAry', prop.formatsArray);
-
-  // TODO: index処理どこいった？
-  prop.executor.execute({
-    execute: () => {
-      deleteFromAry(cssSelector, key, id, prop);
-      updateFormat(cssSelector, key, prop);
-    },
-    undo: () => {
-      pushToAry(cssSelector, key, deletedElem[0].cssValue, id, prop);
-      updateFormat(cssSelector, key, prop);
-    },
-  });
-
-  saveFormat(prop);
-};
-
-/**
- * 要素の、cssSelectorに対するスタイルスタックのindexを返す
- * 要素がない場合はundefinedを返す
- */
-const getIndex = (
-  cssSelector: string,
-  key: string,
-  id: number | string,
-  prop: IPropsContext,
-): number | undefined => {
-  return prop.formatsArray
-    .find((e) => matchUrl(prop.editedUrl, e.url))
-    ?.formats.find((e) => e.cssSelector === cssSelector)
-    ?.changes.find((e) => e.cssKey === key)
-    ?.cssValues.findIndex((e) => e.id === id);
 };
 
 /**

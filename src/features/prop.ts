@@ -61,9 +61,11 @@ export const updateFormat = (
     cssKey,
   );
   if (!value) {
+    resta_console.log('updateFormat: remove', cssSelector, cssKey);
     removeStyleRule(cssSelector, cssKey);
     return;
   }
+  resta_console.log('updateFormat: apply', cssSelector, cssKey, value);
   setStyleRule(
     {
       cssSelector: cssSelector,

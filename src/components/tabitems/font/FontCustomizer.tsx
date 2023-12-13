@@ -214,8 +214,8 @@ const FontCustomizer = () => {
                 <IconButton
                   icon={<BoldOutlined />}
                   cssKey={'font-weight'}
-                  actualValue={'700'}
-                  defaultValue={'400'}
+                  actualValue={'bold'}
+                  defaultValue={'normal'}
                   id={103}
                   onChange={onChange}
                 />

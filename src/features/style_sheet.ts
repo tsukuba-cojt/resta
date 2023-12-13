@@ -65,7 +65,7 @@ export const setStyleRule = (
         continue;
       }
       if (rule.style.getPropertyValue(key) === value) continue;
-      resta_console.log('setProperty');
+      resta_console.log('setProperty', key, value);
       rule.style.setProperty(key, value);
     }
   } else {
@@ -80,7 +80,7 @@ export const setStyleRule = (
         removeStyleRule(styles.cssSelector, key);
         continue;
       }
-      resta_console.log('insertRule');
+      resta_console.log('insertRule', key, value);
       if (canInsert) {
         styleSheet?.insertRule(
           `${styles.cssSelector}{${key}:${value}}`,

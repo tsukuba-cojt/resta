@@ -8,7 +8,7 @@ import { Tree, Button } from 'antd';
 import { getStyleLayer } from '../../../features/style_layer';
 import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
 import { getAbsoluteCSSSelector } from '../../../utils/CSSUtils';
-import { deleteFromAry } from '../../../features/formatter';
+import { deleteCssCommandGenerator } from '../../../features/formatter';
 import t from '../../../features/translator';
 import { updateFormat } from '../../../features/prop';
 import { saveFormat } from '../../../features/format_manager';
@@ -86,7 +86,9 @@ const LayerCustomizer = () => {
     id: string | number,
   ) => {
     (async () => {
-      deleteFromAry(selector, cssKey, id, prop);
+      const c = deleteCssCommandGenerator(selector, cssKey, id, prop);
+      if (!c) return;
+      await c.execute();
       updateFormat(selector, cssKey, prop);
       await saveFormat(prop);
     })();

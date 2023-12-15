@@ -88,6 +88,10 @@ const FontCustomizer = () => {
 
   const onChangeFonts = (values: string[]) => {
     setSelectedFonts(values);
+    const value = values
+      .map((font) => (defaultFontFamilies.includes(font) ? font : `"${font}"`))
+      .join(', ');
+    onChange('font-family', value, 'font-family');
   };
 
   const onChange = (key: string, value: string, id: number | string) => {
@@ -106,13 +110,6 @@ const FontCustomizer = () => {
       );
     }
   };
-
-  useEffect(() => {
-    const value = selectedFonts
-      .map((font) => (defaultFontFamilies.includes(font) ? font : `"${font}"`))
-      .join(', ');
-    onChange('font-family', value, 'font-family');
-  }, [selectedFonts]);
 
   useEffect(() => {
     (async () => {

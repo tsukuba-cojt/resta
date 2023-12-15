@@ -371,28 +371,23 @@ const setStyleRuleOnInit = (
   },
   formatsArray: Array<FormatBlockByURL>,
 ) => {
+  resta_console.log('setStyleRuleOnInit', styles, formatsArray);
   if (!styles.keys || !styles.cssSelector) {
     resta_console.log('setStyleRule: invalid value');
     return;
   }
   const styleSheet = getStyleSheet();
-  // insertRuleが使えるかどうか
-  // 使えない場合、つまり古いバージョンのChromeの場合はaddRuleを使う
-  const canInsert = styleSheet.insertRule as
-    | ((rule: string, index?: number) => number)
-    | undefined;
   const formats = formatsArray
     .map((e) => e.formats)
     .filter((e) => e !== undefined)
     .map((e) => e.find((e) => e.cssSelector === styles.cssSelector))
     .filter((e) => e !== undefined);
 
-  const rule = Array.from(styleSheet?.cssRules).find(
-    (e) => e instanceof CSSStyleRule && e.selectorText === styles.cssSelector,
-  ) as CSSStyleRule | undefined;
-
-  if (rule) {
-    for (const key of styles.keys) {
+  for (const key of styles.keys) {
+    const rule = Array.from(styleSheet?.cssRules).find(
+      (e) => e instanceof CSSStyleRule && e.selectorText === styles.cssSelector,
+    ) as CSSStyleRule | undefined;
+    if (rule) {
       const value = getDisplayedFormat(formats, key);
       if (!value) {
         resta_console.error(
@@ -404,9 +399,7 @@ const setStyleRuleOnInit = (
       if (rule.style.getPropertyValue(key) === value) continue;
       resta_console.log('setProperty');
       rule.style.setProperty(key, value);
-    }
-  } else {
-    for (const key of styles.keys) {
+    } else {
       const value = getDisplayedFormat(formats, key);
       if (!value) {
         resta_console.error(
@@ -414,18 +407,10 @@ const setStyleRuleOnInit = (
         );
         removeStyleRule(styles.cssSelector, key);
       }
-      if (canInsert) {
-        styleSheet?.insertRule(
-          `${styles.cssSelector}{${key}:${value}}`,
-          styleSheet.cssRules.length,
-        );
-      } else {
-        styleSheet?.addRule(
-          styles.cssSelector,
-          `${key}:${value}`,
-          styleSheet.rules.length,
-        );
-      }
+      styleSheet?.insertRule(
+        `${styles.cssSelector}{${key}:${value}}`,
+        styleSheet.cssRules.length,
+      );
     }
   }
 };

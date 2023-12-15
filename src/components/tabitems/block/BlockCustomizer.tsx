@@ -15,11 +15,19 @@ import BoxShadowCustomizer from './BoxShadowCustomizer';
 import { PropsContext } from '../../../contexts/PropsContext';
 import { setFormatsAndPushToAry } from '../../../features/formatter';
 import { getAbsoluteCSSSelector } from '../../../utils/CSSUtils';
+import InteractiveStyler from './InteractiveStyler';
 
 const Wrapper = styled.div``;
 
 const InputWrapper = styled.div`
   padding-bottom: 12px;
+`;
+
+const InteractiveStylerWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const BlockCustomizer = () => {
@@ -64,6 +72,9 @@ const BlockCustomizer = () => {
               onChange={(e) => setSearchText(e.currentTarget!.value)}
             />
           </InputWrapper>
+          <InteractiveStylerWrapper>
+            <InteractiveStyler />
+          </InteractiveStylerWrapper>
           {Object.entries(customizers)
             .filter((entry) =>
               searchText ? t(entry[0]).includes(searchText) : true,

@@ -31,6 +31,8 @@ type ReturnType = {
   setPaddingRight: React.Dispatch<React.SetStateAction<number>>;
   setPaddingBottom: React.Dispatch<React.SetStateAction<number>>;
   setPaddingLeft: React.Dispatch<React.SetStateAction<number>>;
+  setIsMarginSelected: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsPaddingSelected: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const DIRECTION_RIGHT = 0;
@@ -57,7 +59,7 @@ export default function useInteractiveStylingHelper(): ReturnType {
   const [paddingBottom, setPaddingBottom] = useState<number>(10);
   const [paddingLeft, setPaddingLeft] = useState<number>(10);
   const [isMarginSelected, setIsMarginSelected] = useState<boolean>(false);
-  const [isPaddingSelected, setIsPaddingSelected] = useState<boolean>(false);
+  const [isPaddingSelected, setIsPaddingSelected] = useState<boolean>(true);
 
   const onMouseMove = useCallback((e: MouseEvent) => {
     const deltaX = e.clientX - mouseStart.current[0];
@@ -193,5 +195,7 @@ export default function useInteractiveStylingHelper(): ReturnType {
     setPaddingRight,
     setPaddingBottom,
     setPaddingLeft,
+    setIsMarginSelected,
+    setIsPaddingSelected
   }
 }

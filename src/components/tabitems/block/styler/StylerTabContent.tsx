@@ -10,11 +10,21 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 
-const DirectionSetter = styled.div`
+const DirectionSetter = styled.div<{
+  topColor?: string;
+  rightColor?: string;
+  bottomColor?: string;
+  leftColor?: string;
+}>`
   position: relative;
   flex: 0;
   width: ${DIRECTION_BUTTON_WIDTH}px;
   height: ${DIRECTION_BUTTON_WIDTH}px;
+  box-sizing: border-box;
+  border-top: ${props => `${DIRECTION_BUTTON_HEIGHT}px solid ${props.topColor ?? 'lightgray'}`};
+  border-right: ${props => `${DIRECTION_BUTTON_HEIGHT}px solid ${props.rightColor ?? 'lightgray'}`};
+  border-bottom: ${props => `${DIRECTION_BUTTON_HEIGHT}px solid ${props.bottomColor ?? 'lightgray'}`};
+  border-left: ${props => `${DIRECTION_BUTTON_HEIGHT}px solid ${props.leftColor ?? 'lightgray'}`};
 `;
 
 const DirectionButton = styled.button<{
@@ -25,37 +35,46 @@ const DirectionButton = styled.button<{
   bottom?: number;
   left?: number;
   selected: boolean;
-  color?: string;
 }>`
   position: absolute;
   width: ${props => props.width}px;
   height: ${props => props.height}px;
-  top: ${props => props.top == null ? 'unset' : `${props.top}px`};
-  right: ${props => props.right == null ? 'unset' : `${props.right}px`};
-  bottom: ${props => props.bottom == null ? 'unset' : `${props.bottom}px`};
-  left: ${props => props.left == null ? 'unset' : `${props.left}px`};
+  top: ${props => props.top == null ? 'unset' : `${props.top - DIRECTION_BUTTON_HEIGHT}px`};
+  right: ${props => props.right == null ? 'unset' : `${props.right - DIRECTION_BUTTON_HEIGHT}px`};
+  bottom: ${props => props.bottom == null ? 'unset' : `${props.bottom - DIRECTION_BUTTON_HEIGHT}px`};
+  left: ${props => props.left == null ? 'unset' : `${props.left - DIRECTION_BUTTON_HEIGHT}px`};
   box-shadow: ${props => props.selected ? '0px 0px 16px -4px #000000' : 'none'};
-  background-color: ${props => props.selected && props.color ? props.color : (!props.selected && props.color ? props.color : (props.selected ? '#00b7ee' : 'lightgray'))};
+  background-color: ${props => props.selected ? '#00b7ee' : 'transparent'};
   outline: none;
   border: none;
   z-index: ${props => props.selected ? 10 : 0};
+  padding: 0;
+  cursor: pointer;
 
   &:focus {
     outline: none;
   }
 `;
 
-const Description = styled.p`
+const AdditionalContentText = styled.p`
   font-size: 0.7rem;
-  margin-top: 8px;
   text-align: right;
 `;
 
+const AdditionalContent = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+`;
+
 type Props = {
-  topValue: number;
-  rightValue: number;
-  bottomValue: number;
-  leftValue: number;
+  topValue?: number;
+  rightValue?: number;
+  bottomValue?: number;
+  leftValue?: number;
   setTopValue: React.Dispatch<React.SetStateAction<number>>;
   setRightValue: React.Dispatch<React.SetStateAction<number>>;
   setBottomValue: React.Dispatch<React.SetStateAction<number>>;
@@ -64,6 +83,8 @@ type Props = {
   rightColor?: string;
   bottomColor?: string;
   leftColor?: string;
+  additionalContents?: { [name: string]: React.ReactNode };
+  onDirectionChange?: (direction: 'top' | 'right' | 'bottom' | 'left') => void;
 }
 
 export default function StylerTabContent({
@@ -78,9 +99,17 @@ export default function StylerTabContent({
                                            topColor,
                                            rightColor,
                                            bottomColor,
-                                           leftColor
+                                           leftColor,
+                                           additionalContents = {},
+                                           onDirectionChange = () => {
+                                           }
                                          }: Props) {
   const [direction, setDirection] = React.useState<'top' | 'right' | 'bottom' | 'left'>('top');
+
+  const _onDirectionChange = useCallback((direction: 'top' | 'right' | 'bottom' | 'left') => {
+    onDirectionChange(direction);
+    setDirection(direction);
+  }, []);
 
   const onChange = useCallback((value: number | null) => {
     if (value == null) {
@@ -129,17 +158,19 @@ export default function StylerTabContent({
     <Wrapper>
       <Row gutter={[8, 0]} align={'middle'}>
         <Col span={5}>
-          <DirectionSetter>
+          <DirectionSetter topColor={topColor} rightColor={rightColor} bottomColor={bottomColor} leftColor={leftColor}>
             <DirectionButton width={DIRECTION_BUTTON_WIDTH} height={DIRECTION_BUTTON_HEIGHT} top={0} left={0}
-                             color={topColor} selected={direction === 'top'} onClick={() => setDirection('top')} />
+                             selected={direction === 'top'}
+                             onClick={() => _onDirectionChange('top')} />
             <DirectionButton width={DIRECTION_BUTTON_HEIGHT} height={DIRECTION_BUTTON_WIDTH} top={0} right={0}
-                             color={rightColor} selected={direction === 'right'}
-                             onClick={() => setDirection('right')} />
+                             selected={direction === 'right'}
+                             onClick={() => _onDirectionChange('right')} />
             <DirectionButton width={DIRECTION_BUTTON_WIDTH} height={DIRECTION_BUTTON_HEIGHT} bottom={0} left={0}
-                             color={bottomColor} selected={direction === 'bottom'}
-                             onClick={() => setDirection('bottom')} />
+                             selected={direction === 'bottom'}
+                             onClick={() => _onDirectionChange('bottom')} />
             <DirectionButton width={DIRECTION_BUTTON_HEIGHT} height={DIRECTION_BUTTON_WIDTH} top={0} left={0}
-                             color={leftColor} selected={direction === 'left'} onClick={() => setDirection('left')} />
+                             selected={direction === 'left'}
+                             onClick={() => _onDirectionChange('left')} />
           </DirectionSetter>
         </Col>
         <Col span={8}>
@@ -154,9 +185,26 @@ export default function StylerTabContent({
           <InputNumber addonAfter={UnitSelect} defaultValue={0} onChange={onChange} value={value} />
         </Col>
       </Row>
-      <Description>
-        <Text type="secondary">上, 右, 下, 左 = {topValue}, {rightValue}, {bottomValue}, {leftValue}</Text>
-      </Description>
+
+      <AdditionalContent>
+        <AdditionalContentText>
+          <Text type='secondary'>サイズ</Text>
+        </AdditionalContentText>
+        <AdditionalContentText>
+          <Text type='secondary'>上, 右, 下, 左
+            = {topValue != null ? topValue : '_'}, {rightValue != null ? rightValue : '_'}, {bottomValue != null ? bottomValue : '_'}, {leftValue != null ? leftValue : '_'}
+          </Text>
+        </AdditionalContentText>
+      </AdditionalContent>
+
+      {Object.entries(additionalContents).map(([name, content], index) => (
+        <AdditionalContent key={index}>
+          <AdditionalContentText>
+            <Text type='secondary'>{name}</Text>
+          </AdditionalContentText>
+          {content}
+        </AdditionalContent>
+      ))}
     </Wrapper>
   );
 }

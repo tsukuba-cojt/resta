@@ -42,7 +42,7 @@ const IconButton = ({
   }, [elementSelection.selectedElement]);
 
   return (
-    <Button type={isOn() ? 'primary' : 'ghost'} icon={icon} onClick={onClick} />
+    <Button type={isOn() ? 'primary' : 'text'} disabled={!isOn()} icon={icon} onClick={onClick} />
   );
 };
 

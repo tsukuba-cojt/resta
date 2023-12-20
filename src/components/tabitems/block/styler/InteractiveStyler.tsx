@@ -5,6 +5,7 @@ import BorderRadiusStyler from './BorderRadiusStyler';
 import useInteractiveStylingHelper from '../../../../hooks/useInteractiveStylingHelper';
 import { Tabs, TabsProps } from 'antd';
 import StylerTabContent from './StylerTabContent';
+import BorderStylerTabContent from './BorderStylerTabContent';
 
 const BASE_SIZE = 200;
 const ELEMENT_SIZE = 50;
@@ -28,10 +29,6 @@ export default function InteractiveStyler() {
   const paddingRight = useMemo(() => Math.min(MAX_VALUE, h.paddingRight), [h.paddingRight]);
   const paddingBottom = useMemo(() => Math.min(MAX_VALUE, h.paddingBottom), [h.paddingBottom]);
   const paddingLeft = useMemo(() => Math.min(MAX_VALUE, h.paddingLeft), [h.paddingLeft]);
-  const borderTop = useMemo(() => Math.min(MAX_VALUE, h.borderTopLeft?.width ?? 0), [h.borderTopLeft]);
-  const borderRight = useMemo(() => Math.min(MAX_VALUE, h.borderTopRight?.width ?? 0), [h.borderTopRight]);
-  const borderBottom = useMemo(() => Math.min(MAX_VALUE, h.borderBottomLeft?.width ?? 0), [h.borderBottomLeft]);
-  const borderLeft = useMemo(() => Math.min(MAX_VALUE, h.borderBottomLeft?.width ?? 0), [h.borderBottomLeft]);
   const marginTop = useMemo(() => Math.min(MAX_VALUE, h.marginTop), [h.marginTop]);
   const marginRight = useMemo(() => Math.min(MAX_VALUE, h.marginRight), [h.marginRight]);
   const marginBottom = useMemo(() => Math.min(MAX_VALUE, h.marginBottom), [h.marginBottom]);
@@ -57,17 +54,21 @@ export default function InteractiveStyler() {
     {
       key: '3',
       label: '枠線と角丸',
-      children: 'test'
+      children: <BorderStylerTabContent topValue={h.borderTopLeft} rightValue={h.borderTopRight}
+                                        bottomValue={h.borderBottomRight}
+                                        leftValue={h.borderBottomLeft}
+                                        setTopValue={h.setBorderTopLeft} setRightValue={h.setBorderTopRight}
+                                        setBottomValue={h.setBorderBottomRight} setLeftValue={h.setBorderBottomLeft} />
     }
   ];
 
   return (
     <>
       <Wrapper>
-        <ResizableComponent baseWidth={ELEMENT_SIZE + paddingLeft + paddingRight + borderLeft + borderRight}
-                            baseHeight={ELEMENT_SIZE + paddingTop + paddingBottom + borderTop + borderBottom}
-                            offsetX={baseOffsetX - marginLeft - borderLeft - paddingLeft}
-                            offsetY={baseOffsetY - marginTop - borderTop - paddingTop}
+        <ResizableComponent baseWidth={ELEMENT_SIZE + paddingLeft + paddingRight}
+                            baseHeight={ELEMENT_SIZE + paddingTop + paddingBottom}
+                            offsetX={baseOffsetX - marginLeft - paddingLeft}
+                            offsetY={baseOffsetY - marginTop - paddingTop}
                             isSelected={h.isMarginSelected}
                             top={marginTop} right={marginRight} bottom={marginBottom} left={marginLeft}
                             color={'#F8CB9C'}
@@ -84,7 +85,8 @@ export default function InteractiveStyler() {
                             onMouseClick={h.onMouseClickOnPaddingStyler}>
           {h.isBorderSelected &&
             <>
-              <BorderRadiusStyler direction={'top-left'} border={h.borderTopLeft} setBorder={h.setBorderTopLeft} />
+              <BorderRadiusStyler direction={'top-left'} border={h.borderTopLeft}
+                                  setBorder={h.setBorderTopLeft} />
               <BorderRadiusStyler direction={'top-right'} border={h.borderTopRight}
                                   setBorder={h.setBorderTopRight} />
               <BorderRadiusStyler direction={'bottom-right'} border={h.borderBottomRight}

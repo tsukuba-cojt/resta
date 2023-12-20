@@ -19,6 +19,7 @@ type ReturnType = {
   paddingLeft: number;
   isMarginSelected: boolean;
   isPaddingSelected: boolean;
+  isBorderSelected: boolean;
   setMarginTop: React.Dispatch<React.SetStateAction<number>>;
   setMarginRight: React.Dispatch<React.SetStateAction<number>>;
   setMarginBottom: React.Dispatch<React.SetStateAction<number>>;
@@ -33,6 +34,7 @@ type ReturnType = {
   setPaddingLeft: React.Dispatch<React.SetStateAction<number>>;
   setIsMarginSelected: React.Dispatch<React.SetStateAction<boolean>>;
   setIsPaddingSelected: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsBorderSelected: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const DIRECTION_RIGHT = 0;
@@ -60,6 +62,7 @@ export default function useInteractiveStylingHelper(): ReturnType {
   const [paddingLeft, setPaddingLeft] = useState<number>(10);
   const [isMarginSelected, setIsMarginSelected] = useState<boolean>(false);
   const [isPaddingSelected, setIsPaddingSelected] = useState<boolean>(true);
+  const [isBorderSelected, setIsBorderSelected] = useState<boolean>(false);
 
   const onMouseMove = useCallback((e: MouseEvent) => {
     const deltaX = e.clientX - mouseStart.current[0];
@@ -143,9 +146,10 @@ export default function useInteractiveStylingHelper(): ReturnType {
     }
   }, [isMarginSelected, isPaddingSelected, onMouseMove, onMouseUp]);
 
-  const onMouseClick = useCallback((margin: boolean, padding: boolean) => {
+  const onMouseClick = useCallback((margin: boolean, padding: boolean, border: boolean) => {
     setIsMarginSelected(margin);
     setIsPaddingSelected(padding);
+    setIsBorderSelected(border);
   }, []);
 
   const onMouseDownOnMarginStyler = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -157,11 +161,11 @@ export default function useInteractiveStylingHelper(): ReturnType {
   }, [onMouseDown]);
 
   const onMouseClickOnMarginStyler = useCallback(() => {
-    onMouseClick(true, false);
+    onMouseClick(true, false, false);
   }, [onMouseClick]);
 
   const onMouseClickOnPaddingStyler = useCallback(() => {
-    onMouseClick(false, true);
+    onMouseClick(false, true, false);
   }, [onMouseClick]);
 
   return {
@@ -183,6 +187,7 @@ export default function useInteractiveStylingHelper(): ReturnType {
     paddingLeft,
     isMarginSelected,
     isPaddingSelected,
+    isBorderSelected,
     setMarginLeft,
     setMarginRight,
     setMarginTop,
@@ -196,6 +201,7 @@ export default function useInteractiveStylingHelper(): ReturnType {
     setPaddingBottom,
     setPaddingLeft,
     setIsMarginSelected,
-    setIsPaddingSelected
+    setIsPaddingSelected,
+    setIsBorderSelected,
   }
 }

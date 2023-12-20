@@ -82,7 +82,7 @@ export default function InteractiveStyler() {
                             color={'#ffffff'}
                             onMouseDown={h.onMouseDownOnPaddingStyler}
                             onMouseClick={h.onMouseClickOnPaddingStyler}>
-          {h.isPaddingSelected &&
+          {h.isBorderSelected &&
             <>
               <BorderRadiusStyler direction={'top-left'} border={h.borderTopLeft} setBorder={h.setBorderTopLeft} />
               <BorderRadiusStyler direction={'top-right'} border={h.borderTopRight}
@@ -108,14 +108,17 @@ export default function InteractiveStyler() {
           case '1':
             h.setIsPaddingSelected(true);
             h.setIsMarginSelected(false);
+            h.setIsBorderSelected(false);
             break;
           case '2':
             h.setIsPaddingSelected(false);
             h.setIsMarginSelected(true);
+            h.setIsBorderSelected(false);
             break;
           case '3':
             h.setIsPaddingSelected(false);
             h.setIsMarginSelected(false);
+            h.setIsBorderSelected(true);
             break;
         }
       }} />

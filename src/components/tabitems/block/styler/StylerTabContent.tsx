@@ -112,6 +112,9 @@ type Props = {
   onDirectionChange?: (direction: Direction[]) => void;
 }
 
+/**
+ * パディング、マージンおよび枠線と角丸タブのコンテンツ
+ */
 export default function StylerTabContent({
                                            topValue,
                                            rightValue,
@@ -129,8 +132,15 @@ export default function StylerTabContent({
                                            onDirectionChange = () => {
                                            }
                                          }: Props) {
+
+  /**
+   * 選択されている方向
+   */
   const [directions, setDirections] = React.useState<Direction[]>(['top', 'right', 'bottom', 'left']);
 
+  /**
+   * 選択されている方向が変わったときの処理
+   */
   const _onDirectionChange = useCallback((direction: Direction | Direction[]) => {
     if (typeof direction === 'string') {
       const newDirections = directions.includes(direction) ? directions.filter(d => d !== direction) : [...directions, direction];
@@ -147,6 +157,9 @@ export default function StylerTabContent({
     }
   }, [directions, onDirectionChange]);
 
+  /**
+   * 指定された方向から値を取得する
+   */
   const getValueByDirection = useCallback((direction: Direction) => {
     switch (direction) {
       case 'top':
@@ -160,6 +173,9 @@ export default function StylerTabContent({
     }
   }, [topValue, rightValue, bottomValue, leftValue]);
 
+  /**
+   * 指定された方向の値を設定する
+   */
   const setValueByDirection = useCallback((direction: Direction, value: number | undefined) => {
     switch (direction) {
       case 'top':
@@ -177,6 +193,9 @@ export default function StylerTabContent({
     }
   }, [topValue, rightValue, bottomValue, leftValue]);
 
+  /**
+   * スライダーまたはインプットによって値が変更されたときの処理
+   */
   const onChange = useCallback((value: number | null | undefined) => {
     if (value == null) {
       value = undefined;
@@ -187,10 +206,17 @@ export default function StylerTabContent({
     }
   }, [directions, setTopValue, setRightValue, setBottomValue, setLeftValue]);
 
+  /**
+   * リセットボタンが押されたときの処理
+   */
   const onResetClick = useCallback(() => {
     onChange(undefined);
   }, [onChange]);
 
+  /**
+   * 現在選択されている方向の値を取得する
+   * すべての方向が同じ値を持っている場合はその値を、そうでない場合には undefined を返す
+   */
   const value = useMemo(() => {
     if (directions.length > 1) {
       let isAllSame = true;
@@ -215,6 +241,9 @@ export default function StylerTabContent({
   const { Text } = Typography;
   const { Option } = Select;
 
+  /**
+   * 単位選択セレクトボックス
+   */
   const UnitSelect = (
     <Select defaultValue='px' style={{ width: 60 }}>
       {spaceUnits.map(unit => <Option value={unit}>{unit}</Option>)}

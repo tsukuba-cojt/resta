@@ -19,6 +19,10 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
+/**
+ * ブロック要素のスタイルをインタラクティブに設定するコンポーネント
+ * @constructor
+ */
 export default function InteractiveStyler() {
   const MAX_VALUE = 25;
   const h = useInteractiveStylingHelper();
@@ -34,6 +38,9 @@ export default function InteractiveStyler() {
   const marginBottom = useMemo(() => h.marginBottom != undefined ? Math.min(MAX_VALUE, h.marginBottom) : 0, [h.marginBottom]);
   const marginLeft = useMemo(() => h.marginLeft != undefined ? Math.min(MAX_VALUE, h.marginLeft) : undefined, [h.marginLeft]);
 
+  /**
+   * タブの要素
+   */
   const items: TabsProps['items'] = [
     {
       key: '1',

@@ -20,6 +20,9 @@ const Description = styled.p`
   text-align: right;
 `;
 
+/**
+ * カラーピッカーと色の値を表示するコンポーネント
+ */
 const Color = ({ onChange, value }: {
   onChange: (c: string | Color | undefined) => void,
   value: string | undefined
@@ -44,6 +47,9 @@ const Color = ({ onChange, value }: {
   );
 };
 
+/**
+ * 角丸の値を表示するコンポーネント
+ */
 const BorderRadius = ({ topValue, rightValue, bottomValue, leftValue }:
                         {
                           topValue: number | undefined;
@@ -65,6 +71,9 @@ const BorderRadius = ({ topValue, rightValue, bottomValue, leftValue }:
   }
 ;
 
+/**
+ * 全ての値が同じでないことを示す値
+ */
 const NOT_ALL_SAME = '_NOT_ALL_SAME';
 
 type Props = {
@@ -78,6 +87,9 @@ type Props = {
   setLeftValue: React.Dispatch<React.SetStateAction<Border>>;
 }
 
+/**
+ * 枠線と角丸タブのコンテンツ
+ */
 export default function BorderStylerTabContent({
                                                  topValue,
                                                  rightValue,
@@ -89,24 +101,14 @@ export default function BorderStylerTabContent({
                                                  setLeftValue
                                                }: Props) {
 
+  /**
+   * 選択されている方向
+   */
   const [directions, setDirections] = useState<Direction[]>(['top', 'right', 'bottom', 'left']);
 
-  const setTopWidth = useCallback((width: SetStateAction<number | undefined>) => {
-    setTopValue({ ...topValue, width: width as number | undefined });
-  }, [topValue, setTopValue, directions]);
-
-  const setRightWidth = useCallback((width: SetStateAction<number | undefined>) => {
-    setRightValue({ ...rightValue, width: width as number | undefined });
-  }, [rightValue, setRightValue, directions]);
-
-  const setBottomWidth = useCallback((width: SetStateAction<number | undefined>) => {
-    setBottomValue({ ...bottomValue, width: width as number | undefined });
-  }, [bottomValue, setBottomValue, directions]);
-
-  const setLeftWidth = useCallback((width: SetStateAction<number | undefined>) => {
-    setLeftValue({ ...leftValue, width: width as number | undefined });
-  }, [leftValue, setLeftValue, directions]);
-
+  /**
+   * 指定された方向の値を取得する
+   */
   const getValueByDirection = useCallback((direction: Direction) => {
     switch (direction) {
       case 'top':
@@ -120,6 +122,9 @@ export default function BorderStylerTabContent({
     }
   }, [topValue, rightValue, bottomValue, leftValue]);
 
+  /**
+   * 指定された方向の値を設定する
+   */
   const setValueByDirection = useCallback((direction: Direction, border: Border) => {
     switch (direction) {
       case 'top':
@@ -137,6 +142,29 @@ export default function BorderStylerTabContent({
     }
   }, [topValue, rightValue, bottomValue, leftValue]);
 
+  /**
+   * 指定された方向の幅を設定する
+   */
+  const setTopWidth = useCallback((width: SetStateAction<number | undefined>) => {
+    setTopValue({ ...topValue, width: width as number | undefined });
+  }, [topValue, setTopValue, directions]);
+
+  const setRightWidth = useCallback((width: SetStateAction<number | undefined>) => {
+    setRightValue({ ...rightValue, width: width as number | undefined });
+  }, [rightValue, setRightValue, directions]);
+
+  const setBottomWidth = useCallback((width: SetStateAction<number | undefined>) => {
+    setBottomValue({ ...bottomValue, width: width as number | undefined });
+  }, [bottomValue, setBottomValue, directions]);
+
+  const setLeftWidth = useCallback((width: SetStateAction<number | undefined>) => {
+    setLeftValue({ ...leftValue, width: width as number | undefined });
+  }, [leftValue, setLeftValue, directions]);
+
+  /**
+   * 現在指定されている方向の色
+   * 全ての方向が同じ色であればその色を、そうでなければ undefined を返す
+   */
   const currentColor = useMemo((): string | undefined => {
     if (directions.length > 1) {
       let isAllSame = true;
@@ -158,6 +186,9 @@ export default function BorderStylerTabContent({
     return getValueByDirection(directions[0]).color;
   }, [directions, topValue, rightValue, bottomValue, leftValue]);
 
+  /**
+   * 色が変更されたときの処理
+   */
   const onChangeColor = useCallback((color: string | Color | undefined) => {
     const colorText = typeof color === 'string' || typeof color == 'undefined' ? color : color.toRgbString();
     for (const direction of directions) {
@@ -165,12 +196,18 @@ export default function BorderStylerTabContent({
     }
   }, [topValue, rightValue, bottomValue, leftValue, setTopValue, setRightValue, setBottomValue, setLeftValue, directions]);
 
+  /**
+   * 角丸が変更されたときの処理
+   */
   const onChangeRadius = useCallback((value: number | undefined) => {
     for (const direction of directions) {
       setValueByDirection(direction, { ...getValueByDirection(direction), radius: value });
     }
   }, [topValue, rightValue, bottomValue, leftValue, setTopValue, setRightValue, setBottomValue, setLeftValue, directions]);
 
+  /**
+   * 追加のコンテンツ
+   */
   const additionalContents: Record<string, [React.ReactNode, ((value: any) => void)]> = {
     '角丸': [
       <BorderRadius topValue={topValue.radius} rightValue={rightValue.radius} bottomValue={bottomValue.radius}

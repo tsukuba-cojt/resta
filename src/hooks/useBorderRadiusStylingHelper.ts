@@ -11,6 +11,9 @@ type ReturnType = {
   ref: React.RefObject<HTMLDivElement>;
 }
 
+/**
+ * つまみによって角丸のサイズを変更するロジックを集めたフック
+ */
 export default function useBorderRadiusStylingHelper({direction, border, setBorder}: Args): ReturnType {
   const ref = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -18,6 +21,9 @@ export default function useBorderRadiusStylingHelper({direction, border, setBord
   const isDraggingRef = useRef<boolean>(false);
   const startRef = useRef<number[]>([0, 0]);
 
+  /**
+   * つまみの位置を更新する
+   */
   const updateKnobPosition = useCallback((r: number) => {
     const style = ref.current!.style;
     const rr = r == null ? (border?.radius ?? 0) : r;
@@ -43,12 +49,18 @@ export default function useBorderRadiusStylingHelper({direction, border, setBord
     }
   }, [direction]);
 
+  /**
+   * 角丸の値が変更されたときのフック
+   */
   useLayoutEffect(() => {
     updateKnobPosition(border?.radius ?? 0);
     startRef.current = start;
     isDraggingRef.current = isDragging;
   }, [border?.radius, direction, isDragging, start, updateKnobPosition]);
 
+  /**
+   * 角丸の値を変更する
+   */
   const setRadius = useCallback((r: number) => {
     setBorder({
       ...border!,
@@ -56,6 +68,9 @@ export default function useBorderRadiusStylingHelper({direction, border, setBord
     });
   }, [border, setBorder]);
 
+  /**
+   * マウスが動いたときの処理
+   */
   const onMouseMove = useCallback((e: MouseEvent) => {
     if (!isDraggingRef.current) {
       return;
@@ -79,12 +94,18 @@ export default function useBorderRadiusStylingHelper({direction, border, setBord
     setRadius(delta);
   }, [direction, setRadius, updateKnobPosition]);
 
+  /**
+   * マウスが離されたときの処理
+   */
   const onMouseUp = useCallback(() => {
     setIsDragging(false);
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
   }, [onMouseMove]);
 
+  /**
+   * マウスが押されたときの処理
+   */
   const onMouseDown = useCallback(() => {
     const rect = ref.current!.getBoundingClientRect();
     const startPos = [rect.x + (border?.radius ?? 0) * Math.cos(Math.PI / 4), rect.y + (border?.radius ?? 0) * Math.sin(Math.PI / 4)];

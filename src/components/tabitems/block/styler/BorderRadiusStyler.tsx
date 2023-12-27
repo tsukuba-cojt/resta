@@ -18,6 +18,9 @@ type Props = {
   setBorder: React.Dispatch<React.SetStateAction<Border>>;
 }
 
+/**
+ * 角丸のつまみコンポーネント
+ */
 export default function BorderRadiusStyler({direction, border, setBorder}: Props) {
   const { onMouseDown, ref } = useBorderRadiusStylingHelper({
     direction, border, setBorder

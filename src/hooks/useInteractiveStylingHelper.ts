@@ -49,6 +49,9 @@ const emptyBorder: Border = {
   radius: undefined,
 };
 
+/**
+ * インタラクティブなブロックスタイリング機能のロジックを集めたフック
+ */
 export default function useInteractiveStylingHelper(): ReturnType {
   const mouseStart = useRef<number[]>([0, 0]);
   const direction = useRef<number>(0);
@@ -72,6 +75,9 @@ export default function useInteractiveStylingHelper(): ReturnType {
   const [isPaddingSelected, setIsPaddingSelected] = useState<boolean>(true);
   const [isBorderSelected, setIsBorderSelected] = useState<boolean>(false);
 
+  /**
+   * リサイズ可能な要素上でマウスが動いたときのイベントハンドラ
+   */
   const onMouseMove = useCallback((e: MouseEvent) => {
     const deltaX = e.clientX - mouseStart.current[0];
     const deltaY = e.clientY - mouseStart.current[1];
@@ -115,6 +121,9 @@ export default function useInteractiveStylingHelper(): ReturnType {
     }
   }, [marginBottom, marginLeft, marginRight, marginTop, paddingBottom, paddingLeft, paddingRight, paddingTop]);
 
+  /**
+   * ドキュメント上でマウスが離れたときのイベントハンドラ
+   */
   const onMouseUp = useCallback(() => {
     isMarginDragging.current = false;
     isPaddingDragging.current = false;
@@ -122,6 +131,9 @@ export default function useInteractiveStylingHelper(): ReturnType {
     document.removeEventListener('mousemove', onMouseMove);
   }, [onMouseMove]);
 
+  /**
+   * ドキュメント上でマウスが押されたときのイベントハンドラ
+   */
   const onMouseDown = useCallback((margin: boolean, padding: boolean, e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     isMarginDragging.current = isMarginSelected && margin;
     isPaddingDragging.current = isPaddingSelected && padding;
@@ -154,6 +166,9 @@ export default function useInteractiveStylingHelper(): ReturnType {
     }
   }, [isMarginSelected, isPaddingSelected, onMouseMove, onMouseUp]);
 
+  /**
+   * リサイズ可能なコンポーネント上でマウスがクリックされたときのイベントハンドラ
+   */
   const onMouseClick = useCallback((margin: boolean, padding: boolean, border: boolean) => {
     setIsMarginSelected(margin);
     setIsPaddingSelected(padding);

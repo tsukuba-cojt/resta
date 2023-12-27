@@ -149,6 +149,9 @@ const InnerWrapper = styled.div`
   }
 `;
 
+/**
+ * ドラッグによってサイズ変更可能なコンポーネント
+ */
 export default function ResizableComponent({
                                              baseWidth,
                                              baseHeight,
@@ -178,6 +181,10 @@ export default function ResizableComponent({
                                              borderBottomLeft,
                                              children
                                            }: Props) {
+
+  /**
+   * リサイズ対象の要素への参照
+   */
   const ref = useRef<HTMLDivElement>(null);
 
   return (

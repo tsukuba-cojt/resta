@@ -1,6 +1,7 @@
 import { useContext, useEffect } from 'react';
 import { PropsContext } from '../contexts/PropsContext';
 import { loadFormat, loadImportedStyle } from '../features/format_manager';
+import { loadUserTemplatesFromStorage } from '../features/userTemplates';
 
 export default function Controller() {
   const prop = useContext(PropsContext);
@@ -12,6 +13,7 @@ export default function Controller() {
     // do something
     loadFormat(prop);
     loadImportedStyle(prop);
+    loadUserTemplatesFromStorage(prop);
   }, []);
 
   return null;

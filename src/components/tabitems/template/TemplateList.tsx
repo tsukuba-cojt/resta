@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Template } from '../../../types/Template';
 import TemplateCard from './TemplateCard';
 import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
+import { PropsContext } from '../../../contexts/PropsContext';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -58,6 +59,7 @@ interface TemplateListProps {
 const TemplateList = ({ templates }: TemplateListProps) => {
   const elementSelection = useContext(ElementSelectionContext);
   const [length, setLength] = useState<number>(0);
+  const prop = useContext(PropsContext);
 
   useEffect(() => {
     if (elementSelection.selectedElement) {
@@ -79,6 +81,7 @@ const TemplateList = ({ templates }: TemplateListProps) => {
         <Wrapper>
           <CardsWrapper>
             <Cards templates={templates} />
+            <Cards templates={prop.userTemplates} />
           </CardsWrapper>
           <p>ボタンをクリックすることでテンプレートを適用することができます</p>
         </Wrapper>

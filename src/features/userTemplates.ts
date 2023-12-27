@@ -3,7 +3,7 @@ import Parser from 'css-simple-parser';
 import * as resta_console from './resta_console';
 import { IPropsContext } from '../contexts/PropsContext';
 
-export const loadTemplatesFromStorage = async (prop: IPropsContext) => {
+export const loadUserTemplatesFromStorage = async (prop: IPropsContext) => {
   await chrome.storage.local.get(['userTemplates'], (result) => {
     if (!result.userTemplates) {
       prop.setUserTemplates([]);

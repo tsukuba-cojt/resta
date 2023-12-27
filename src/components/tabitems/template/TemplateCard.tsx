@@ -51,20 +51,29 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
 
   useEffect(() => insertCSS(), []);
 
-  return (
-    <>
-      {template.tags[0] === 'a' && (
-        <a ref={ref} id={template.name} href={'#'} onClick={onUseClick}>
-          ボタン
-        </a>
-      )}
-      {template.tags[0] === 'button' && (
-        <button ref={ref} id={template.name} onClick={onUseClick}>
-          ボタン
-        </button>
-      )}
-    </>
-  );
+  let card;
+
+  if (template.tags[0] === 'a') {
+    card = (
+      <a ref={ref} id={template.name} href={'#'} onClick={onUseClick}>
+        ボタン
+      </a>
+    );
+  } else if (template.tags[0] === 'button') {
+    card = (
+      <button ref={ref} id={template.name} onClick={onUseClick}>
+        ボタン
+      </button>
+    );
+  } else {
+    card = (
+      <div ref={ref} id={template.name} onClick={onUseClick}>
+        ボタン
+      </div>
+    );
+  }
+
+  return <>{card}</>;
 };
 
 export default TemplateCard;

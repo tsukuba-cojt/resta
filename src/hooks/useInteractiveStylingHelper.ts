@@ -5,33 +5,33 @@ type ReturnType = {
   onMouseDownOnPaddingStyler: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   onMouseClickOnMarginStyler: VoidFunction;
   onMouseClickOnPaddingStyler: VoidFunction;
-  marginTop: number;
-  marginRight: number;
-  marginBottom: number;
-  marginLeft: number;
-  borderTopLeft: Border | undefined;
-  borderTopRight: Border | undefined;
-  borderBottomRight: Border | undefined;
-  borderBottomLeft: Border | undefined;
-  paddingTop: number;
-  paddingRight: number;
-  paddingBottom: number;
-  paddingLeft: number;
+  marginTop: number | undefined;
+  marginRight: number | undefined;
+  marginBottom: number | undefined;
+  marginLeft: number | undefined;
+  borderTopLeft: Border;
+  borderTopRight: Border;
+  borderBottomRight: Border;
+  borderBottomLeft: Border;
+  paddingTop: number | undefined;
+  paddingRight: number | undefined;
+  paddingBottom: number | undefined;
+  paddingLeft: number | undefined;
   isMarginSelected: boolean;
   isPaddingSelected: boolean;
   isBorderSelected: boolean;
-  setMarginTop: React.Dispatch<React.SetStateAction<number>>;
-  setMarginRight: React.Dispatch<React.SetStateAction<number>>;
-  setMarginBottom: React.Dispatch<React.SetStateAction<number>>;
-  setMarginLeft: React.Dispatch<React.SetStateAction<number>>;
-  setBorderTopLeft: React.Dispatch<React.SetStateAction<Border | undefined>>;
-  setBorderTopRight: React.Dispatch<React.SetStateAction<Border | undefined>>;
-  setBorderBottomRight: React.Dispatch<React.SetStateAction<Border | undefined>>;
-  setBorderBottomLeft: React.Dispatch<React.SetStateAction<Border | undefined>>;
-  setPaddingTop: React.Dispatch<React.SetStateAction<number>>;
-  setPaddingRight: React.Dispatch<React.SetStateAction<number>>;
-  setPaddingBottom: React.Dispatch<React.SetStateAction<number>>;
-  setPaddingLeft: React.Dispatch<React.SetStateAction<number>>;
+  setMarginTop: React.Dispatch<React.SetStateAction<number | undefined>>;
+  setMarginRight: React.Dispatch<React.SetStateAction<number | undefined>>;
+  setMarginBottom: React.Dispatch<React.SetStateAction<number | undefined>>;
+  setMarginLeft: React.Dispatch<React.SetStateAction<number | undefined>>;
+  setBorderTopLeft: React.Dispatch<React.SetStateAction<Border>>;
+  setBorderTopRight: React.Dispatch<React.SetStateAction<Border>>;
+  setBorderBottomRight: React.Dispatch<React.SetStateAction<Border>>;
+  setBorderBottomLeft: React.Dispatch<React.SetStateAction<Border>>;
+  setPaddingTop: React.Dispatch<React.SetStateAction<number | undefined>>;
+  setPaddingRight: React.Dispatch<React.SetStateAction<number | undefined>>;
+  setPaddingBottom: React.Dispatch<React.SetStateAction<number | undefined>>;
+  setPaddingLeft: React.Dispatch<React.SetStateAction<number | undefined>>;
   setIsMarginSelected: React.Dispatch<React.SetStateAction<boolean>>;
   setIsPaddingSelected: React.Dispatch<React.SetStateAction<boolean>>;
   setIsBorderSelected: React.Dispatch<React.SetStateAction<boolean>>;
@@ -42,24 +42,32 @@ const DIRECTION_LEFT = 1;
 const DIRECTION_TOP = 2;
 const DIRECTION_BOTTOM = 3;
 
+const emptyBorder: Border = {
+  width: undefined,
+  type: undefined,
+  color: undefined,
+  radius: undefined,
+};
+
 export default function useInteractiveStylingHelper(): ReturnType {
   const mouseStart = useRef<number[]>([0, 0]);
   const direction = useRef<number>(0);
   const isMarginDragging = useRef<boolean>(false);
   const isPaddingDragging = useRef<boolean>(false);
 
-  const [marginTop, setMarginTop] = useState<number>(10);
-  const [marginRight, setMarginRight] = useState<number>(10);
-  const [marginBottom, setMarginBottom] = useState<number>(10);
-  const [marginLeft, setMarginLeft] = useState<number>(10);
-  const [borderTopLeft, setBorderTopLeft] = useState<Border | undefined>();
-  const [borderTopRight, setBorderTopRight] = useState<Border | undefined>(undefined);
-  const [borderBottomRight, setBorderBottomRight] = useState<Border | undefined>(undefined);
-  const [borderBottomLeft, setBorderBottomLeft] = useState<Border | undefined>(undefined);
-  const [paddingTop, setPaddingTop] = useState<number>(10);
-  const [paddingRight, setPaddingRight] = useState<number>(10);
-  const [paddingBottom, setPaddingBottom] = useState<number>(10);
-  const [paddingLeft, setPaddingLeft] = useState<number>(10);
+  const [marginTop, setMarginTop] = useState<number | undefined>(undefined);
+  const [marginRight, setMarginRight] = useState<number | undefined>(undefined);
+  const [marginBottom, setMarginBottom] = useState<number | undefined>(undefined);
+  const [marginLeft, setMarginLeft] = useState<number | undefined>(undefined);
+  const [borderTopLeft, setBorderTopLeft] = useState<Border>(Object.assign({}, emptyBorder));
+  const [borderTopRight, setBorderTopRight] = useState<Border>(Object.assign({}, emptyBorder));
+  const [borderBottomRight, setBorderBottomRight] = useState<Border>(Object.assign({}, emptyBorder));
+  const [borderBottomLeft, setBorderBottomLeft] = useState<Border>(Object.assign({}, emptyBorder));
+  const [paddingTop, setPaddingTop] = useState<number | undefined>(undefined);
+  const [paddingRight, setPaddingRight] = useState<number | undefined>(undefined);
+  const [paddingBottom, setPaddingBottom] = useState<number | undefined>(undefined);
+  const [paddingLeft, setPaddingLeft] = useState<number | undefined>(undefined);
+
   const [isMarginSelected, setIsMarginSelected] = useState<boolean>(false);
   const [isPaddingSelected, setIsPaddingSelected] = useState<boolean>(true);
   const [isBorderSelected, setIsBorderSelected] = useState<boolean>(false);
@@ -72,16 +80,16 @@ export default function useInteractiveStylingHelper(): ReturnType {
       case isMarginDragging.current: {
         switch (direction.current) {
           case DIRECTION_TOP:
-            setMarginTop(Math.max(0, marginTop - deltaY));
+            setMarginTop(Math.max(0, (marginTop ?? 0) - deltaY));
             break;
           case DIRECTION_RIGHT:
-            setMarginRight(Math.max(0, marginRight + deltaX));
+            setMarginRight(Math.max(0, (marginRight ?? 0) + deltaX));
             break;
           case DIRECTION_BOTTOM:
-            setMarginBottom(Math.max(0, marginBottom + deltaY));
+            setMarginBottom(Math.max(0, (marginBottom ?? 0) + deltaY));
             break;
           case DIRECTION_LEFT:
-            setMarginLeft(Math.max(0, marginLeft - deltaX));
+            setMarginLeft(Math.max(0, (marginLeft ?? 0) - deltaX));
             break;
         }
         break;
@@ -90,16 +98,16 @@ export default function useInteractiveStylingHelper(): ReturnType {
       case isPaddingDragging.current: {
         switch (direction.current) {
           case DIRECTION_TOP:
-            setPaddingTop(Math.max(0, paddingTop - deltaY));
+            setPaddingTop(Math.max(0, (paddingTop ?? 0) - deltaY));
             break;
           case DIRECTION_RIGHT:
-            setPaddingRight(Math.max(0, paddingRight + deltaX));
+            setPaddingRight(Math.max(0, (paddingRight ?? 0) + deltaX));
             break;
           case DIRECTION_BOTTOM:
-            setPaddingBottom(Math.max(0, paddingBottom + deltaY));
+            setPaddingBottom(Math.max(0, (paddingBottom ?? 0) + deltaY));
             break;
           case DIRECTION_LEFT:
-            setPaddingLeft(Math.max(0, paddingLeft - deltaX));
+            setPaddingLeft(Math.max(0, (paddingLeft ?? 0) - deltaX));
             break;
         }
         break;

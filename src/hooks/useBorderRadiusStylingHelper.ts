@@ -2,8 +2,8 @@ import React, {useCallback, useLayoutEffect, useRef, useState} from "react";
 
 type Args = {
   direction: 'top-left' | 'top-right' | 'bottom-right' | 'bottom-left';
-  border?: Border;
-  setBorder: React.Dispatch<React.SetStateAction<Border | undefined>>;
+  border: Border;
+  setBorder: React.Dispatch<React.SetStateAction<Border>>;
 }
 
 type ReturnType = {
@@ -52,7 +52,7 @@ export default function useBorderRadiusStylingHelper({direction, border, setBord
   const setRadius = useCallback((r: number) => {
     setBorder({
       ...border!,
-      radius: r,
+      radius: Math.floor(r),
     });
   }, [border, setBorder]);
 

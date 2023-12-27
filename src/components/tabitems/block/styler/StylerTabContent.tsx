@@ -1,13 +1,20 @@
 import React, { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
-import { Col, InputNumber, Row, Select, Slider, Typography } from 'antd';
+import { Button, Col, InputNumber, Row, Select, Slider, Typography } from 'antd';
 import { spaceUnits } from '../../../../consts/units';
+import { DeleteOutlined } from '@ant-design/icons';
 
 const DIRECTION_BUTTON_WIDTH = 45;
 const DIRECTION_BUTTON_HEIGHT = 8;
 
 const Wrapper = styled.div`
   width: 100%;
+`;
+
+const Flex = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const DirectionSetter = styled.div<{
@@ -59,6 +66,7 @@ const DirectionButton = styled.button<{
 const AdditionalContentText = styled.p`
   font-size: 0.7rem;
   text-align: right;
+  white-space: nowrap;
 `;
 
 const AdditionalContent = styled.div`
@@ -75,15 +83,15 @@ type Props = {
   rightValue?: number;
   bottomValue?: number;
   leftValue?: number;
-  setTopValue: React.Dispatch<React.SetStateAction<number>>;
-  setRightValue: React.Dispatch<React.SetStateAction<number>>;
-  setBottomValue: React.Dispatch<React.SetStateAction<number>>;
-  setLeftValue: React.Dispatch<React.SetStateAction<number>>;
+  setTopValue: React.Dispatch<React.SetStateAction<number | undefined>>;
+  setRightValue: React.Dispatch<React.SetStateAction<number | undefined>>;
+  setBottomValue: React.Dispatch<React.SetStateAction<number | undefined>>;
+  setLeftValue: React.Dispatch<React.SetStateAction<number | undefined>>;
   topColor?: string;
   rightColor?: string;
   bottomColor?: string;
   leftColor?: string;
-  additionalContents?: { [name: string]: React.ReactNode };
+  additionalContents?: { [name: string]: [React.ReactNode, ((value: any) => void)] };
   onDirectionChange?: (direction: 'top' | 'right' | 'bottom' | 'left') => void;
 }
 
@@ -109,11 +117,11 @@ export default function StylerTabContent({
   const _onDirectionChange = useCallback((direction: 'top' | 'right' | 'bottom' | 'left') => {
     onDirectionChange(direction);
     setDirection(direction);
-  }, []);
+  }, [direction, onDirectionChange]);
 
-  const onChange = useCallback((value: number | null) => {
+  const onChange = useCallback((value: number | null | undefined) => {
     if (value == null) {
-      return;
+      value = undefined;
     }
 
     switch (direction) {
@@ -131,6 +139,10 @@ export default function StylerTabContent({
         break;
     }
   }, [direction, setTopValue, setRightValue, setBottomValue, setLeftValue]);
+
+  const onResetClick = useCallback(() => {
+    onChange(undefined);
+  }, [onChange]);
 
   const value = useMemo(() => {
     switch (direction) {
@@ -190,11 +202,16 @@ export default function StylerTabContent({
         <AdditionalContentText>
           <Text type='secondary'>サイズ</Text>
         </AdditionalContentText>
-        <AdditionalContentText>
-          <Text type='secondary'>上, 右, 下, 左
-            = {topValue != null ? topValue : '_'}, {rightValue != null ? rightValue : '_'}, {bottomValue != null ? bottomValue : '_'}, {leftValue != null ? leftValue : '_'}
-          </Text>
-        </AdditionalContentText>
+        <Flex>
+          <AdditionalContentText>
+            <Text type='secondary'>
+              {topValue != null ? topValue : '_'}, {rightValue != null ? rightValue : '_'}, {bottomValue != null ? bottomValue : '_'}, {leftValue != null ? leftValue : '_'}
+            </Text>
+          </AdditionalContentText>
+          <Button type='link' size='small' onClick={onResetClick}>
+            <DeleteOutlined width={16} color={'rgba(0, 0, 0, 0.45)'} />
+          </Button>
+        </Flex>
       </AdditionalContent>
 
       {Object.entries(additionalContents).map(([name, content], index) => (
@@ -202,7 +219,12 @@ export default function StylerTabContent({
           <AdditionalContentText>
             <Text type='secondary'>{name}</Text>
           </AdditionalContentText>
-          {content}
+          <Flex>
+            {content[0]}
+            <Button type='link' size='small' onClick={() => content[1](undefined)}>
+              <DeleteOutlined width={16} color={'rgba(0, 0, 0, 0.45)'} />
+            </Button>
+          </Flex>
         </AdditionalContent>
       ))}
     </Wrapper>

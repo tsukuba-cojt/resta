@@ -25,14 +25,14 @@ export default function InteractiveStyler() {
   const baseOffsetX = useMemo(() => (BASE_SIZE - ELEMENT_SIZE) / 2, []);
   const baseOffsetY = useMemo(() => (BASE_SIZE - ELEMENT_SIZE) / 2, []);
 
-  const paddingTop = useMemo(() => Math.min(MAX_VALUE, h.paddingTop), [h.paddingTop]);
-  const paddingRight = useMemo(() => Math.min(MAX_VALUE, h.paddingRight), [h.paddingRight]);
-  const paddingBottom = useMemo(() => Math.min(MAX_VALUE, h.paddingBottom), [h.paddingBottom]);
-  const paddingLeft = useMemo(() => Math.min(MAX_VALUE, h.paddingLeft), [h.paddingLeft]);
-  const marginTop = useMemo(() => Math.min(MAX_VALUE, h.marginTop), [h.marginTop]);
-  const marginRight = useMemo(() => Math.min(MAX_VALUE, h.marginRight), [h.marginRight]);
-  const marginBottom = useMemo(() => Math.min(MAX_VALUE, h.marginBottom), [h.marginBottom]);
-  const marginLeft = useMemo(() => Math.min(MAX_VALUE, h.marginLeft), [h.marginLeft]);
+  const paddingTop = useMemo(() => h.paddingTop != undefined ? Math.min(MAX_VALUE, h.paddingTop) : undefined, [h.paddingTop]);
+  const paddingRight = useMemo(() => h.paddingRight != undefined ? Math.min(MAX_VALUE, h.paddingRight) : undefined, [h.paddingRight]);
+  const paddingBottom = useMemo(() => h.paddingBottom != undefined ? Math.min(MAX_VALUE, h.paddingBottom) : undefined, [h.paddingBottom]);
+  const paddingLeft = useMemo(() => h.paddingLeft != undefined ? Math.min(MAX_VALUE, h.paddingLeft) : undefined, [h.paddingLeft]);
+  const marginTop = useMemo(() => h.marginTop != undefined ? Math.min(MAX_VALUE, h.marginTop) : undefined, [h.marginTop]);
+  const marginRight = useMemo(() => h.marginRight != undefined ? Math.min(MAX_VALUE, h.marginRight) : 0, [h.marginRight]);
+  const marginBottom = useMemo(() => h.marginBottom != undefined ? Math.min(MAX_VALUE, h.marginBottom) : 0, [h.marginBottom]);
+  const marginLeft = useMemo(() => h.marginLeft != undefined ? Math.min(MAX_VALUE, h.marginLeft) : undefined, [h.marginLeft]);
 
   const items: TabsProps['items'] = [
     {
@@ -65,21 +65,23 @@ export default function InteractiveStyler() {
   return (
     <>
       <Wrapper>
-        <ResizableComponent baseWidth={ELEMENT_SIZE + paddingLeft + paddingRight}
-                            baseHeight={ELEMENT_SIZE + paddingTop + paddingBottom}
-                            offsetX={baseOffsetX - marginLeft - paddingLeft}
-                            offsetY={baseOffsetY - marginTop - paddingTop}
+        <ResizableComponent baseWidth={ELEMENT_SIZE + (paddingLeft ?? 0) + (paddingRight ?? 0)}
+                            baseHeight={ELEMENT_SIZE + (paddingTop ?? 0) + (paddingBottom ?? 0)}
+                            offsetX={baseOffsetX - (marginLeft ?? 0) - (paddingLeft ?? 0)}
+                            offsetY={baseOffsetY - (marginTop ?? 0) - (paddingTop ?? 0)}
                             isSelected={h.isMarginSelected}
-                            top={marginTop} right={marginRight} bottom={marginBottom} left={marginLeft}
-                            actualTop={h.marginTop} actualRight={h.marginRight} actualBottom={h.marginBottom} actualLeft={h.marginLeft}
+                            top={marginTop ?? 0} right={marginRight ?? 0} bottom={marginBottom ?? 0} left={marginLeft ?? 0}
+                            actualTop={h.marginTop} actualRight={h.marginRight} actualBottom={h.marginBottom}
+                            actualLeft={h.marginLeft}
                             color={'#F8CB9C'}
                             onMouseDown={h.onMouseDownOnMarginStyler}
                             onMouseClick={h.onMouseClickOnMarginStyler} />
         <ResizableComponent baseWidth={ELEMENT_SIZE} baseHeight={ELEMENT_SIZE}
-                            offsetX={baseOffsetX - paddingLeft}
-                            offsetY={baseOffsetY - paddingTop} isSelected={h.isPaddingSelected}
-                            top={paddingTop} right={paddingRight} bottom={paddingBottom} left={paddingLeft}
-                            actualTop={h.paddingTop} actualRight={h.paddingRight} actualBottom={h.paddingBottom} actualLeft={h.paddingLeft}
+                            offsetX={baseOffsetX - (paddingLeft ?? 0)}
+                            offsetY={baseOffsetY - (paddingTop ?? 0)} isSelected={h.isPaddingSelected}
+                            top={paddingTop ?? 0} right={paddingRight ?? 0} bottom={paddingBottom ?? 0} left={paddingLeft ?? 0}
+                            actualTop={h.paddingTop} actualRight={h.paddingRight} actualBottom={h.paddingBottom}
+                            actualLeft={h.paddingLeft}
                             borderTopLeft={h.borderTopLeft} borderTopRight={h.borderTopRight}
                             borderBottomRight={h.borderBottomRight} borderBottomLeft={h.borderBottomLeft}
                             color={'#ffffff'}

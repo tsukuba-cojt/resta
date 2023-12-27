@@ -4,8 +4,6 @@ import StylerTabContent from './StylerTabContent';
 import type { Color } from 'antd/es/color-picker';
 import { ColorPicker, Typography } from 'antd';
 
-const DEFAULT_COLOR = 'rgba(0, 0, 0, 255)';
-
 const Wrapper = styled.div`
   width: 100%;
 `;
@@ -22,13 +20,15 @@ const Description = styled.p`
   text-align: right;
 `;
 
-const Color = ({ onChange, value }: { onChange: (c: string | Color | undefined) => void, value: string }) => {
+const Color = ({ onChange, value }: {
+  onChange: (c: string | Color | undefined) => void,
+  value: string | undefined
+}) => {
   const { Text } = Typography;
 
   return (
     <ColorWrapper>
       <ColorPicker
-        allowClear
         size='small'
         value={value}
         onChangeComplete={(c) => {
@@ -36,21 +36,43 @@ const Color = ({ onChange, value }: { onChange: (c: string | Color | undefined) 
         }}
       />
       <Description>
-        <Text type='secondary'>{value}</Text>
+        {value && <Text type='secondary'>{value}</Text>}
+        {value == undefined && <Text type='secondary'>未設定</Text>}
       </Description>
     </ColorWrapper>
   );
 };
 
+const BorderRadius = ({ topValue, rightValue, bottomValue, leftValue }:
+                        {
+                          topValue: number | undefined;
+                          rightValue: number | undefined;
+                          bottomValue: number | undefined;
+                          leftValue: number | undefined;
+                        }) => {
+    const { Text } = Typography;
+
+    return (
+      <div>
+        <Description>
+          <Text type='secondary'>
+            {topValue != null ? topValue : '_'}, {rightValue != null ? rightValue : '_'}, {bottomValue != null ? bottomValue : '_'}, {leftValue != null ? leftValue : '_'}
+          </Text>
+        </Description>
+      </div>
+    );
+  }
+;
+
 type Props = {
-  topValue?: Border;
-  rightValue?: Border;
-  bottomValue?: Border;
-  leftValue?: Border;
-  setTopValue: React.Dispatch<React.SetStateAction<Border | undefined>>;
-  setRightValue: React.Dispatch<React.SetStateAction<Border | undefined>>;
-  setBottomValue: React.Dispatch<React.SetStateAction<Border | undefined>>;
-  setLeftValue: React.Dispatch<React.SetStateAction<Border | undefined>>;
+  topValue: Border;
+  rightValue: Border;
+  bottomValue: Border;
+  leftValue: Border;
+  setTopValue: React.Dispatch<React.SetStateAction<Border>>;
+  setRightValue: React.Dispatch<React.SetStateAction<Border>>;
+  setBottomValue: React.Dispatch<React.SetStateAction<Border>>;
+  setLeftValue: React.Dispatch<React.SetStateAction<Border>>;
 }
 
 export default function BorderStylerTabContent({
@@ -66,93 +88,78 @@ export default function BorderStylerTabContent({
 
   const [direction, setDirection] = useState<'top' | 'right' | 'bottom' | 'left'>('top');
 
-  const updateBorder = useCallback((dest: Border | undefined, setter: React.Dispatch<React.SetStateAction<Border | undefined>>, {
-    width,
-    type,
-    color,
-    radius
-  }: Partial<Border>): Border => {
-    const newValue = dest == null
-      ? {
-        width: width != null ? width : 0,
-        type: type != null ? type : 'solid',
-        color: color != null ? color : DEFAULT_COLOR,
-        radius: radius != null ? radius : 0
-      }
-      : {
-        width: width != null ? width : dest.width,
-        type: type != null ? type : dest.type,
-        color: color != null ? color : dest.color,
-        radius: radius != null ? radius : dest.radius
-      };
-    setter(newValue);
-    return newValue;
-  }, []);
-
-  const setTopWidth = useCallback((width: SetStateAction<number>) => {
-    if (typeof width === 'number') {
-      updateBorder(topValue, setTopValue, { width: width });
-    }
+  const setTopWidth = useCallback((width: SetStateAction<number | undefined>) => {
+    setTopValue({ ...topValue, width: width as number | undefined });
   }, [topValue, setTopValue, direction]);
 
-  const setRightWidth = useCallback((width: SetStateAction<number>) => {
-    if (typeof width === 'number') {
-      updateBorder(rightValue, setRightValue, { width: width });
-    }
+  const setRightWidth = useCallback((width: SetStateAction<number | undefined>) => {
+    setRightValue({ ...rightValue, width: width as number | undefined });
   }, [rightValue, setRightValue, direction]);
 
-  const setBottomWidth = useCallback((width: SetStateAction<number>) => {
-    if (typeof width === 'number') {
-      updateBorder(bottomValue, setBottomValue, { width: width });
-    }
+  const setBottomWidth = useCallback((width: SetStateAction<number | undefined>) => {
+    setBottomValue({ ...bottomValue, width: width as number | undefined });
   }, [bottomValue, setBottomValue, direction]);
 
-  const setLeftWidth = useCallback((width: SetStateAction<number>) => {
-    if (typeof width === 'number') {
-      updateBorder(leftValue, setLeftValue, { width: width });
-    }
+  const setLeftWidth = useCallback((width: SetStateAction<number | undefined>) => {
+    setLeftValue({ ...leftValue, width: width as number | undefined });
   }, [leftValue, setLeftValue, direction]);
 
-  const currentColor = useMemo((): string => {
+  const currentColor = useMemo((): string | undefined => {
     switch (direction) {
       case 'top':
-        return topValue?.color ?? DEFAULT_COLOR;
+        return topValue?.color;
       case 'right':
-        return rightValue?.color ?? DEFAULT_COLOR;
+        return rightValue?.color;
       case 'bottom':
-        return bottomValue?.color ?? DEFAULT_COLOR;
+        return bottomValue?.color;
       case 'left':
-        return leftValue?.color ?? DEFAULT_COLOR;
+        return leftValue?.color;
       default:
-        return DEFAULT_COLOR;
+        return undefined;
     }
   }, [direction, topValue, rightValue, bottomValue, leftValue]);
 
   const onChangeColor = useCallback((color: string | Color | undefined) => {
-    if (color == null) {
-      return;
-    }
-
-    const colorText = typeof color === 'string' ? color : color.toRgbString();
+    const colorText = typeof color === 'string' || typeof color == 'undefined' ? color : color.toRgbString();
     switch (direction) {
       case 'top':
-        updateBorder(topValue, setTopValue, { color: colorText });
+        setTopValue({ ...leftValue, color: colorText as string | undefined });
         break;
       case 'right':
-        updateBorder(rightValue, setRightValue, { color: colorText });
+        setRightValue({ ...rightValue, color: colorText as string | undefined });
         break;
       case 'bottom':
-        updateBorder(bottomValue, setBottomValue, { color: colorText });
+        setBottomValue({ ...bottomValue, color: colorText as string | undefined });
         break;
       case 'left':
-        updateBorder(leftValue, setLeftValue, { color: colorText });
+        setLeftValue({ ...leftValue, color: colorText as string | undefined });
         break;
     }
   }, [topValue, rightValue, bottomValue, leftValue, setTopValue, setRightValue, setBottomValue, setLeftValue, direction]);
 
-  const additionalContents = {
-    '色': <Color value={currentColor} onChange={onChangeColor} />,
-  }
+  const onChangeRadius = useCallback((value: number | undefined) => {
+    switch (direction) {
+      case 'top':
+        setTopValue({ ...leftValue, radius: value as number | undefined });
+        break;
+      case 'right':
+        setRightValue({ ...rightValue, radius: value as number | undefined });
+        break;
+      case 'bottom':
+        setBottomValue({ ...bottomValue, radius: value as number | undefined });
+        break;
+      case 'left':
+        setLeftValue({ ...leftValue, radius: value as number | undefined });
+        break;
+    }
+  }, [topValue, rightValue, bottomValue, leftValue, setTopValue, setRightValue, setBottomValue, setLeftValue, direction]);
+
+  const additionalContents: Record<string, [React.ReactNode, ((value: any) => void)]> = {
+    '角丸': [
+      <BorderRadius topValue={topValue.radius} rightValue={rightValue.radius} bottomValue={bottomValue.radius}
+                    leftValue={leftValue.radius} />, onChangeRadius],
+    '色': [<Color value={currentColor} onChange={onChangeColor} />, onChangeColor]
+  };
 
   return (
     <Wrapper>

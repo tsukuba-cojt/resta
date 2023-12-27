@@ -14,8 +14,8 @@ const Knob = styled.div`
 
 type Props = {
   direction: 'top-left' | 'top-right' | 'bottom-right' | 'bottom-left';
-  border?: Border;
-  setBorder: React.Dispatch<React.SetStateAction<Border | undefined>>;
+  border: Border;
+  setBorder: React.Dispatch<React.SetStateAction<Border>>;
 }
 
 export default function BorderRadiusStyler({direction, border, setBorder}: Props) {

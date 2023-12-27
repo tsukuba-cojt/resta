@@ -63,6 +63,23 @@ const DirectionButton = styled.button<{
   }
 `;
 
+const DirectionSetAllButton = styled.button`
+  position: absolute;
+  width: ${DIRECTION_BUTTON_WIDTH - 2 * DIRECTION_BUTTON_HEIGHT}px;
+  height: ${DIRECTION_BUTTON_WIDTH - 2 * DIRECTION_BUTTON_HEIGHT}px;
+  top: 0;
+  left: 0;
+  outline: none;
+  border: none;
+  z-index: 10;
+  padding: 0;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
+`;
+
 const AdditionalContentText = styled.p`
   font-size: 0.7rem;
   text-align: right;
@@ -92,7 +109,7 @@ type Props = {
   bottomColor?: string;
   leftColor?: string;
   additionalContents?: { [name: string]: [React.ReactNode, ((value: any) => void)] };
-  onDirectionChange?: (direction: 'top' | 'right' | 'bottom' | 'left') => void;
+  onDirectionChange?: (direction: Direction[]) => void;
 }
 
 export default function StylerTabContent({
@@ -112,18 +129,38 @@ export default function StylerTabContent({
                                            onDirectionChange = () => {
                                            }
                                          }: Props) {
-  const [direction, setDirection] = React.useState<'top' | 'right' | 'bottom' | 'left'>('top');
+  const [directions, setDirections] = React.useState<Direction[]>(['top', 'right', 'bottom', 'left']);
 
-  const _onDirectionChange = useCallback((direction: 'top' | 'right' | 'bottom' | 'left') => {
-    onDirectionChange(direction);
-    setDirection(direction);
-  }, [direction, onDirectionChange]);
+  const _onDirectionChange = useCallback((direction: Direction | Direction[]) => {
+    if (typeof direction === 'string') {
+      const newDirections = directions.includes(direction) ? directions.filter(d => d !== direction) : [...directions, direction];
+      onDirectionChange(newDirections);
+      setDirections(newDirections);
 
-  const onChange = useCallback((value: number | null | undefined) => {
-    if (value == null) {
-      value = undefined;
+    } else if (Array.isArray(direction) && directions.length !== 4) {
+      onDirectionChange(direction);
+      setDirections(direction);
+
+    } else {
+      onDirectionChange([]);
+      setDirections([]);
     }
+  }, [directions, onDirectionChange]);
 
+  const getValueByDirection = useCallback((direction: Direction) => {
+    switch (direction) {
+      case 'top':
+        return topValue;
+      case 'right':
+        return rightValue;
+      case 'bottom':
+        return bottomValue;
+      case 'left':
+        return leftValue;
+    }
+  }, [topValue, rightValue, bottomValue, leftValue]);
+
+  const setValueByDirection = useCallback((direction: Direction, value: number | undefined) => {
     switch (direction) {
       case 'top':
         setTopValue(value);
@@ -138,24 +175,42 @@ export default function StylerTabContent({
         setLeftValue(value);
         break;
     }
-  }, [direction, setTopValue, setRightValue, setBottomValue, setLeftValue]);
+  }, [topValue, rightValue, bottomValue, leftValue]);
+
+  const onChange = useCallback((value: number | null | undefined) => {
+    if (value == null) {
+      value = undefined;
+    }
+
+    for (const direction of directions) {
+      setValueByDirection(direction, value);
+    }
+  }, [directions, setTopValue, setRightValue, setBottomValue, setLeftValue]);
 
   const onResetClick = useCallback(() => {
     onChange(undefined);
   }, [onChange]);
 
   const value = useMemo(() => {
-    switch (direction) {
-      case 'top':
-        return topValue;
-      case 'right':
-        return rightValue;
-      case 'bottom':
-        return bottomValue;
-      case 'left':
-        return leftValue;
+    if (directions.length > 1) {
+      let isAllSame = true;
+      let previousValue = getValueByDirection(directions[0]);
+
+      for (const direction of directions) {
+        isAllSame = previousValue === getValueByDirection(direction);
+        if (!isAllSame) {
+          return undefined;
+        }
+      }
+
+      return previousValue;
+
+    } else if (directions.length === 0) {
+      return undefined;
     }
-  }, [direction, topValue, rightValue, bottomValue, leftValue]);
+
+    return getValueByDirection(directions[0]);
+  }, [directions, topValue, rightValue, bottomValue, leftValue]);
 
   const { Text } = Typography;
   const { Option } = Select;
@@ -171,17 +226,18 @@ export default function StylerTabContent({
       <Row gutter={[8, 0]} align={'middle'}>
         <Col span={5}>
           <DirectionSetter topColor={topColor} rightColor={rightColor} bottomColor={bottomColor} leftColor={leftColor}>
+            <DirectionSetAllButton onClick={() => _onDirectionChange(['top', 'right', 'bottom', 'left'])} />
             <DirectionButton width={DIRECTION_BUTTON_WIDTH} height={DIRECTION_BUTTON_HEIGHT} top={0} left={0}
-                             selected={direction === 'top'}
+                             selected={directions.includes('top')}
                              onClick={() => _onDirectionChange('top')} />
             <DirectionButton width={DIRECTION_BUTTON_HEIGHT} height={DIRECTION_BUTTON_WIDTH} top={0} right={0}
-                             selected={direction === 'right'}
+                             selected={directions.includes('right')}
                              onClick={() => _onDirectionChange('right')} />
             <DirectionButton width={DIRECTION_BUTTON_WIDTH} height={DIRECTION_BUTTON_HEIGHT} bottom={0} left={0}
-                             selected={direction === 'bottom'}
+                             selected={directions.includes('bottom')}
                              onClick={() => _onDirectionChange('bottom')} />
             <DirectionButton width={DIRECTION_BUTTON_HEIGHT} height={DIRECTION_BUTTON_WIDTH} top={0} left={0}
-                             selected={direction === 'left'}
+                             selected={directions.includes('left')}
                              onClick={() => _onDirectionChange('left')} />
           </DirectionSetter>
         </Col>

@@ -4,8 +4,10 @@ type SelectedElement = {
 }
 
 type Border = {
-  type: 'solid' | 'dashed' | 'dotted';
-  width: number;
-  color: string;
-  radius: number;
+  type: 'solid' | 'dashed' | 'dotted' | undefined;
+  width: number | undefined;
+  color: string | undefined;
+  radius: number | undefined;
 }
+
+type Direction = 'top' | 'right' | 'bottom' | 'left';

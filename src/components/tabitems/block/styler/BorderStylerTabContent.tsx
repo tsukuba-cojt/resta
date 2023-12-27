@@ -30,14 +30,15 @@ const Color = ({ onChange, value }: {
     <ColorWrapper>
       <ColorPicker
         size='small'
-        value={value}
+        value={value !== NOT_ALL_SAME ? value : undefined}
         onChangeComplete={(c) => {
           onChange(c);
         }}
       />
       <Description>
-        {value && <Text type='secondary'>{value}</Text>}
-        {value == undefined && <Text type='secondary'>未設定</Text>}
+        {value && value !== NOT_ALL_SAME && <Text type='secondary'>{value}</Text>}
+        {value === NOT_ALL_SAME && <Text type='secondary'>決定できません</Text>}
+        {value == undefined && <Text type='secondary'>未選択</Text>}
       </Description>
     </ColorWrapper>
   );
@@ -64,6 +65,8 @@ const BorderRadius = ({ topValue, rightValue, bottomValue, leftValue }:
   }
 ;
 
+const NOT_ALL_SAME = '_NOT_ALL_SAME';
+
 type Props = {
   topValue: Border;
   rightValue: Border;
@@ -86,73 +89,87 @@ export default function BorderStylerTabContent({
                                                  setLeftValue
                                                }: Props) {
 
-  const [direction, setDirection] = useState<'top' | 'right' | 'bottom' | 'left'>('top');
+  const [directions, setDirections] = useState<Direction[]>(['top', 'right', 'bottom', 'left']);
 
   const setTopWidth = useCallback((width: SetStateAction<number | undefined>) => {
     setTopValue({ ...topValue, width: width as number | undefined });
-  }, [topValue, setTopValue, direction]);
+  }, [topValue, setTopValue, directions]);
 
   const setRightWidth = useCallback((width: SetStateAction<number | undefined>) => {
     setRightValue({ ...rightValue, width: width as number | undefined });
-  }, [rightValue, setRightValue, direction]);
+  }, [rightValue, setRightValue, directions]);
 
   const setBottomWidth = useCallback((width: SetStateAction<number | undefined>) => {
     setBottomValue({ ...bottomValue, width: width as number | undefined });
-  }, [bottomValue, setBottomValue, direction]);
+  }, [bottomValue, setBottomValue, directions]);
 
   const setLeftWidth = useCallback((width: SetStateAction<number | undefined>) => {
     setLeftValue({ ...leftValue, width: width as number | undefined });
-  }, [leftValue, setLeftValue, direction]);
+  }, [leftValue, setLeftValue, directions]);
 
-  const currentColor = useMemo((): string | undefined => {
+  const getValueByDirection = useCallback((direction: Direction) => {
     switch (direction) {
       case 'top':
-        return topValue?.color;
+        return topValue;
       case 'right':
-        return rightValue?.color;
+        return rightValue;
       case 'bottom':
-        return bottomValue?.color;
+        return bottomValue;
       case 'left':
-        return leftValue?.color;
-      default:
-        return undefined;
+        return leftValue;
     }
-  }, [direction, topValue, rightValue, bottomValue, leftValue]);
+  }, [topValue, rightValue, bottomValue, leftValue]);
+
+  const setValueByDirection = useCallback((direction: Direction, border: Border) => {
+    switch (direction) {
+      case 'top':
+        setTopValue(border);
+        break;
+      case 'right':
+        setRightValue(border);
+        break;
+      case 'bottom':
+        setBottomValue(border);
+        break;
+      case 'left':
+        setLeftValue(border);
+        break;
+    }
+  }, [topValue, rightValue, bottomValue, leftValue]);
+
+  const currentColor = useMemo((): string | undefined => {
+    if (directions.length > 1) {
+      let isAllSame = true;
+      let previousColor = getValueByDirection(directions[0]).color;
+
+      for (const direction of directions) {
+        isAllSame = previousColor === getValueByDirection(direction).color;
+        if (!isAllSame) {
+          return NOT_ALL_SAME;
+        }
+      }
+
+      return previousColor;
+
+    } else if (directions.length === 0) {
+      return undefined;
+    }
+
+    return getValueByDirection(directions[0]).color;
+  }, [directions, topValue, rightValue, bottomValue, leftValue]);
 
   const onChangeColor = useCallback((color: string | Color | undefined) => {
     const colorText = typeof color === 'string' || typeof color == 'undefined' ? color : color.toRgbString();
-    switch (direction) {
-      case 'top':
-        setTopValue({ ...leftValue, color: colorText as string | undefined });
-        break;
-      case 'right':
-        setRightValue({ ...rightValue, color: colorText as string | undefined });
-        break;
-      case 'bottom':
-        setBottomValue({ ...bottomValue, color: colorText as string | undefined });
-        break;
-      case 'left':
-        setLeftValue({ ...leftValue, color: colorText as string | undefined });
-        break;
+    for (const direction of directions) {
+      setValueByDirection(direction, { ...getValueByDirection(direction), color: colorText });
     }
-  }, [topValue, rightValue, bottomValue, leftValue, setTopValue, setRightValue, setBottomValue, setLeftValue, direction]);
+  }, [topValue, rightValue, bottomValue, leftValue, setTopValue, setRightValue, setBottomValue, setLeftValue, directions]);
 
   const onChangeRadius = useCallback((value: number | undefined) => {
-    switch (direction) {
-      case 'top':
-        setTopValue({ ...leftValue, radius: value as number | undefined });
-        break;
-      case 'right':
-        setRightValue({ ...rightValue, radius: value as number | undefined });
-        break;
-      case 'bottom':
-        setBottomValue({ ...bottomValue, radius: value as number | undefined });
-        break;
-      case 'left':
-        setLeftValue({ ...leftValue, radius: value as number | undefined });
-        break;
+    for (const direction of directions) {
+      setValueByDirection(direction, { ...getValueByDirection(direction), radius: value });
     }
-  }, [topValue, rightValue, bottomValue, leftValue, setTopValue, setRightValue, setBottomValue, setLeftValue, direction]);
+  }, [topValue, rightValue, bottomValue, leftValue, setTopValue, setRightValue, setBottomValue, setLeftValue, directions]);
 
   const additionalContents: Record<string, [React.ReactNode, ((value: any) => void)]> = {
     '角丸': [
@@ -172,7 +189,7 @@ export default function BorderStylerTabContent({
                         topColor={topValue?.color} rightColor={rightValue?.color}
                         bottomColor={bottomValue?.color} leftColor={leftValue?.color}
                         additionalContents={additionalContents}
-                        onDirectionChange={setDirection} />
+                        onDirectionChange={setDirections} />
     </Wrapper>
   );
 }

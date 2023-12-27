@@ -96,16 +96,17 @@ const Meter = styled.div<{
   border-left: ${props => props.direction === 'left' || props.direction === 'right' ? 'dashed 1px black' : 'none'};
 `;
 
-const Size = ({ size, width, height, direction }: {
-  size: number,
-  width: number,
-  height: number,
-  direction: 'top' | 'right' | 'bottom' | 'left'
+const Size = ({ size, actualSize, width, height, direction }: {
+  size: number;
+  actualSize: number;
+  width: number;
+  height: number;
+  direction: 'top' | 'right' | 'bottom' | 'left';
 }) => {
   const { Text } = Typography;
   return (
     <SizeWrapper size={size} width={width} height={height} direction={direction}>
-      <SizeText><Text>{size}</Text></SizeText>
+      <SizeText><Text>{actualSize}</Text></SizeText>
       <Meter size={size} direction={direction} />
     </SizeWrapper>
   );
@@ -120,6 +121,10 @@ type Props = {
   right: number;
   bottom: number;
   left: number;
+  actualTop?: number;
+  actualRight?: number;
+  actualBottom?: number;
+  actualLeft?: number;
   selectable?: boolean;
   isSelected?: boolean;
   onMouseDown?: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -153,6 +158,10 @@ export default function ResizableComponent({
                                              right,
                                              bottom,
                                              left,
+                                             actualTop = 0,
+                                             actualRight = 0,
+                                             actualBottom = 0,
+                                             actualLeft = 0,
                                              selectable = true,
                                              isSelected = false,
                                              onMouseDown,
@@ -178,10 +187,10 @@ export default function ResizableComponent({
              left={offsetX} selectable={selectable} onMouseDown={onMouseDown} onClick={onMouseClick}
              isSelected={isSelected}>
       {isSelected && <>
-        <Size size={top} width={baseWidth + left + right} height={baseHeight + bottom} direction={'top'} />
-        <Size size={right} width={baseWidth + left + right} height={baseHeight + top + bottom} direction={'right'} />
-        <Size size={bottom} width={baseWidth + left + right} height={baseHeight + top + bottom} direction={'bottom'} />
-        <Size size={left} width={baseWidth  + right} height={baseHeight + top + bottom} direction={'left'} />
+        <Size size={top} actualSize={actualTop} width={baseWidth + left + right} height={baseHeight + bottom} direction={'top'} />
+        <Size size={right} actualSize={actualRight} width={baseWidth + left + right} height={baseHeight + top + bottom} direction={'right'} />
+        <Size size={bottom} actualSize={actualBottom} width={baseWidth + left + right} height={baseHeight + top + bottom} direction={'bottom'} />
+        <Size size={left} actualSize={actualLeft} width={baseWidth + right} height={baseHeight + top + bottom} direction={'left'} />
       </>}
       <BorderComponent id={'resta-resize-top'} cursor={isSelected ? 'row-resize' : 'pointer'}
                        width={baseWidth + left + right} height={top} top={0} left={0} onClick={onTopClick} />

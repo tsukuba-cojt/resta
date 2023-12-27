@@ -71,6 +71,7 @@ export default function InteractiveStyler() {
                             offsetY={baseOffsetY - marginTop - paddingTop}
                             isSelected={h.isMarginSelected}
                             top={marginTop} right={marginRight} bottom={marginBottom} left={marginLeft}
+                            actualTop={h.marginTop} actualRight={h.marginRight} actualBottom={h.marginBottom} actualLeft={h.marginLeft}
                             color={'#F8CB9C'}
                             onMouseDown={h.onMouseDownOnMarginStyler}
                             onMouseClick={h.onMouseClickOnMarginStyler} />
@@ -78,6 +79,7 @@ export default function InteractiveStyler() {
                             offsetX={baseOffsetX - paddingLeft}
                             offsetY={baseOffsetY - paddingTop} isSelected={h.isPaddingSelected}
                             top={paddingTop} right={paddingRight} bottom={paddingBottom} left={paddingLeft}
+                            actualTop={h.paddingTop} actualRight={h.paddingRight} actualBottom={h.paddingBottom} actualLeft={h.paddingLeft}
                             borderTopLeft={h.borderTopLeft} borderTopRight={h.borderTopRight}
                             borderBottomRight={h.borderBottomRight} borderBottomLeft={h.borderBottomLeft}
                             color={'#ffffff'}

@@ -8,7 +8,7 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  
+
   p {
     margin-top: 16px;
     color: gray;
@@ -38,10 +38,11 @@ const Cards = ({ templates }: CardsProps) => {
   return (
     <>
       {templates
-        .filter((t) =>
-          t.tags.includes(
-            elementSelection.selectedElement!.tagName.toLowerCase(),
-          ),
+        .filter(
+          (t) =>
+            t.tags.includes(
+              elementSelection.selectedElement!.tagName.toLowerCase(),
+            ) || t.tags.includes('all'),
         )
         .map((t) => (
           <TemplateCard template={t} />

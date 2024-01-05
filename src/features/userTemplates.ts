@@ -19,7 +19,7 @@ export const loadUserTemplatesFromStorage = async (prop: IPropsContext) => {
  * @param name このテンプレートの名前
  * @param tags 適用させるタグ。['all']の場合は全てのタグに適用される。
  */
-export const saveStyle = async (
+export const saveUserTemplates = async (
   cssText: string,
   name = '',
   tags = ['all'],
@@ -34,7 +34,7 @@ export const saveStyle = async (
   } else {
     templates[index] = template;
   }
-  await saveUserTemplates(prop);
+  await saveUserTemplatesLocal(prop);
 };
 
 /**
@@ -42,20 +42,28 @@ export const saveStyle = async (
  * @param name
  * @param prop
  */
-export const deleteStyle = async (name: string, prop: IPropsContext) => {
+export const deleteUserTemplates = async (
+  name: string,
+  prop: IPropsContext,
+) => {
   const templates: Template[] = prop.userTemplates;
   const index = templates.findIndex((e) => e.name === name);
   if (index !== -1) {
     templates.splice(index, 1);
   }
-  await saveUserTemplates(prop);
+  await saveUserTemplatesLocal(prop);
+};
+
+export const deleteAllUserTemplates = async (prop: IPropsContext) => {
+  prop.setUserTemplates([]);
+  await saveUserTemplatesLocal(prop);
 };
 
 /**
  * 現在のuserTemplatesの状態をlocal storageに保存する。
  * @param templates
  */
-const saveUserTemplates = async (prop: IPropsContext) => {
+const saveUserTemplatesLocal = async (prop: IPropsContext) => {
   chrome.storage.local.set({ userTemplates: prop.userTemplates });
 };
 

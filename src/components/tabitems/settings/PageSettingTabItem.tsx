@@ -9,6 +9,7 @@ import Section from '../common/Section';
 import SubTitle from '../common/SubTitle';
 import { DEBUG_MODE } from '../../../consts/debug';
 import { PropsContext } from '../../../contexts/PropsContext';
+import { deleteAllUserTemplates } from '../../../features/userTemplates';
 
 const Wrapper = styled.div``;
 
@@ -83,6 +84,25 @@ const PageSettingTabItem = () => {
           title={t('confirm')}
           description={t('confirm_description')}
           onConfirm={onClickInitAllPagesFormats}
+          okText={t('yes')}
+          cancelText={t('no')}
+          zIndex={999999}
+        >
+          <Button danger block type="primary">
+            {t('execute')}
+          </Button>
+        </Popconfirm>
+      </Section>
+
+      <Section>
+        <SubTitle text={t('init_all_css_template')} />
+        <Description>{t('init_all_css_template_description')}</Description>
+        <Popconfirm
+          title={t('confirm')}
+          description={t('confirm_description')}
+          onConfirm={() => {
+            deleteAllUserTemplates(prop);
+          }}
           okText={t('yes')}
           cancelText={t('no')}
           zIndex={999999}

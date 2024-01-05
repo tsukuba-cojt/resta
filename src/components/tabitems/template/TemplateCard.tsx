@@ -67,9 +67,9 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
     );
   } else {
     card = (
-      <div ref={ref} id={template.name} onClick={onUseClick}>
+      <button ref={ref} id={template.name} onClick={onUseClick}>
         ボタン
-      </div>
+      </button>
     );
   }
 

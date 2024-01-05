@@ -4,6 +4,7 @@ import { Template } from '../../../types/Template';
 import TemplateCard from './TemplateCard';
 import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
 import { PropsContext } from '../../../contexts/PropsContext';
+import { CreateTemplateByCss } from './CreateTemplateByCss';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -79,11 +80,12 @@ const TemplateList = ({ templates }: TemplateListProps) => {
     <>
       {elementSelection.selectedElement && length !== 0 && (
         <Wrapper>
-          <CardsWrapper>
-            <Cards templates={templates} />
-            <Cards templates={prop.userTemplates} />
-          </CardsWrapper>
+          <CreateTemplateByCss />
           <p>ボタンをクリックすることでテンプレートを適用することができます</p>
+          <CardsWrapper>
+            <Cards templates={prop.userTemplates} />
+            <Cards templates={templates} />
+          </CardsWrapper>
         </Wrapper>
       )}
       {length === 0 && <p>この要素に適用できるテンプレートはありません</p>}

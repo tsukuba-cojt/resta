@@ -12,7 +12,8 @@ export const CreateTemplateByCss = () => {
   `;
   const prop = useContext(PropsContext);
   const { TextArea } = Input;
-  const [css] = useState<string>('');
+  const [css, setCss] = useState<string>('');
+  const [templateName, setTemplateName] = useState<string>('');
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -33,7 +34,7 @@ export const CreateTemplateByCss = () => {
         title="テンプレートの作成"
         open={isModalOpen}
         onOk={() => {
-          saveUserTemplates(css, 'hoge', [], prop)
+          saveUserTemplates(css, templateName, [], prop)
             .then(() => {
               setIsModalOpen(false);
             })
@@ -44,9 +45,19 @@ export const CreateTemplateByCss = () => {
         onCancel={() => setIsModalOpen(false)}
         zIndex={99999}
       >
+        テンプレート名
+        <Input
+          defaultValue={templateName}
+          value={templateName}
+          onChange={(e) => setTemplateName(e.target.value)}
+          contentEditable={true}
+        />
+        CSS
         <TextArea
           defaultValue={css}
-          contentEditable={false}
+          value={css}
+          onChange={(e) => setCss(e.target.value)}
+          contentEditable={true}
           autoSize={{ minRows: 5, maxRows: 20 }}
         />
       </Modal>

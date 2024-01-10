@@ -62,6 +62,8 @@ const TemplateList = ({ templates }: TemplateListProps) => {
   const [length, setLength] = useState<number>(0);
   const prop = useContext(PropsContext);
 
+  console.log(prop.userTemplates);
+
   useEffect(() => {
     if (elementSelection.selectedElement) {
       setLength(

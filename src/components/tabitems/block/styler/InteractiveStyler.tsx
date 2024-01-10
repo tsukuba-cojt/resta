@@ -45,7 +45,8 @@ export default function InteractiveStyler() {
     {
       key: '1',
       label: 'パディング',
-      children: <StylerTabContent topValue={h.paddingTop} rightValue={h.paddingRight} bottomValue={h.paddingBottom}
+      children: <StylerTabContent type={'padding'} topValue={h.paddingTop} rightValue={h.paddingRight}
+                                  bottomValue={h.paddingBottom}
                                   leftValue={h.paddingLeft}
                                   setTopValue={h.setPaddingTop} setRightValue={h.setPaddingRight}
                                   setBottomValue={h.setPaddingBottom} setLeftValue={h.setPaddingLeft} />
@@ -53,7 +54,8 @@ export default function InteractiveStyler() {
     {
       key: '2',
       label: 'マージン',
-      children: <StylerTabContent topValue={h.marginTop} rightValue={h.marginRight} bottomValue={h.marginBottom}
+      children: <StylerTabContent type={'margin'} topValue={h.marginTop} rightValue={h.marginRight}
+                                  bottomValue={h.marginBottom}
                                   leftValue={h.marginLeft}
                                   setTopValue={h.setMarginTop} setRightValue={h.setMarginRight}
                                   setBottomValue={h.setMarginBottom} setLeftValue={h.setMarginLeft} />
@@ -77,7 +79,8 @@ export default function InteractiveStyler() {
                             offsetX={baseOffsetX - (marginLeft ?? 0) - (paddingLeft ?? 0)}
                             offsetY={baseOffsetY - (marginTop ?? 0) - (paddingTop ?? 0)}
                             isSelected={h.isMarginSelected}
-                            top={marginTop ?? 0} right={marginRight ?? 0} bottom={marginBottom ?? 0} left={marginLeft ?? 0}
+                            top={marginTop ?? 0} right={marginRight ?? 0} bottom={marginBottom ?? 0}
+                            left={marginLeft ?? 0}
                             actualTop={h.marginTop} actualRight={h.marginRight} actualBottom={h.marginBottom}
                             actualLeft={h.marginLeft}
                             color={'#F8CB9C'}
@@ -86,7 +89,8 @@ export default function InteractiveStyler() {
         <ResizableComponent baseWidth={ELEMENT_SIZE} baseHeight={ELEMENT_SIZE}
                             offsetX={baseOffsetX - (paddingLeft ?? 0)}
                             offsetY={baseOffsetY - (paddingTop ?? 0)} isSelected={h.isPaddingSelected}
-                            top={paddingTop ?? 0} right={paddingRight ?? 0} bottom={paddingBottom ?? 0} left={paddingLeft ?? 0}
+                            top={paddingTop ?? 0} right={paddingRight ?? 0} bottom={paddingBottom ?? 0}
+                            left={paddingLeft ?? 0}
                             actualTop={h.paddingTop} actualRight={h.paddingRight} actualBottom={h.paddingBottom}
                             actualLeft={h.paddingLeft}
                             borderTopLeft={h.borderTopLeft} borderTopRight={h.borderTopRight}

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Button, Col, InputNumber, Row, Select, Slider, Typography } from 'antd';
 import { spaceUnits } from '../../../../consts/units';
 import { DeleteOutlined } from '@ant-design/icons';
+import useStyleApplier from '../../../../hooks/useStyleApplier';
 
 const DIRECTION_BUTTON_WIDTH = 45;
 const DIRECTION_BUTTON_HEIGHT = 8;
@@ -96,6 +97,7 @@ const AdditionalContent = styled.div`
 `;
 
 type Props = {
+  type: string;
   topValue?: number;
   rightValue?: number;
   bottomValue?: number;
@@ -116,6 +118,7 @@ type Props = {
  * パディング、マージンおよび枠線と角丸タブのコンテンツ
  */
 export default function StylerTabContent({
+                                           type,
                                            topValue,
                                            rightValue,
                                            bottomValue,
@@ -132,6 +135,8 @@ export default function StylerTabContent({
                                            onDirectionChange = () => {
                                            }
                                          }: Props) {
+
+  const styleApplier = useStyleApplier();
 
   /**
    * 選択されている方向
@@ -204,6 +209,8 @@ export default function StylerTabContent({
     for (const direction of directions) {
       setValueByDirection(direction, value);
     }
+
+    styleApplier.applyStyle(directions.map((d) => [`${type}-${d}`, value == null ? 'unset' : `${value}px`]));
   }, [directions, setTopValue, setRightValue, setBottomValue, setLeftValue]);
 
   /**

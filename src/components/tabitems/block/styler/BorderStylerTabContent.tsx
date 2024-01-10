@@ -217,7 +217,7 @@ export default function BorderStylerTabContent({
 
   return (
     <Wrapper>
-      <StylerTabContent topValue={topValue?.width}
+      <StylerTabContent type={'border'} topValue={topValue?.width}
                         rightValue={rightValue?.width}
                         bottomValue={bottomValue?.width}
                         leftValue={leftValue?.width}

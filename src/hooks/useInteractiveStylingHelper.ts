@@ -1,4 +1,5 @@
 import React, {useCallback, useRef, useState} from "react";
+import useStyleApplier from './useStyleApplier';
 
 type ReturnType = {
   onMouseDownOnMarginStyler: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
@@ -53,6 +54,8 @@ const emptyBorder: Border = {
  * インタラクティブなブロックスタイリング機能のロジックを集めたフック
  */
 export default function useInteractiveStylingHelper(): ReturnType {
+  const styleApplier = useStyleApplier();
+
   const mouseStart = useRef<number[]>([0, 0]);
   const direction = useRef<number>(0);
   const isMarginDragging = useRef<boolean>(false);
@@ -85,36 +88,60 @@ export default function useInteractiveStylingHelper(): ReturnType {
     switch (true) {
       case isMarginDragging.current: {
         switch (direction.current) {
-          case DIRECTION_TOP:
-            setMarginTop(Math.max(0, (marginTop ?? 0) - deltaY));
+          case DIRECTION_TOP: {
+            const value = Math.max(0, (marginTop ?? 0) - deltaY);
+            setMarginTop(value);
+            styleApplier.applyStyle('margin-top', `${value}px`);
             break;
-          case DIRECTION_RIGHT:
-            setMarginRight(Math.max(0, (marginRight ?? 0) + deltaX));
+          }
+          case DIRECTION_RIGHT: {
+            const value = Math.max(0, (marginRight ?? 0) + deltaX);
+            setMarginRight(value);
+            styleApplier.applyStyle('margin-right', `${value}px`);
             break;
-          case DIRECTION_BOTTOM:
-            setMarginBottom(Math.max(0, (marginBottom ?? 0) + deltaY));
+          }
+          case DIRECTION_BOTTOM: {
+            const value = Math.max(0, (marginBottom ?? 0) + deltaY);
+            setMarginBottom(value);
+            styleApplier.applyStyle('margin-bottom', `${value}px`);
             break;
-          case DIRECTION_LEFT:
-            setMarginLeft(Math.max(0, (marginLeft ?? 0) - deltaX));
+          }
+          case DIRECTION_LEFT: {
+            const value = Math.max(0, (marginLeft ?? 0) - deltaX);
+            setMarginLeft(value);
+            styleApplier.applyStyle('margin-left', `${value}px`);
             break;
+          }
         }
         break;
       }
 
       case isPaddingDragging.current: {
         switch (direction.current) {
-          case DIRECTION_TOP:
-            setPaddingTop(Math.max(0, (paddingTop ?? 0) - deltaY));
+          case DIRECTION_TOP: {
+            const value = Math.max(0, (paddingTop ?? 0) - deltaY);
+            setPaddingTop(value);
+            styleApplier.applyStyle('padding-top', `${value}px`);
             break;
-          case DIRECTION_RIGHT:
-            setPaddingRight(Math.max(0, (paddingRight ?? 0) + deltaX));
+          }
+          case DIRECTION_RIGHT: {
+            const value = Math.max(0, (paddingRight ?? 0) + deltaX);
+            setPaddingRight(value);
+            styleApplier.applyStyle('padding-right', `${value}px`);
             break;
-          case DIRECTION_BOTTOM:
-            setPaddingBottom(Math.max(0, (paddingBottom ?? 0) + deltaY));
+          }
+          case DIRECTION_BOTTOM: {
+            const value = Math.max(0, (paddingBottom ?? 0) + deltaY);
+            setPaddingBottom(value);
+            styleApplier.applyStyle('padding-bottom', `${value}px`);
             break;
-          case DIRECTION_LEFT:
-            setPaddingLeft(Math.max(0, (paddingLeft ?? 0) - deltaX));
+          }
+          case DIRECTION_LEFT: {
+            const value = Math.max(0, (paddingLeft ?? 0) - deltaX);
+            setPaddingLeft(value);
+            styleApplier.applyStyle('padding-left', `${value}px`);
             break;
+          }
         }
         break;
       }

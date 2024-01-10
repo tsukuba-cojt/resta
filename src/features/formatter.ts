@@ -19,6 +19,8 @@ export const initStyle = async () => {
   applyFormats();
 };
 
+const notRestaRoot = ':not(#resta-root *)';
+
 export const setFormatsAndPushToAry = (
   rules: Array<StyleRule>,
   prop: IPropsContext,
@@ -27,7 +29,7 @@ export const setFormatsAndPushToAry = (
   for (const rule of rules) {
     for (const value of rule.values) {
       const c: CssCommand | null = setCommandGenerator(
-        rule.cssSelector,
+        rule.cssSelector + notRestaRoot,
         value.key,
         value.value,
         rule.id,
@@ -50,6 +52,7 @@ export type RemoveRule = {
 };
 
 /**
+ * @deprecated
  * スタイルに変更を加えてformatsListに変更内容を追加
  * formatsListはsaveFormat()でlocalに保存される
  * Undo可能
@@ -79,7 +82,13 @@ export const setFormatAndPushToAry = (
     resta_console.log('setFormatAndPushToAry:invalid args, value is not found');
     return;
   }
-  const c = setCommandGenerator(cssSelector, key, value, id, prop);
+  const c = setCommandGenerator(
+    cssSelector + notRestaRoot,
+    key,
+    value,
+    id,
+    prop,
+  );
   if (c) {
     prop.executor.execute(c);
   }

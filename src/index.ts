@@ -4,6 +4,7 @@ import loadRestaSetting from './features/setting_loader';
 import { initContainer } from './features/root_manager';
 import * as resta_console from './features/resta_console';
 import { activateRestaSubsystems } from './features/upload_import_manager';
+import { testCssParse } from './features/userTemplates';
 
 export let isContainerActive: boolean = false;
 export const setContainerActive = (value: boolean) => {
@@ -12,6 +13,7 @@ export const setContainerActive = (value: boolean) => {
 
 window.addEventListener('load', () => {
   resta_console.log('OnUpdated');
+  testCssParse();
 
   prop.setUrl(window.location.href);
 
@@ -42,6 +44,7 @@ chrome.runtime.onMessage.addListener((req) => {
 const target = document.querySelector('body');
 const observer = new MutationObserver(() => {
   resta_console.log('OnUpdated');
+
   initStyle();
 });
 observer.observe(target!, {

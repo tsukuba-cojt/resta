@@ -88,11 +88,11 @@
     "extension_settings": "ReSta設定",
     "init_all_format": "全デザイン初期化",
     "init_all_format_description": "全てのデザインを初期化します。初期化すると現在のデザインは失われます。この操作は取り消せません。",
+    "init_all_css_template": "全CSSテンプレート初期化",
+    "init_all_css_template_description": "全てのCSSテンプレートを初期化します。初期化すると現在のCSSテンプレートは失われます。この操作は取り消せません。",
     "execute": "実行",
     "confirm": "確認",
     "confirm_description": "実行します。本当によろしいですか？",
-    "yes": "はい",
-    "no": "いいえ",
 
     "font-family": "フォント",
     "font-size": "フォントサイズ",
@@ -131,6 +131,8 @@
     "normal_class": "通常",
     "hover_class": "ホバー",
     "focus_class": "フォーカス",
-    "first-letter_class": "一文字目"
+    "first-letter_class": "一文字目",
+    "select_element": "通常",
+    "select_tag": "タグ"
   }
 }

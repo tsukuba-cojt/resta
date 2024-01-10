@@ -74,19 +74,16 @@ export const getFormatAryFromLocal = async (): Promise<any> => {
  * localからimportしたフォーマットを読み込む
  */
 export const loadImportedStyle = async (prop: IPropsContext) => {
-  await chrome.storage.local.get(['imported_style']).then((result) => {
+  chrome.storage.local.get(['imported_style']).then((result) => {
     if (!result.imported_style) {
       resta_console.log('loadImportedStyle:no format');
       return;
     } else {
       try {
-        resta_console.log('loadImportedStyle', result.imported_style);
-        prop.setImportedFormats(
-          (result.imported_style as Array<prop.ImportedFormat>).filter(
-            (e) => e.style.length !== 0,
-          ),
-        );
-        resta_console.log('loadImportedStyle', prop.importedFormats);
+        const ary = result.imported_style as Array<prop.ImportedFormat>;
+        resta_console.log('loadImportedStyle', ary);
+        prop.setImportedFormats(ary);
+        resta_console.log('setImportedFormats: bug→', prop.importedFormats);
       } catch (e) {
         resta_console.error('loadImportedStyle', e);
       }

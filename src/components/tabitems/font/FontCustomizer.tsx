@@ -35,7 +35,7 @@ import { Button, Divider, Input, InputRef, Select, Space, Tooltip } from 'antd';
 import type { SelectProps } from 'antd';
 import opentype from 'opentype.js';
 import { defaultFontFamilies } from '../../../consts/cssValues';
-import { getAbsoluteCSSSelector, kebabToCamel } from '../../../utils/CSSUtils';
+import { getCssSelector, kebabToCamel } from '../../../utils/CSSUtils';
 import { setFormatsAndPushToAry } from '../../../features/formatter';
 import { PropsContext } from '../../../contexts/PropsContext';
 
@@ -101,8 +101,10 @@ const FontCustomizer = () => {
           {
             id,
             cssSelector:
-              getAbsoluteCSSSelector(elementSelection.selectedElement) +
-              elementSelection.selectedPseudoClass,
+              getCssSelector(
+                elementSelection.selectElementBy,
+                elementSelection.selectedElement,
+              ) + elementSelection.selectedPseudoClass,
             values: [{ key, value }],
           },
         ],

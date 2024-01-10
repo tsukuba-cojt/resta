@@ -10,6 +10,9 @@ type ElementSelectionContext = {
   selectedPseudoClass: string;
   setSelectedPseudoClass: (value: string) => void;
 
+  selectElementBy: string;
+  setSelectElementBy: (value: string) => void;
+
   /**
    * 選択された要素の上にオーバーレイする四角い枠を表現するための要素
    * NOTE: 複数選択を見据えて配列にしてある
@@ -25,6 +28,8 @@ export const defaultElementSelectionContext: ElementSelectionContext = {
   setSelectedElement: (_) => {},
   selectedPseudoClass: '',
   setSelectedPseudoClass: (_) => {},
+  selectElementBy: '',
+  setSelectElementBy: (_) => {},
   overlayElements: [],
   setOverlayElements: () => undefined,
 };
@@ -40,6 +45,7 @@ export const useElementSelectionContext = (): ElementSelectionContext => {
     null,
   );
   const [selectedPseudoClass, _setSelectedPseudoClass] = useState<string>('');
+  const [selectElementBy, _setSelectElementBy] = useState<string>(''); // ['', 'tag']
   const [overlayElements, _setOverlayElements] = useState<SelectedElement[]>(
     [],
   );
@@ -54,6 +60,10 @@ export const useElementSelectionContext = (): ElementSelectionContext => {
 
   const setSelectedPseudoClass = useCallback((value: string): void => {
     _setSelectedPseudoClass(value);
+  }, []);
+
+  const setSelectElementBy = useCallback((value: string): void => {
+    _setSelectElementBy(value);
   }, []);
 
   const setOverlayElements = useCallback(
@@ -74,6 +84,8 @@ export const useElementSelectionContext = (): ElementSelectionContext => {
     setSelectedElement,
     selectedPseudoClass,
     setSelectedPseudoClass,
+    selectElementBy,
+    setSelectElementBy,
     overlayElements,
     setOverlayElements,
   };

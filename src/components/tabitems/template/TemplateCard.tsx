@@ -1,6 +1,9 @@
 import { Template } from '../../../types/Template';
 import React, { useContext, useEffect, useRef } from 'react';
-import { getAbsoluteCSSSelector } from '../../../utils/CSSUtils';
+import {
+  getAbsoluteCSSSelector,
+  getCssSelector,
+} from '../../../utils/CSSUtils';
 import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
 import { setFormatsAndPushToAry } from '../../../features/formatter';
 import { getStyleSheet } from '../../../features/style_sheet';
@@ -22,8 +25,10 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
         template.styles.map((style) => ({
           id: createId(template.name),
           cssSelector:
-            getAbsoluteCSSSelector(elementSelection.selectedElement!) +
-            (style.pseudoClass ? `:${style.pseudoClass}` : ''),
+            getCssSelector(
+              elementSelection.selectElementBy,
+              elementSelection.selectedElement || null,
+            ) + (style.pseudoClass ? `:${style.pseudoClass}` : ''),
           values: Object.entries(style.css).map(([key, value]) => ({
             key,
             value,
@@ -51,20 +56,29 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
 
   useEffect(() => insertCSS(), []);
 
-  return (
-    <>
-      {template.tags[0] === 'a' && (
-        <a ref={ref} id={template.name} href={'#'} onClick={onUseClick}>
-          ボタン
-        </a>
-      )}
-      {template.tags[0] === 'button' && (
-        <button ref={ref} id={template.name} onClick={onUseClick}>
-          ボタン
-        </button>
-      )}
-    </>
-  );
+  let card;
+
+  if (template.tags[0] === 'a') {
+    card = (
+      <a ref={ref} id={template.name} href={'#'} onClick={onUseClick}>
+        ボタン
+      </a>
+    );
+  } else if (template.tags[0] === 'button') {
+    card = (
+      <button ref={ref} id={template.name} onClick={onUseClick}>
+        ボタン
+      </button>
+    );
+  } else {
+    card = (
+      <button ref={ref} id={template.name} onClick={onUseClick}>
+        ボタン
+      </button>
+    );
+  }
+
+  return <>{card}</>;
 };
 
 export default TemplateCard;

@@ -4,6 +4,7 @@ import { ImportedFormat } from '../features/prop';
 import useCommandExecutor, {
   CommandExecutor,
 } from 'react-command-lib/dist/esm';
+import { Template } from '../types/Template';
 
 export type IPropsContext = {
   /**
@@ -31,6 +32,12 @@ export type IPropsContext = {
   setImportedFormats: Dispatch<ImportedFormat[]>;
 
   /**
+   * ユーザーのテンプレート
+   */
+  userTemplates: Template[];
+  setUserTemplates: Dispatch<Template[]>;
+
+  /**
    * コマンドマネージャ
    */
   executor: CommandExecutor;
@@ -45,6 +52,8 @@ const defaultPropsContext: IPropsContext = {
   setFormatsArray: () => undefined,
   importedFormats: [],
   setImportedFormats: () => undefined,
+  userTemplates: [],
+  setUserTemplates: () => undefined,
   executor: {
     execute: () => undefined,
     undo: () => undefined,
@@ -79,6 +88,8 @@ export default function usePropsContext(): IPropsContext {
   const [importedFormats, setImportedFormats] = useMemoizedState<
     ImportedFormat[]
   >([]);
+
+  const [userTemplates, setUserTemplates] = useMemoizedState<Template[]>([]);
   const executor = useCommandExecutor();
 
   return {
@@ -90,6 +101,8 @@ export default function usePropsContext(): IPropsContext {
     setFormatsArray,
     importedFormats,
     setImportedFormats,
+    userTemplates,
+    setUserTemplates,
     executor,
   };
 }

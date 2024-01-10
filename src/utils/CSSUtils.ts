@@ -12,6 +12,23 @@ export const kebabToCamel = (text: string): string => {
   return result;
 };
 
+export const getCssSelector = (
+  selectElementBy: string,
+  selectedElement: HTMLElement | null,
+) => {
+  if (selectedElement == null) {
+    return '';
+  }
+  switch (selectElementBy) {
+    case 'tag':
+      return selectedElement.tagName.toLowerCase();
+
+    case '':
+    default:
+      return getAbsoluteCSSSelector(selectedElement);
+  }
+};
+
 /**
  * 指定された要素のルート要素からのCSSセレクタを取得する
  * @param element

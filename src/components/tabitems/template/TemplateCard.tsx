@@ -1,6 +1,9 @@
 import { Template } from '../../../types/Template';
 import React, { useContext, useEffect, useRef } from 'react';
-import { getAbsoluteCSSSelector } from '../../../utils/CSSUtils';
+import {
+  getAbsoluteCSSSelector,
+  getCssSelector,
+} from '../../../utils/CSSUtils';
 import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
 import { setFormatsAndPushToAry } from '../../../features/formatter';
 import { getStyleSheet } from '../../../features/style_sheet';
@@ -22,8 +25,10 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
         template.styles.map((style) => ({
           id: createId(template.name),
           cssSelector:
-            getAbsoluteCSSSelector(elementSelection.selectedElement!) +
-            (style.pseudoClass ? `:${style.pseudoClass}` : ''),
+            getCssSelector(
+              elementSelection.selectElementBy,
+              elementSelection.selectedElement || null,
+            ) + (style.pseudoClass ? `:${style.pseudoClass}` : ''),
           values: Object.entries(style.css).map(([key, value]) => ({
             key,
             value,

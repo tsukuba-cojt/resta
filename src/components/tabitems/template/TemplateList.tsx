@@ -4,7 +4,6 @@ import { Template } from '../../../types/Template';
 import TemplateCard from './TemplateCard';
 import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
 import { PropsContext } from '../../../contexts/PropsContext';
-import { CreateTemplateByCss } from './CreateTemplateByCss';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -78,16 +77,14 @@ const TemplateList = ({ templates }: TemplateListProps) => {
               ) || t.tags.includes('all'),
           ).length,
       );
+      console.log('TemplateList: ' + prop.userTemplates);
     } else {
       setLength(0);
     }
-  }, [elementSelection.selectedElement]);
+  }, [elementSelection.selectedElement, templates, prop.userTemplates]);
 
   return (
     <>
-      <Wrapper>
-        <CreateTemplateByCss />
-      </Wrapper>
       {elementSelection.selectedElement && length !== 0 && (
         <Wrapper>
           <p>ボタンをクリックすることでテンプレートを適用することができます</p>

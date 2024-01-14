@@ -1,6 +1,8 @@
 import { Template, TemplateStyle } from '../types/Template';
 import Parser from 'css-simple-parser';
 import { IPropsContext } from '../contexts/PropsContext';
+import { log } from './resta_console';
+import t from './translator';
 
 export const loadUserTemplatesFromStorage = async (prop: IPropsContext) => {
   await chrome.storage.local.get(['userTemplates'], (result) => {
@@ -56,6 +58,8 @@ export const deleteUserTemplates = async (
 export const deleteAllUserTemplates = async (prop: IPropsContext) => {
   prop.setUserTemplates([]);
   await saveUserTemplatesLocal(prop);
+  // ページをリロード
+  window.location.reload();
 };
 
 /**
@@ -79,15 +83,39 @@ const createTemplateStyle = (
   tags: string[],
 ): Template => {
   const styles: TemplateStyle[] = [];
-  const ast = Parser.parse(removeSeparators(cssText));
-  for (const child of ast.children) {
-    const pseudoClass = child.selector.split(':')[1];
-    const css: string[] = child.body
+  // background: #27acd9; のような単純なcssの場合は、css-simple-parserが解析できない
+  // そのため、その場合は1行ずつ分割するのみとする。
+  if (cssText.includes('{')) {
+    const ast = Parser.parse(removeSeparators(cssText));
+    log('ast', ast);
+    if (ast.children.length === 0) throw new Error(t('css-parse-error'));
+    for (const child of ast.children) {
+      const pseudoClass = child.selector.split(':')[1];
+      const css: string[] = child.body
+        .trim()
+        .split(';')
+        .filter((e) => e !== '');
+      if (css.length === 0) continue;
+
+      const cssMap: { [key: string]: string } = {};
+
+      for (const c of css) {
+        const [key, value] = c.split(':');
+        cssMap[key] = value;
+      }
+
+      const TemplateStyle: TemplateStyle = {
+        pseudoClass: pseudoClass,
+        css: cssMap,
+      };
+      styles.push(TemplateStyle);
+    }
+  } else {
+    const css: string[] = cssText
       .trim()
       .split(';')
       .filter((e) => e !== '');
-    if (css.length === 0) continue;
-
+    if (css.length === 0) throw new Error(t('css-parse-error'));
     const cssMap: { [key: string]: string } = {};
 
     for (const c of css) {
@@ -96,7 +124,7 @@ const createTemplateStyle = (
     }
 
     const TemplateStyle: TemplateStyle = {
-      pseudoClass: pseudoClass,
+      pseudoClass: '',
       css: cssMap,
     };
     styles.push(TemplateStyle);

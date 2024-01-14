@@ -1,11 +1,12 @@
 import styled from 'styled-components';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button, Input, Modal, Select } from 'antd';
 import Section from '../common/Section';
 import SubTitle from '../common/SubTitle';
 import { saveUserTemplates } from '../../../features/userTemplates';
 import { PropsContext } from '../../../contexts/PropsContext';
 import type { SelectProps } from 'antd';
+import t from '../../../features/translator';
 export const CreateTemplateByCss = () => {
   const Description = styled.p`
     font-size: 10pt;
@@ -17,7 +18,7 @@ export const CreateTemplateByCss = () => {
   const [templateName, setTemplateName] = useState<string>('');
   const [tags, setTags] = useState<string[]>([]);
   const options: SelectProps['options'] = [
-    { value: 'all', label: '全ての要素' },
+    { value: 'all', label: t('all_tags') },
     { value: 'button', label: 'button' },
     { value: 'input', label: 'input' },
     { value: 'a', label: 'a' },
@@ -33,6 +34,12 @@ export const CreateTemplateByCss = () => {
   ];
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    setCss('');
+    setTemplateName('');
+    setTags([]);
+  }, [isModalOpen]);
 
   return (
     <Section>

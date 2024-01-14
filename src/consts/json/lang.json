@@ -65,6 +65,7 @@
     "category_button_1": "ふつうのボタン",
     "category_button_2": "ふつうのボタン2",
     "category_button_3": "ふつうのボタン3",
+    "all_tags": "すべての要素",
 
     "imported_styles": "インポート済み",
     "no_imported_styles": "インポート済みスタイルはありません",
@@ -74,6 +75,8 @@
     "import_popup_title": "スタイルを削除",
     "import_popup_description": "インポートしたスタイルを削除しますか？この操作は取り消せません。",
     "open_style_link": "ダウンロードページを開く",
+    "create_new_style": "新規作成",
+    "css-parse-error": "CSSの解析に失敗しました",
 
     "page_settings": "ページ設定",
     "init_page_format": "編集中のデザイン初期化",

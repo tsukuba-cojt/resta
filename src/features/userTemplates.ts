@@ -1,6 +1,5 @@
 import { Template, TemplateStyle } from '../types/Template';
 import Parser from 'css-simple-parser';
-import * as resta_console from './resta_console';
 import { IPropsContext } from '../contexts/PropsContext';
 
 export const loadUserTemplatesFromStorage = async (prop: IPropsContext) => {
@@ -121,9 +120,8 @@ const removeSeparators = (str: string): string => {
   return str.replace(/\s+/g, '');
 };
 
-/**
- * テスト用
- */
+/*
+// テスト用
 export const testCssParse = () => {
   resta_console.log(
     'testCssParse1',
@@ -166,3 +164,4 @@ a.btn_06:hover {
 	color: #fff;
 }
 `;
+*/

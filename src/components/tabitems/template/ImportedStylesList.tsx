@@ -9,12 +9,10 @@ import {
 import t from '../../../features/translator';
 import { Button, Card, Popconfirm } from 'antd';
 import { PropsContext } from '../../../contexts/PropsContext';
+import { IconShoppingBagX } from '@tabler/icons-react';
+import NoItem from '../common/NoItem';
 
 const Wrapper = styled.div``;
-
-const DescriptionWrapper = styled.div`
-  padding-bottom: 12px;
-`;
 
 const Author = styled.p`
   padding-bottom: 8px;
@@ -106,10 +104,6 @@ const ImportedStylesList = () => {
   const [styles, setStyles] = useState<ImportedFormatAbstract[]>([]);
   const props = useContext(PropsContext);
 
-  const onOpenStoreClick = () => {
-    window.open('https://resta-frontend.pages.dev/style/', '_blank');
-  };
-
   const updateTree = async () => {
     const styles = getImportedFormats(props);
     setStyles(styles);
@@ -123,14 +117,11 @@ const ImportedStylesList = () => {
     <Wrapper>
       {styles.length !== 0 && <Cards styles={styles} updateFunc={updateTree} />}
       {styles.length === 0 && (
-        <>
-          <DescriptionWrapper>
-            <p>{t('no_imported_styles')}</p>
-          </DescriptionWrapper>
-          <Button type="primary" onClick={onOpenStoreClick} block>
-            {t('open_resta_store')}
+        <NoItem icon={<IconShoppingBagX size={96} color={'#999999'} />} text={t('no_imported_styles')}>
+          <Button type="link" onClick={() => window.open('https://resta-frontend.pages.dev/style/', '_blank')} block>
+            <span style={{color: '#00b7ee'}}>{t('open_resta_store')}</span>
           </Button>
-        </>
+        </NoItem>
       )}
     </Wrapper>
   );

@@ -8,6 +8,8 @@ import { PropsContext } from '../../../contexts/PropsContext';
 import { setFormatsAndPushToAry } from '../../../features/formatter';
 import { getCssSelector } from '../../../utils/CSSUtils';
 import InteractiveStyler from './styler/InteractiveStyler';
+import NoItem from '../common/NoItem';
+import { IconClick } from '@tabler/icons-react';
 
 const Wrapper = styled.div``;
 
@@ -68,7 +70,11 @@ const BlockCustomizer = () => {
             ))}
         </>
       )}
-      {!elementSelection.selectedElement && <p>要素を選択してください</p>}
+      {!elementSelection.selectedElement &&
+        <NoItem icon={<IconClick size={96} color={'#999999'} />} offset={140} text={"要素を選択してください"}>
+          <p>ヒント：編集したい要素の上でマウスをクリックすることで要素を選択できます。</p>
+        </NoItem>
+      }
     </Wrapper>
   );
 };

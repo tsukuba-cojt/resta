@@ -2,7 +2,9 @@ import React, { SetStateAction, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import StylerTabContent from './StylerTabContent';
 import type { Color } from 'antd/es/color-picker';
-import { ColorPicker, Typography } from 'antd';
+import { ColorPicker, Select, Typography } from 'antd';
+import useStyleApplier from '../../../../hooks/useStyleApplier';
+import { DefaultOptionType } from 'antd/es/select';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -101,6 +103,8 @@ export default function BorderStylerTabContent({
                                                  setLeftValue
                                                }: Props) {
 
+  const styleApplier = useStyleApplier();
+
   /**
    * 選択されている方向
    */
@@ -122,6 +126,19 @@ export default function BorderStylerTabContent({
     }
   }, [topValue, rightValue, bottomValue, leftValue]);
 
+  const applyBorder = useCallback((directions: Direction[], border: Border | number | undefined) => {
+    for (const direction of directions) {
+      let b: Border;
+      if (border == null || typeof border === 'number') {
+        b = { ...getValueByDirection(direction), width: border };
+        console.log(1, b)
+      } else {
+        b = border;
+      }
+      styleApplier.applyStyle(`border-${direction}`, `${b.width}px ${b.style} ${b.color}`);
+    }
+  }, [styleApplier, getValueByDirection, topValue, rightValue, bottomValue, leftValue]);
+
   /**
    * 指定された方向の値を設定する
    */
@@ -140,6 +157,7 @@ export default function BorderStylerTabContent({
         setLeftValue(border);
         break;
     }
+    applyBorder([direction], border);
   }, [topValue, rightValue, bottomValue, leftValue]);
 
   /**
@@ -184,7 +202,7 @@ export default function BorderStylerTabContent({
     }
 
     return getValueByDirection(directions[0]).color;
-  }, [directions, topValue, rightValue, bottomValue, leftValue]);
+  }, [topValue, rightValue, bottomValue, leftValue, directions, getValueByDirection]);
 
   /**
    * 色が変更されたときの処理
@@ -194,7 +212,16 @@ export default function BorderStylerTabContent({
     for (const direction of directions) {
       setValueByDirection(direction, { ...getValueByDirection(direction), color: colorText });
     }
-  }, [topValue, rightValue, bottomValue, leftValue, setTopValue, setRightValue, setBottomValue, setLeftValue, directions]);
+  }, [topValue, rightValue, bottomValue, leftValue, directions, setValueByDirection, getValueByDirection]);
+
+  /**
+   * 枠線スタイルが変更されたときの処理
+   */
+  const onChangeStyle = useCallback((style: BorderStyle) => {
+    for (const direction of directions) {
+      setValueByDirection(direction, { ...getValueByDirection(direction), style });
+    }
+  }, [topValue, rightValue, bottomValue, leftValue, directions, setValueByDirection, getValueByDirection]);
 
   /**
    * 角丸が変更されたときの処理
@@ -203,21 +230,72 @@ export default function BorderStylerTabContent({
     for (const direction of directions) {
       setValueByDirection(direction, { ...getValueByDirection(direction), radius: value });
     }
-  }, [topValue, rightValue, bottomValue, leftValue, setTopValue, setRightValue, setBottomValue, setLeftValue, directions]);
+  }, [topValue, rightValue, bottomValue, leftValue, directions, setValueByDirection, getValueByDirection]);
+
+  /**
+   * 枠線幅が変更されたときの処理
+   */
+  const onChangeWidth = useCallback((value: number | undefined) => {
+    for (const direction of directions) {
+      setValueByDirection(direction, { ...getValueByDirection(direction), width: value });
+    }
+  }, [topValue, rightValue, bottomValue, leftValue, directions, setValueByDirection, getValueByDirection]);
+
+  /**
+   * 現在選択されている方向の値を取得する
+   * すべての方向が同じ値を持っている場合はその値を、そうでない場合には undefined を返す
+   */
+  const borderStyle = useMemo(() => {
+    if (directions.length > 1) {
+      let isAllSame = true;
+      let previousValue = getValueByDirection(directions[0]).style;
+
+      for (const direction of directions) {
+        isAllSame = previousValue === getValueByDirection(direction).style;
+        if (!isAllSame) {
+          return undefined;
+        }
+      }
+
+      return previousValue;
+
+    } else if (directions.length === 0) {
+      return undefined;
+    }
+
+    return getValueByDirection(directions[0]).style;
+  }, [topValue, rightValue, bottomValue, leftValue, directions, setValueByDirection, getValueByDirection]);
+
+  /**
+   * 枠線スタイルの選択肢
+   */
+  const borderStyleOptions: DefaultOptionType[] = [
+    { value: 'none', label: 'なし' },
+    { value: 'solid', label: '実線' },
+    { value: 'dashed', label: '破線' },
+    { value: 'dotted', label: '点線' },
+    { value: 'double', label: '二重線' },
+    { value: 'groove', label: '浮き出し線' },
+    { value: 'ridge', label: '浮き出し線' },
+    { value: 'inset', label: 'インセット線' },
+    { value: 'outset', label: 'アウトセット線' }
+  ];
 
   /**
    * 追加のコンテンツ
    */
   const additionalContents: Record<string, [React.ReactNode, ((value: any) => void)]> = {
+    '色': [<Color value={currentColor} onChange={onChangeColor} />, onChangeColor],
+    'スタイル': [<Select options={borderStyleOptions} defaultValue={undefined} value={borderStyle}
+                     onChange={onChangeStyle} style={{minWidth: '130px'}} />, onChangeStyle],
     '角丸': [
       <BorderRadius topValue={topValue.radius} rightValue={rightValue.radius} bottomValue={bottomValue.radius}
-                    leftValue={leftValue.radius} />, onChangeRadius],
-    '色': [<Color value={currentColor} onChange={onChangeColor} />, onChangeColor]
+                    leftValue={leftValue.radius} />, onChangeRadius]
   };
 
   return (
     <Wrapper>
-      <StylerTabContent type={'border'} subType={'width'} topValue={topValue?.width}
+      <StylerTabContent type={'border'} topValue={topValue?.width}
                         rightValue={rightValue?.width}
                         bottomValue={bottomValue?.width}
                         leftValue={leftValue?.width}
@@ -226,7 +304,8 @@ export default function BorderStylerTabContent({
                         topColor={topValue?.color} rightColor={rightValue?.color}
                         bottomColor={bottomValue?.color} leftColor={leftValue?.color}
                         additionalContents={additionalContents}
-                        onDirectionChange={setDirections} />
+                        onDirectionChange={setDirections}
+                        onChange={onChangeWidth} />
     </Wrapper>
   );
 }

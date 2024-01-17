@@ -98,7 +98,6 @@ const AdditionalContent = styled.div`
 
 type Props = {
   type: string;
-  subType?: string;
   topValue?: number;
   rightValue?: number;
   bottomValue?: number;
@@ -113,6 +112,7 @@ type Props = {
   leftColor?: string;
   additionalContents?: { [name: string]: [React.ReactNode, ((value: any) => void)] };
   onDirectionChange?: (direction: Direction[]) => void;
+  onChange?: (value: number | undefined) => void;
 }
 
 /**
@@ -120,7 +120,6 @@ type Props = {
  */
 export default function StylerTabContent({
                                            type,
-                                           subType,
                                            topValue,
                                            rightValue,
                                            bottomValue,
@@ -135,7 +134,8 @@ export default function StylerTabContent({
                                            leftColor,
                                            additionalContents = {},
                                            onDirectionChange = () => {
-                                           }
+                                           },
+                                           onChange,
                                          }: Props) {
 
   const styleApplier = useStyleApplier();
@@ -203,28 +203,29 @@ export default function StylerTabContent({
   /**
    * スライダーまたはインプットによって値が変更されたときの処理
    */
-  const onChange = useCallback((value: number | null | undefined) => {
+  const _onChange = useCallback((value: number | null | undefined) => {
     if (value == null) {
       value = undefined;
+    }
+
+    if (onChange) {
+      onChange(value);
+      return;
     }
 
     for (const direction of directions) {
       setValueByDirection(direction, value);
     }
 
-    if (type !== 'border') {
-      styleApplier.applyStyle(directions.map((d) => [`${type}-${d}`, value == null ? 'unset' : `${value}px`]));
-    } else if (subType) {
-      styleApplier.applyStyle(directions.map((d) => [`${type}-${d}-${subType}`, value == null ? 'unset' : `${value}px`]));
-    }
+    styleApplier.applyStyle(directions.map((d) => [`${type}-${d}`, value == null ? 'unset' : `${value}px`]));
   }, [directions, setTopValue, setRightValue, setBottomValue, setLeftValue, styleApplier.applyStyle]);
 
   /**
    * リセットボタンが押されたときの処理
    */
   const onResetClick = useCallback(() => {
-    onChange(undefined);
-  }, [onChange]);
+    _onChange(undefined);
+  }, [_onChange]);
 
   /**
    * 現在選択されている方向の値を取得する
@@ -287,12 +288,12 @@ export default function StylerTabContent({
           <Slider
             min={0}
             max={25}
-            onChange={onChange}
+            onChange={_onChange}
             value={value}
           />
         </Col>
         <Col span={11}>
-          <InputNumber addonAfter={UnitSelect} defaultValue={0} onChange={onChange} value={value} />
+          <InputNumber addonAfter={UnitSelect} defaultValue={0} onChange={_onChange} value={value} />
         </Col>
       </Row>
 

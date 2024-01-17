@@ -40,7 +40,7 @@ export default function useStyleApplier(): ReturnType {
       }
 
       const keyString = Array.isArray(keyOrArray) ? keyOrArray.map(([key, _]) => `${key}`).join(';') : keyOrArray;
-      const id = previousCssKey.current === keyString ? previousId.current : Math.random() * 10000;
+      const id = previousCssKey.current === keyString ? previousId.current : Math.floor(Math.random() * 10000);
 
       let rules: StyleRule[];
       if (Array.isArray(keyOrArray)) {

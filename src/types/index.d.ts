@@ -3,7 +3,7 @@ type SelectedElement = {
   element: HTMLElement;
 }
 
-type BorderStyle = 'solid' | 'dashed' | 'dotted' | undefined;
+type BorderStyle = 'solid' | 'dashed' | 'dotted' | 'double' | 'groove' | 'ridge' | 'inset' | 'outset' | 'none' | undefined;
 
 type Border = {
   style: BorderStyle;

@@ -1,4 +1,5 @@
 import React, {useCallback, useLayoutEffect, useRef, useState} from "react";
+import useStyleApplier from './useStyleApplier';
 
 type Args = {
   direction: 'top-left' | 'top-right' | 'bottom-right' | 'bottom-left';
@@ -15,6 +16,7 @@ type ReturnType = {
  * つまみによって角丸のサイズを変更するロジックを集めたフック
  */
 export default function useBorderRadiusStylingHelper({direction, border, setBorder}: Args): ReturnType {
+  const styleApplier = useStyleApplier();
   const ref = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [start, setStart] = useState<number[]>([0, 0]);
@@ -66,6 +68,7 @@ export default function useBorderRadiusStylingHelper({direction, border, setBord
       ...border!,
       radius: Math.floor(r),
     });
+    styleApplier.applyStyle(`border-${direction}-radius`, `${Math.floor(r)}px`);
   }, [border, setBorder]);
 
   /**

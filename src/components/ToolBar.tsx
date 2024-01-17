@@ -46,13 +46,13 @@ const ToolBar = () => {
   return (
     <Wrapper>
       <Button
-        type="ghost"
+        type="text"
         size={'small'}
         icon={<CloseOutlined />}
         onClick={onCloseButtonClick}
       />
       <Button
-        type="ghost"
+        type="text"
         size={'small'}
         icon={getIcon()}
         onClick={() => setRight(toggleContainerPosition)}
@@ -81,7 +81,7 @@ const ToolBar = () => {
         onChange={elementSelection.setSelectedPseudoClass}
       />
       <Button
-        type="ghost"
+        type="text"
         size={'small'}
         disabled={!context.executor.isUndoable}
         icon={
@@ -94,7 +94,7 @@ const ToolBar = () => {
         onClick={context.executor.undo}
       />
       <Button
-        type="ghost"
+        type="text"
         size={'small'}
         disabled={!context.executor.isRedoable}
         icon={

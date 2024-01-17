@@ -49,7 +49,7 @@ const LayerCustomizer = () => {
                 <span>
                   {t(child.cssKey)}
                   <Button
-                    type={'ghost'}
+                    type={'text'}
                     onClick={() =>
                       onDeleteStyle(
                         getAbsoluteCSSSelector(

@@ -8,6 +8,7 @@ import { TemplateCategory } from '../../../types/Template';
 import Scrollable from '../common/Scrollable';
 import TemplateList from './TemplateList';
 import ImportedStylesList from './ImportedStylesList';
+import { CreateTemplateByCss } from './CreateTemplateByCss';
 
 const Wrapper = styled.div``;
 
@@ -28,17 +29,26 @@ const TemplateCustomizer = () => {
   );
 
   const items = useCallback(() => {
-    const categories = [{
-      label: t('imported_styles'),
-      key: 'imported_styles',
-      children: <ImportedStylesList />,
-    }];
+    const categories = [
+      {
+        label: t('imported_styles'),
+        key: 'imported_styles',
+        children: <ImportedStylesList />,
+      },
+      {
+        label: t('create_new_style'),
+        key: 'create_new_style',
+        children: <CreateTemplateByCss />,
+      },
+    ];
 
-    categories.push(...categoriesArray.map((category, i) => ({
-      label: t(category.name),
-      key: i.toString(),
-      children: <TemplateList templates={category.templates} />,
-    })));
+    categories.push(
+      ...categoriesArray.map((category, i) => ({
+        label: t(category.name),
+        key: i.toString(),
+        children: <TemplateList templates={category.templates} />,
+      })),
+    );
 
     return categories;
   }, [categoriesArray]);

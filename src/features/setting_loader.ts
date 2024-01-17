@@ -13,6 +13,7 @@ import * as resta_console from './resta_console';
 export const loadRestaSetting = async (): Promise<ChangeStyleCategoryMap> => {
   const styles = await downloadUiSetting();
   resta_console.log('uiSetting', styles);
+
   return loadRestaSettingStyles(styles);
 };
 

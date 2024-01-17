@@ -12,7 +12,7 @@ import {
   closeContainer,
   toggleContainerPosition,
 } from '../features/root_manager';
-import { pseudoClassOptions } from '../consts/menu';
+import { pseudoClassOptions, selectElementByOptions } from '../consts/menu';
 import { ElementSelectionContext } from '../contexts/ElementSelectionContext';
 import { PropsContext } from '../contexts/PropsContext';
 
@@ -58,6 +58,17 @@ const ToolBar = () => {
         onClick={() => setRight(toggleContainerPosition)}
       />
       <ToolBarSpace />
+      <Select
+        size={'small'}
+        bordered={false}
+        options={selectElementByOptions}
+        defaultValue={selectElementByOptions[0].value}
+        popupMatchSelectWidth={false}
+        dropdownStyle={{ zIndex: 99999 }}
+        placement={'bottomRight'}
+        value={elementSelection.selectElementBy}
+        onChange={elementSelection.setSelectElementBy}
+      />
       <Select
         size={'small'}
         bordered={false}

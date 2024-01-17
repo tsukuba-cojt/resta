@@ -35,7 +35,7 @@ import { Button, Divider, Input, InputRef, Select, Space, Tooltip } from 'antd';
 import type { SelectProps } from 'antd';
 import opentype from 'opentype.js';
 import { defaultFontFamilies } from '../../../consts/cssValues';
-import { getAbsoluteCSSSelector, kebabToCamel } from '../../../utils/CSSUtils';
+import { getCssSelector, kebabToCamel } from '../../../utils/CSSUtils';
 import { setFormatsAndPushToAry } from '../../../features/formatter';
 import { PropsContext } from '../../../contexts/PropsContext';
 
@@ -88,6 +88,10 @@ const FontCustomizer = () => {
 
   const onChangeFonts = (values: string[]) => {
     setSelectedFonts(values);
+    const value = values
+      .map((font) => (defaultFontFamilies.includes(font) ? font : `"${font}"`))
+      .join(', ');
+    onChange('font-family', value, 'font-family');
   };
 
   const onChange = (key: string, value: string, id: number | string) => {
@@ -97,8 +101,10 @@ const FontCustomizer = () => {
           {
             id,
             cssSelector:
-              getAbsoluteCSSSelector(elementSelection.selectedElement) +
-              elementSelection.selectedPseudoClass,
+              getCssSelector(
+                elementSelection.selectElementBy,
+                elementSelection.selectedElement,
+              ) + elementSelection.selectedPseudoClass,
             values: [{ key, value }],
           },
         ],
@@ -106,13 +112,6 @@ const FontCustomizer = () => {
       );
     }
   };
-
-  useEffect(() => {
-    const value = selectedFonts
-      .map((font) => (defaultFontFamilies.includes(font) ? font : `"${font}"`))
-      .join(', ');
-    onChange('font-family', value, 'font-family');
-  }, [selectedFonts]);
 
   useEffect(() => {
     (async () => {

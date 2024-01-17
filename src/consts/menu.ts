@@ -18,3 +18,14 @@ export const pseudoClassOptions = [
     value: ':first-letter',
   },
 ];
+
+export const selectElementByOptions = [
+  {
+    label: t('select_element'),
+    value: '',
+  },
+  {
+    label: t('select_tag'),
+    value: 'tag',
+  },
+];

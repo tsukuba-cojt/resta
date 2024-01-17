@@ -11,7 +11,7 @@ import { ElementSelectionContext } from '../../../contexts/ElementSelectionConte
 import BoxShadowCustomizer from './BoxShadowCustomizer';
 import { PropsContext } from '../../../contexts/PropsContext';
 import { setFormatsAndPushToAry } from '../../../features/formatter';
-import { getAbsoluteCSSSelector } from '../../../utils/CSSUtils';
+import { getCssSelector } from '../../../utils/CSSUtils';
 import InteractiveStyler from './styler/InteractiveStyler';
 
 const Wrapper = styled.div``;
@@ -36,8 +36,10 @@ const BlockCustomizer = () => {
           {
             id,
             cssSelector:
-              getAbsoluteCSSSelector(elementSelection.selectedElement) +
-              elementSelection.selectedPseudoClass,
+              getCssSelector(
+                elementSelection.selectElementBy,
+                elementSelection.selectedElement,
+              ) + elementSelection.selectedPseudoClass,
             values: [{ key, value }],
           },
         ],

@@ -39,6 +39,13 @@ const PageSettingTabItem = () => {
     window.location.reload();
   };
 
+  const onClickInitAllPagesCssTemplates = async () => {
+    // localStorageのuserTemplatesを上書き
+    await chrome.storage.local.set({ userTemplates: [] });
+    // ページをリロード
+    window.location.reload();
+  };
+
   const elementSelection = useContext(ElementSelectionContext);
   const [developerToolEnabled, setDeveloperToolEnabled] =
     useState<boolean>(false);
@@ -83,6 +90,23 @@ const PageSettingTabItem = () => {
           title={t('confirm')}
           description={t('confirm_description')}
           onConfirm={onClickInitAllPagesFormats}
+          okText={t('yes')}
+          cancelText={t('no')}
+          zIndex={999999}
+        >
+          <Button danger block type="primary">
+            {t('execute')}
+          </Button>
+        </Popconfirm>
+      </Section>
+
+      <Section>
+        <SubTitle text={t('init_all_css_template')} />
+        <Description>{t('init_all_css_template_description')}</Description>
+        <Popconfirm
+          title={t('confirm')}
+          description={t('confirm_description')}
+          onConfirm={onClickInitAllPagesCssTemplates}
           okText={t('yes')}
           cancelText={t('no')}
           zIndex={999999}

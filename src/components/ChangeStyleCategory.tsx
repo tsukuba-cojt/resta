@@ -8,7 +8,7 @@ import t from '../features/translator';
 import { setFormatAndPushToAry } from '../features/formatter';
 import InputNumberWithUnit from './controls/InputNumberWithUnit';
 import Select from './controls/Select';
-import { getAbsoluteCSSSelector } from '../utils/CSSUtils';
+import { getCssSelector } from '../utils/CSSUtils';
 import { ElementSelectionContext } from '../contexts/ElementSelectionContext';
 import { PropsContext } from '../contexts/PropsContext';
 
@@ -43,7 +43,10 @@ const ChangeStyleCategory = ({
   const onChange = (key: string, value: string, id: number | string) => {
     if (elementSelection.selectedElement) {
       setFormatAndPushToAry(
-        getAbsoluteCSSSelector(elementSelection.selectedElement),
+        getCssSelector(
+          elementSelection.selectElementBy,
+          elementSelection.selectedElement,
+        ),
         key,
         value,
         id,

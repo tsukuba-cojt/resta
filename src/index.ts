@@ -42,6 +42,7 @@ chrome.runtime.onMessage.addListener((req) => {
 const target = document.querySelector('body');
 const observer = new MutationObserver(() => {
   resta_console.log('OnUpdated');
+
   initStyle();
 });
 observer.observe(target!, {

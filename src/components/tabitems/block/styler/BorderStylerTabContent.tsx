@@ -2,52 +2,19 @@ import React, { SetStateAction, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import StylerTabContent from './StylerTabContent';
 import type { Color } from 'antd/es/color-picker';
-import { ColorPicker, Select, Typography } from 'antd';
+import { Select, Typography } from 'antd';
 import useStyleApplier from '../../../../hooks/useStyleApplier';
 import { DefaultOptionType } from 'antd/es/select';
+import ColorPicker2 from '../../../controls/ColorPicker2';
 
 const Wrapper = styled.div`
   width: 100%;
-`;
-
-const ColorWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
 `;
 
 const Description = styled.p`
   font-size: 0.7rem;
   text-align: right;
 `;
-
-/**
- * カラーピッカーと色の値を表示するコンポーネント
- */
-const Color = ({ onChange, value }: {
-  onChange: (c: string | Color | undefined) => void,
-  value: string | undefined
-}) => {
-  const { Text } = Typography;
-
-  return (
-    <ColorWrapper>
-      <ColorPicker
-        size='small'
-        value={value !== NOT_ALL_SAME ? value : undefined}
-        onChangeComplete={(c) => {
-          onChange(c);
-        }}
-      />
-      <Description>
-        {value && value !== NOT_ALL_SAME && <Text type='secondary'>{value}</Text>}
-        {value === NOT_ALL_SAME && <Text type='secondary'>決定できません</Text>}
-        {value == undefined && <Text type='secondary'>未選択</Text>}
-      </Description>
-    </ColorWrapper>
-  );
-};
 
 /**
  * 角丸の値を表示するコンポーネント
@@ -87,6 +54,7 @@ type Props = {
   setRightValue: React.Dispatch<React.SetStateAction<Border>>;
   setBottomValue: React.Dispatch<React.SetStateAction<Border>>;
   setLeftValue: React.Dispatch<React.SetStateAction<Border>>;
+  additionalContents?: Record<string, [React.ReactNode, ((value: any) => void)]>
 }
 
 /**
@@ -100,7 +68,8 @@ export default function BorderStylerTabContent({
                                                  setTopValue,
                                                  setRightValue,
                                                  setBottomValue,
-                                                 setLeftValue
+                                                 setLeftValue,
+                                                 additionalContents = {},
                                                }: Props) {
 
   const styleApplier = useStyleApplier();
@@ -284,13 +253,14 @@ export default function BorderStylerTabContent({
   /**
    * 追加のコンテンツ
    */
-  const additionalContents: Record<string, [React.ReactNode, ((value: any) => void)]> = {
-    '色': [<Color value={currentColor} onChange={onChangeColor} />, onChangeColor],
-    'スタイル': [<Select options={borderStyleOptions} defaultValue={undefined} value={borderStyle}
-                     onChange={onChangeStyle} style={{minWidth: '130px'}} />, onChangeStyle],
+  const _additionalContents: Record<string, [React.ReactNode, ((value: any) => void)]> = {
+    '色': [<ColorPicker2 value={currentColor} onChange={onChangeColor} />, onChangeColor],
+    'スタイル': [<Select size={'small'} bordered={false} options={borderStyleOptions} defaultValue={undefined} value={borderStyle}
+                     onChange={onChangeStyle} style={{minWidth: '130px', textAlign: 'right'}} />, onChangeStyle],
     '角丸': [
       <BorderRadius topValue={topValue.radius} rightValue={rightValue.radius} bottomValue={bottomValue.radius}
-                    leftValue={leftValue.radius} />, onChangeRadius]
+                    leftValue={leftValue.radius} />, onChangeRadius],
+    ...additionalContents
   };
 
   return (
@@ -303,7 +273,7 @@ export default function BorderStylerTabContent({
                         setBottomValue={setBottomWidth} setLeftValue={setLeftWidth}
                         topColor={topValue?.color} rightColor={rightValue?.color}
                         bottomColor={bottomValue?.color} leftColor={leftValue?.color}
-                        additionalContents={additionalContents}
+                        additionalContents={_additionalContents}
                         onDirectionChange={setDirections}
                         onChange={onChangeWidth} />
     </Wrapper>

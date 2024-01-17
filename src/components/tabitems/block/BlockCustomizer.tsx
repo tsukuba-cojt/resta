@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import React, { useContext } from 'react';
 import SubTitle from '../common/SubTitle';
 import Section from '../common/Section';
-import BackgroundColorCustomizer from './BackgroundColorCustomizer';
 import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
 import BoxShadowCustomizer from './BoxShadowCustomizer';
 import { PropsContext } from '../../../contexts/PropsContext';
@@ -45,7 +44,7 @@ const BlockCustomizer = () => {
   };
 
   const customizers: { [key: string]: React.JSX.Element } = {
-    背景色: <BackgroundColorCustomizer onChange={onChange} />,
+    // 背景色: <BackgroundColorCustomizer onChange={onChange} />,
     // 幅と高さ: <SizeCustomizer onChange={onChange} />,
     // 余白: <PaddingCustomizer onChange={onChange} />,
     // 角丸: <BorderRadiusCustomizer onChange={onChange} />,

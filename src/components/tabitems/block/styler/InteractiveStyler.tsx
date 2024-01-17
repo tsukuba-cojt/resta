@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import ResizableComponent from './ResizableComponent';
-import React, { useContext, useEffect, useMemo } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import BorderRadiusStyler from './BorderRadiusStyler';
 import useInteractiveStylingHelper from '../../../../hooks/useInteractiveStylingHelper';
 import { Tabs, TabsProps } from 'antd';
@@ -8,6 +8,9 @@ import StylerTabContent from './StylerTabContent';
 import BorderStylerTabContent from './BorderStylerTabContent';
 import { ElementSelectionContext } from '../../../../contexts/ElementSelectionContext';
 import { getDecimalFromCSSValue } from '../../../../utils/CSSUtils';
+import ColorPicker2 from '../../../controls/ColorPicker2';
+import { Color } from 'antd/es/color-picker';
+import useStyleApplier from '../../../../hooks/useStyleApplier';
 
 const BASE_SIZE = 200;
 const ELEMENT_SIZE = 50;
@@ -27,6 +30,7 @@ const Wrapper = styled.div`
  */
 export default function InteractiveStyler() {
   const MAX_VALUE = 25;
+  const styleApplier = useStyleApplier();
   const h = useInteractiveStylingHelper();
   const baseOffsetX = useMemo(() => (BASE_SIZE - ELEMENT_SIZE) / 2, []);
   const baseOffsetY = useMemo(() => (BASE_SIZE - ELEMENT_SIZE) / 2, []);
@@ -40,6 +44,21 @@ export default function InteractiveStyler() {
   const marginBottom = useMemo(() => h.marginBottom != undefined ? Math.min(MAX_VALUE, h.marginBottom) : 0, [h.marginBottom]);
   const marginLeft = useMemo(() => h.marginLeft != undefined ? Math.min(MAX_VALUE, h.marginLeft) : undefined, [h.marginLeft]);
 
+  const onChangeColor = useCallback((value: string | Color | undefined) => {
+    h.setBackgroundColor(value);
+    styleApplier.applyStyle('background-color', typeof value === 'object' ? value.toRgbString() : value);
+  }, []);
+
+  /**
+   * 追加のコンテンツ
+   */
+  const additionalContents: Record<string, [React.ReactNode, ((value: any) => void)]> = {
+    '背景色': [<ColorPicker2
+      value={h.backgroundColor}
+      onChange={onChangeColor}
+    />, onChangeColor],
+  };
+
   /**
    * タブの要素
    */
@@ -51,7 +70,8 @@ export default function InteractiveStyler() {
                                   bottomValue={h.paddingBottom}
                                   leftValue={h.paddingLeft}
                                   setTopValue={h.setPaddingTop} setRightValue={h.setPaddingRight}
-                                  setBottomValue={h.setPaddingBottom} setLeftValue={h.setPaddingLeft} />
+                                  setBottomValue={h.setPaddingBottom} setLeftValue={h.setPaddingLeft}
+                                  additionalContents={additionalContents} />
     },
     {
       key: '2',
@@ -60,7 +80,8 @@ export default function InteractiveStyler() {
                                   bottomValue={h.marginBottom}
                                   leftValue={h.marginLeft}
                                   setTopValue={h.setMarginTop} setRightValue={h.setMarginRight}
-                                  setBottomValue={h.setMarginBottom} setLeftValue={h.setMarginLeft} />
+                                  setBottomValue={h.setMarginBottom} setLeftValue={h.setMarginLeft}
+                                  additionalContents={additionalContents} />
     },
     {
       key: '3',
@@ -69,7 +90,8 @@ export default function InteractiveStyler() {
                                         bottomValue={h.borderBottomRight}
                                         leftValue={h.borderBottomLeft}
                                         setTopValue={h.setBorderTopLeft} setRightValue={h.setBorderTopRight}
-                                        setBottomValue={h.setBorderBottomRight} setLeftValue={h.setBorderBottomLeft} />
+                                        setBottomValue={h.setBorderBottomRight} setLeftValue={h.setBorderBottomLeft}
+                                        additionalContents={additionalContents} />
     }
   ];
 
@@ -112,6 +134,7 @@ export default function InteractiveStyler() {
       color: style.borderBottomColor,
       radius: getDecimalFromCSSValue(style.borderBottomLeftRadius)
     });
+    h.setBackgroundColor(style.backgroundColor);
 
   }, [elementSelection.selectedElement]);
 
@@ -132,14 +155,14 @@ export default function InteractiveStyler() {
                             onMouseClick={h.onMouseClickOnMarginStyler} />
         <ResizableComponent baseWidth={ELEMENT_SIZE} baseHeight={ELEMENT_SIZE}
                             offsetX={baseOffsetX - (paddingLeft ?? 0)}
-                            offsetY={baseOffsetY - (paddingTop ?? 0)} isSelected={h.isPaddingSelected}
+                            offsetY={baseOffsetY - (paddingTop ?? 0)} isSelected={h.isPaddingSelected || h.isBorderSelected}
                             top={paddingTop ?? 0} right={paddingRight ?? 0} bottom={paddingBottom ?? 0}
                             left={paddingLeft ?? 0}
                             actualTop={h.paddingTop} actualRight={h.paddingRight} actualBottom={h.paddingBottom}
                             actualLeft={h.paddingLeft}
                             borderTopLeft={h.borderTopLeft} borderTopRight={h.borderTopRight}
                             borderBottomRight={h.borderBottomRight} borderBottomLeft={h.borderBottomLeft}
-                            color={'#ffffff'}
+                            color={typeof h.backgroundColor === 'object' ? h.backgroundColor.toRgbString() : h.backgroundColor ?? '#FFFFFF'}
                             onMouseDown={h.onMouseDownOnPaddingStyler}
                             onMouseClick={h.onMouseClickOnPaddingStyler}>
           {h.isBorderSelected &&

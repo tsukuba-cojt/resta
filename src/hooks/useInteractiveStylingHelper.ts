@@ -1,5 +1,6 @@
 import React, {useCallback, useRef, useState} from "react";
 import useStyleApplier from './useStyleApplier';
+import { Color } from 'antd/es/color-picker';
 
 type ReturnType = {
   onMouseDownOnMarginStyler: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
@@ -18,6 +19,7 @@ type ReturnType = {
   paddingRight: number | undefined;
   paddingBottom: number | undefined;
   paddingLeft: number | undefined;
+  backgroundColor: string | Color | undefined;
   isMarginSelected: boolean;
   isPaddingSelected: boolean;
   isBorderSelected: boolean;
@@ -36,6 +38,7 @@ type ReturnType = {
   setIsMarginSelected: React.Dispatch<React.SetStateAction<boolean>>;
   setIsPaddingSelected: React.Dispatch<React.SetStateAction<boolean>>;
   setIsBorderSelected: React.Dispatch<React.SetStateAction<boolean>>;
+  setBackgroundColor: React.Dispatch<React.SetStateAction<string | Color | undefined>>;
 }
 
 const DIRECTION_RIGHT = 0;
@@ -73,6 +76,7 @@ export default function useInteractiveStylingHelper(): ReturnType {
   const [paddingRight, setPaddingRight] = useState<number | undefined>(undefined);
   const [paddingBottom, setPaddingBottom] = useState<number | undefined>(undefined);
   const [paddingLeft, setPaddingLeft] = useState<number | undefined>(undefined);
+  const [backgroundColor, setBackgroundColor] = useState<string | Color | undefined>(undefined);
 
   const [isMarginSelected, setIsMarginSelected] = useState<boolean>(false);
   const [isPaddingSelected, setIsPaddingSelected] = useState<boolean>(true);
@@ -235,6 +239,7 @@ export default function useInteractiveStylingHelper(): ReturnType {
     paddingRight,
     paddingBottom,
     paddingLeft,
+    backgroundColor,
     isMarginSelected,
     isPaddingSelected,
     isBorderSelected,
@@ -253,5 +258,6 @@ export default function useInteractiveStylingHelper(): ReturnType {
     setIsMarginSelected,
     setIsPaddingSelected,
     setIsBorderSelected,
+    setBackgroundColor,
   }
 }

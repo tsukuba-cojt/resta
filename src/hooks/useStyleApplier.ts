@@ -60,7 +60,7 @@ export default function useStyleApplier(): ReturnType {
           cssSelector: getAbsoluteCSSSelector(elementContext.selectedElement),
           values: [{
             key: keyOrArray,
-            value: `${value}`
+            value: value != null ? `${value}` : 'unset',
           }]
         }];
       }

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Input, Modal, Select } from 'antd';
+import { Button, Input, Modal, Select, message } from 'antd';
 import Section from '../common/Section';
 import SubTitle from '../common/SubTitle';
 import { saveUserTemplates } from '../../../features/userTemplates';
@@ -33,6 +33,8 @@ export const CreateTemplateByCss = () => {
     { value: 'h3', label: 'h3' },
   ];
 
+  const [messageApi, contextHolder] = message.useMessage();
+
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -42,73 +44,92 @@ export const CreateTemplateByCss = () => {
   }, [isModalOpen]);
 
   return (
-    <Section>
-      <SubTitle text={'テンプレートの作成'} />
-      <Description>{'CSSを入力してテンプレートを作成します'}</Description>
-      <Button
-        block
-        type="default"
-        onClick={async () => {
-          setIsModalOpen(true);
-        }}
-      >
-        開く
-      </Button>
-      <Modal
-        title="テンプレートの作成"
-        open={isModalOpen}
-        onOk={() => {
-          if (css === '') {
-            alert('CSSを入力してください');
-            return;
-          }
-          if (templateName === '') {
-            alert('テンプレート名を入力してください');
-            return;
-          }
-          saveUserTemplates(css, templateName, tags, prop)
-            .then(() => {
-              setIsModalOpen(false);
-            })
-            .catch((e) => {
-              alert(e);
-            });
-        }}
-        onCancel={() => setIsModalOpen(false)}
-        zIndex={99999}
-      >
-        <Section>
-          テンプレート名
-          <Input
-            defaultValue={templateName}
-            value={templateName}
-            onChange={(e) => setTemplateName(e.target.value)}
-            contentEditable={true}
-          />
-        </Section>
-        <Section>
-          対象とする要素のタグ名(入力しない場合は全ての要素に適用されます)
-          <Select
-            mode="tags"
-            style={{ width: '100%' }}
-            defaultValue={[]}
-            value={tags?.length === 0 ? [] : tags}
-            tokenSeparators={[',']}
-            onChange={setTags}
-            options={options}
-          />
-        </Section>
-        <Section>
-          CSS
-          <TextArea
-            defaultValue={css}
-            value={css}
-            onChange={(e) => setCss(e.target.value)}
-            contentEditable={true}
-            autoSize={{ minRows: 5, maxRows: 20 }}
-          />
-        </Section>
-      </Modal>
-    </Section>
+    <>
+      {contextHolder}
+      <Section>
+        <SubTitle text={'テンプレートの作成'} />
+        <Description>{'CSSを入力してテンプレートを作成します'}</Description>
+        <Button
+          block
+          type="default"
+          onClick={async () => {
+            setIsModalOpen(true);
+          }}
+        >
+          テンプレートを作成
+        </Button>
+        <Modal
+          title="テンプレートの作成"
+          open={isModalOpen}
+          onOk={() => {
+            if (css === '') {
+              alert('CSSを入力してください');
+              return;
+            }
+            if (templateName === '') {
+              alert('テンプレート名を入力してください');
+              return;
+            }
+            const templates = prop.userTemplates;
+            if (templates.findIndex((t) => t.name === templateName) > -1) {
+              const ok = confirm(
+                '同じ名前のテンプレートが存在します。上書きしますか？',
+              );
+              if (!ok) {
+                return;
+              }
+            }
+            if (templateName) {
+              saveUserTemplates(css, templateName, tags, prop)
+                .then(() => {
+                  setIsModalOpen(false);
+                  messageApi.open({
+                    type: 'success',
+                    content: 'テンプレートを作成しました',
+                    duration: 5,
+                  });
+                })
+                .catch((e) => {
+                  alert(e);
+                });
+            }
+          }}
+          onCancel={() => setIsModalOpen(false)}
+          zIndex={99999}
+        >
+          <Section>
+            テンプレート名
+            <Input
+              defaultValue={templateName}
+              value={templateName}
+              onChange={(e) => setTemplateName(e.target.value)}
+              contentEditable={true}
+            />
+          </Section>
+          <Section>
+            対象とする要素のタグ名(入力しない場合は全ての要素に適用されます)
+            <Select
+              mode="tags"
+              style={{ width: '100%' }}
+              defaultValue={[]}
+              value={tags?.length === 0 ? [] : tags}
+              tokenSeparators={[',']}
+              onChange={setTags}
+              options={options}
+            />
+          </Section>
+          <Section>
+            CSS
+            <TextArea
+              defaultValue={css}
+              value={css}
+              onChange={(e) => setCss(e.target.value)}
+              contentEditable={true}
+              autoSize={{ minRows: 5, maxRows: 20 }}
+            />
+          </Section>
+        </Modal>
+      </Section>
+    </>
   );
 };

@@ -98,6 +98,7 @@ const AdditionalContent = styled.div`
 
 type Props = {
   type: string;
+  subType?: string;
   topValue?: number;
   rightValue?: number;
   bottomValue?: number;
@@ -119,6 +120,7 @@ type Props = {
  */
 export default function StylerTabContent({
                                            type,
+                                           subType,
                                            topValue,
                                            rightValue,
                                            bottomValue,
@@ -210,7 +212,11 @@ export default function StylerTabContent({
       setValueByDirection(direction, value);
     }
 
-    styleApplier.applyStyle(directions.map((d) => [`${type}-${d}`, value == null ? 'unset' : `${value}px`]));
+    if (type !== 'border') {
+      styleApplier.applyStyle(directions.map((d) => [`${type}-${d}`, value == null ? 'unset' : `${value}px`]));
+    } else if (subType) {
+      styleApplier.applyStyle(directions.map((d) => [`${type}-${d}-${subType}`, value == null ? 'unset' : `${value}px`]));
+    }
   }, [directions, setTopValue, setRightValue, setBottomValue, setLeftValue, styleApplier.applyStyle]);
 
   /**

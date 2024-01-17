@@ -132,7 +132,7 @@ export default function InteractiveStyler() {
                             onMouseClick={h.onMouseClickOnMarginStyler} />
         <ResizableComponent baseWidth={ELEMENT_SIZE} baseHeight={ELEMENT_SIZE}
                             offsetX={baseOffsetX - (paddingLeft ?? 0)}
-                            offsetY={baseOffsetY - (paddingTop ?? 0)} isSelected={h.isPaddingSelected}
+                            offsetY={baseOffsetY - (paddingTop ?? 0)} isSelected={h.isPaddingSelected || h.isBorderSelected}
                             top={paddingTop ?? 0} right={paddingRight ?? 0} bottom={paddingBottom ?? 0}
                             left={paddingLeft ?? 0}
                             actualTop={h.paddingTop} actualRight={h.paddingRight} actualBottom={h.paddingBottom}

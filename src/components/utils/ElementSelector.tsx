@@ -1,4 +1,4 @@
-import { useContext, useEffect, useLayoutEffect, useRef } from 'react';
+import { useContext, useEffect, useLayoutEffect } from 'react';
 import { CONTAINER_ID } from '../../features/root_manager';
 import { ElementSelectionContext } from '../../contexts/ElementSelectionContext';
 import { isContainerActive } from '../../index';
@@ -12,14 +12,6 @@ const ElementSelector = () => {
      */
 
   const elementSelection = useContext(ElementSelectionContext);
-
-  const overlayElements = useRef(elementSelection.overlayElements);
-  const setOverlayElements = useRef(elementSelection.setOverlayElements);
-  const hoveredElement = useRef(elementSelection.hoveredElement);
-  const setHoveredElement = useRef(elementSelection.setHoveredElement);
-  const selectedElement = useRef(elementSelection.selectedElement);
-  const setSelectedElement = useRef(elementSelection.setSelectedElement);
-
   const ignores = [
     '#resta-root',
     '.ant-select-dropdown',
@@ -42,7 +34,7 @@ const ElementSelector = () => {
    */
   useEffect(() => {
     const listener = () => {
-      overlayElements.current.forEach((element) => {
+      elementSelection.overlayElements.forEach((element) => {
         const scrollY = window.scrollY;
         const scrollX = window.scrollX;
         const rect = element.element.getBoundingClientRect();
@@ -72,10 +64,10 @@ const ElementSelector = () => {
       }
 
       if (
-        element !== hoveredElement.current &&
+        element !== elementSelection.hoveredElement &&
         checkIgnores(element!)
       ) {
-        setHoveredElement.current(element);
+        elementSelection.setHoveredElement(element);
 
         const previousBackgroundColor = element.style.backgroundColor;
         element.style.backgroundColor = HOVERED_BACKGROUND_COLOR;
@@ -87,7 +79,7 @@ const ElementSelector = () => {
 
         const clickListener = (ev: MouseEvent) => {
           if (!isContainerActive) {
-            selectedElement.current?.removeEventListener(
+            elementSelection.selectedElement?.removeEventListener(
               'click',
               clickListener,
             );
@@ -99,7 +91,7 @@ const ElementSelector = () => {
             ev.preventDefault();
             ev.stopPropagation();
             ev.stopImmediatePropagation()
-            selectedElement.current?.removeEventListener(
+            elementSelection.selectedElement?.removeEventListener(
               'click',
               clickListener,
             );
@@ -119,10 +111,8 @@ const ElementSelector = () => {
             div.style.pointerEvents = 'none';
             div.setAttribute('class', 'resta-selected-element');
 
-            setOverlayElements.current((prev) => {
-              prev.forEach((element) => {
-                document.body.removeChild(element.overlayElement);
-              });
+            elementSelection.setOverlayElements((prev) => {
+              prev.forEach((element) => document.body.removeChild(element.overlayElement));
               return [{element: newElement, overlayElement: div}];
             });
 
@@ -133,14 +123,14 @@ const ElementSelector = () => {
         const listener = (ev: MouseEvent) => {
           const newElement = ev.target as HTMLElement;
           if (checkIgnores(newElement!)) {
-            selectedElement.current?.removeEventListener(
+            elementSelection.selectedElement?.removeEventListener(
               'mousedown',
               listener,
             );
             ev.stopPropagation();
             ev.stopImmediatePropagation();
             newElement.style.backgroundColor = previousBackgroundColor;
-            setSelectedElement.current(newElement);
+            elementSelection.setSelectedElement(newElement);
           }
         };
 

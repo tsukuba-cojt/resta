@@ -18,8 +18,6 @@ export default function useStyleApplier(): ReturnType {
   const propsContext = useContext(PropsContext);
   const elementContext = useContext(ElementSelectionContext);
 
-  const props = useRef(propsContext);
-  const element = useRef(elementContext.selectedElement);
   const previousCssKey = useRef('');
   const previousId = useRef(Math.random() * 10000);
 
@@ -37,7 +35,7 @@ export default function useStyleApplier(): ReturnType {
 
   const applyStyle = useCallback((keyOrArray: string | [key: string, value: string | number][], value: string | number | undefined) => {
     debounce(() => {
-      if (element.current == null) {
+      if (elementContext.selectedElement == null) {
         return;
       }
 
@@ -49,7 +47,7 @@ export default function useStyleApplier(): ReturnType {
         rules = keyOrArray.map(([key, value]) => {
           return {
             id,
-            cssSelector: getAbsoluteCSSSelector(element.current!),
+            cssSelector: getAbsoluteCSSSelector(elementContext.selectedElement!),
             values: [{
               key,
               value: `${value}`
@@ -59,7 +57,7 @@ export default function useStyleApplier(): ReturnType {
       } else {
         rules = [{
           id,
-          cssSelector: getAbsoluteCSSSelector(element.current!),
+          cssSelector: getAbsoluteCSSSelector(elementContext.selectedElement),
           values: [{
             key: keyOrArray,
             value: `${value}`
@@ -67,7 +65,7 @@ export default function useStyleApplier(): ReturnType {
         }];
       }
 
-      setFormatsAndPushToAry(rules, props.current);
+      setFormatsAndPushToAry(rules, propsContext);
 
       previousCssKey.current = keyString;
       previousId.current = id;

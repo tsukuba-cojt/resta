@@ -211,7 +211,7 @@ export default function StylerTabContent({
     }
 
     styleApplier.applyStyle(directions.map((d) => [`${type}-${d}`, value == null ? 'unset' : `${value}px`]));
-  }, [directions, setTopValue, setRightValue, setBottomValue, setLeftValue]);
+  }, [directions, setTopValue, setRightValue, setBottomValue, setLeftValue, styleApplier.applyStyle]);
 
   /**
    * リセットボタンが押されたときの処理

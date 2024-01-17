@@ -1,8 +1,10 @@
-import React, {useCallback, useLayoutEffect, useRef, useState} from "react";
+import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import useStyleApplier from './useStyleApplier';
 
+type RadiusDirection = 'top-left' | 'top-right' | 'bottom-right' | 'bottom-left';
+
 type Args = {
-  direction: 'top-left' | 'top-right' | 'bottom-right' | 'bottom-left';
+  direction: RadiusDirection;
   border: Border;
   setBorder: React.Dispatch<React.SetStateAction<Border>>;
 }
@@ -23,13 +25,44 @@ export default function useBorderRadiusStylingHelper({direction, border, setBord
   const isDraggingRef = useRef<boolean>(false);
   const startRef = useRef<number[]>([0, 0]);
 
+  type Vector2 = [number, number];
+
+  type RadiusOption = {
+    centerVector: Vector2;
+    tangentLineVector: Vector2;
+    basePosition: Vector2;
+  }
+
+  const radiusOptions: Record<RadiusDirection, RadiusOption> = useMemo(() => ({
+    'top-left': {
+      centerVector: [1, 1],
+      tangentLineVector: [-1, 1],
+      basePosition: [0, 0],
+    },
+    'top-right': {
+      centerVector: [-1, 1],
+      tangentLineVector: [-1, -1],
+      basePosition: [1, 0],
+    },
+    'bottom-right': {
+      centerVector: [-1, -1],
+      tangentLineVector: [1, -1],
+      basePosition: [1, 1],
+    },
+    'bottom-left': {
+      centerVector: [1, -1],
+      tangentLineVector: [1, 1],
+      basePosition: [0, 1],
+    },
+  }), []);
+
   /**
    * つまみの位置を更新する
    */
   const updateKnobPosition = useCallback((r: number) => {
     const style = ref.current!.style;
     const rr = r == null ? (border?.radius ?? 0) : r;
-    const delta = (5 + rr) * Math.cos(Math.PI / 4);
+    const delta = ((rr === 0 ? 5 : -2.5) + rr) * Math.cos(Math.PI / 4);
 
     switch (direction) {
       case 'top-left':
@@ -58,6 +91,10 @@ export default function useBorderRadiusStylingHelper({direction, border, setBord
     updateKnobPosition(border?.radius ?? 0);
     startRef.current = start;
     isDraggingRef.current = isDragging;
+    ref.current!.onclick = (e) => {
+      e.stopPropagation();
+      e.preventDefault()
+    };
   }, [border?.radius, direction, isDragging, start, updateKnobPosition]);
 
   /**
@@ -79,22 +116,46 @@ export default function useBorderRadiusStylingHelper({direction, border, setBord
       return;
     }
 
-    const x = e.clientX - startRef.current[0];
-    const y = e.clientY - startRef.current[1];
+    const parentRect = ref.current!.parentElement!.parentElement!.getBoundingClientRect();
+    const options = radiusOptions[direction];
 
-    if ((direction === 'top-left' && x < 0 && y < 0)
-    || (direction === 'top-right' && x > 0 && y < 0)
-    || (direction === 'bottom-right' && x > 0 && y > 0)
-    || (direction === 'bottom-left' && x < 0 && y > 0)) {
-      setRadius(0);
+    // 各頂点を基準としたマウスの位置
+    const x = e.clientX - parentRect.x - parentRect.width * options.basePosition[0];
+    const y = e.clientY - parentRect.y - parentRect.height * options.basePosition[1];
+
+    if (x === 0 && y === 0) {
       updateKnobPosition(0);
+      setRadius(0);
       return;
     }
 
-    const delta = Math.sqrt(x * x + y * y);
+    // 頂点から中心にむかうベクトルとのなす角のcos値
+    const angle = (options.centerVector[0] * x + options.centerVector[1] * y) / (Math.sqrt(x * x + y * y) * Math.sqrt(2));
 
-    updateKnobPosition(delta);
-    setRadius(delta);
+    // 頂点から中心にむかうベクトルとのなす角が180度を超えたら角丸のサイズを0にする
+    if (angle <= 0) {
+      updateKnobPosition(0);
+      setRadius(0);
+      return;
+    }
+
+    const radius = Math.sqrt(x * x + y * y) * angle;
+    updateKnobPosition(radius);
+    setRadius(radius);
+
+    // if ((direction === 'top-left' && x < 0 && y < 0)
+    // || (direction === 'top-right' && x > 0 && y < 0)
+    // || (direction === 'bottom-right' && x > 0 && y > 0)
+    // || (direction === 'bottom-left' && x < 0 && y > 0)) {
+    //   setRadius(0);
+    //   updateKnobPosition(0);
+    //   return;
+    // }
+    //
+    // const delta = Math.sqrt(x * x + y * y);
+    //
+    // updateKnobPosition(delta);
+    // setRadius(delta);
   }, [direction, setRadius, updateKnobPosition]);
 
   /**

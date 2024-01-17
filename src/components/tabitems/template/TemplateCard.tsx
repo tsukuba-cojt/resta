@@ -12,9 +12,13 @@ import { PropsContext } from '../../../contexts/PropsContext';
 
 interface TemplateCardProps {
   template: Template;
+  userTemplate?: boolean;
 }
 
-const TemplateCard = ({ template }: TemplateCardProps) => {
+const TemplateCard = (
+  { template }: TemplateCardProps,
+  userTemplate: boolean,
+) => {
   const ref = useRef<any>(null);
   const elementSelection = useContext(ElementSelectionContext);
   const props = useContext(PropsContext);
@@ -58,7 +62,13 @@ const TemplateCard = ({ template }: TemplateCardProps) => {
 
   let card;
 
-  if (template.tags[0] === 'a') {
+  if (userTemplate && template.name) {
+    card = (
+      <button ref={ref} id={template.name} onClick={onUseClick}>
+        {template.name}
+      </button>
+    );
+  } else if (template.tags[0] === 'a') {
     card = (
       <a ref={ref} id={template.name} href={'#'} onClick={onUseClick}>
         ボタン

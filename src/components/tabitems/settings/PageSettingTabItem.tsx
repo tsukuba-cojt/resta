@@ -9,7 +9,6 @@ import Section from '../common/Section';
 import SubTitle from '../common/SubTitle';
 import { DEBUG_MODE } from '../../../consts/debug';
 import { PropsContext } from '../../../contexts/PropsContext';
-import { deleteAllUserTemplates } from '../../../features/userTemplates';
 
 const Wrapper = styled.div``;
 
@@ -36,6 +35,13 @@ const PageSettingTabItem = () => {
   const onClickInitAllPagesFormats = async () => {
     // localStorageのformatsを上書き
     await save([]);
+    // ページをリロード
+    window.location.reload();
+  };
+
+  const onClickInitAllPagesCssTemplates = async () => {
+    // localStorageのuserTemplatesを上書き
+    await chrome.storage.local.set({ userTemplates: [] });
     // ページをリロード
     window.location.reload();
   };
@@ -100,9 +106,7 @@ const PageSettingTabItem = () => {
         <Popconfirm
           title={t('confirm')}
           description={t('confirm_description')}
-          onConfirm={() => {
-            deleteAllUserTemplates(prop);
-          }}
+          onConfirm={onClickInitAllPagesCssTemplates}
           okText={t('yes')}
           cancelText={t('no')}
           zIndex={999999}

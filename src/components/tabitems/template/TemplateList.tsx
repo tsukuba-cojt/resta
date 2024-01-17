@@ -4,7 +4,6 @@ import { Template } from '../../../types/Template';
 import TemplateCard from './TemplateCard';
 import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
 import { PropsContext } from '../../../contexts/PropsContext';
-import { CreateTemplateByCss } from './CreateTemplateByCss';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -65,22 +64,29 @@ const TemplateList = ({ templates }: TemplateListProps) => {
   useEffect(() => {
     if (elementSelection.selectedElement) {
       setLength(
-        templates.filter((t) =>
-          t.tags.includes(
-            elementSelection.selectedElement!.tagName.toLowerCase(),
-          ),
-        ).length,
+        templates.filter(
+          (t) =>
+            t.tags.includes(
+              elementSelection.selectedElement!.tagName.toLowerCase(),
+            ) || t.tags.includes('all'),
+        ).length +
+          prop.userTemplates.filter(
+            (t) =>
+              t.tags.includes(
+                elementSelection.selectedElement!.tagName.toLowerCase(),
+              ) || t.tags.includes('all'),
+          ).length,
       );
+      console.log('TemplateList: ' + prop.userTemplates);
     } else {
       setLength(0);
     }
-  }, [elementSelection.selectedElement]);
+  }, [elementSelection.selectedElement, templates, prop.userTemplates]);
 
   return (
     <>
       {elementSelection.selectedElement && length !== 0 && (
         <Wrapper>
-          <CreateTemplateByCss />
           <p>ボタンをクリックすることでテンプレートを適用することができます</p>
           <CardsWrapper>
             <Cards templates={prop.userTemplates} />

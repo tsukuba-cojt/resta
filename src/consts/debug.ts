@@ -1,4 +1,4 @@
-export const DEBUG_MODE = true;
+export const DEBUG_MODE = false;
 
 /**
  * Log level (recommended: 2)

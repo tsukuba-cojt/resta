@@ -255,8 +255,8 @@ export default function BorderStylerTabContent({
    */
   const _additionalContents: Record<string, [React.ReactNode, ((value: any) => void)]> = {
     '色': [<ColorPicker2 value={currentColor} onChange={onChangeColor} />, onChangeColor],
-    'スタイル': [<Select options={borderStyleOptions} defaultValue={undefined} value={borderStyle}
-                     onChange={onChangeStyle} style={{minWidth: '130px'}} />, onChangeStyle],
+    'スタイル': [<Select size={'small'} bordered={false} options={borderStyleOptions} defaultValue={undefined} value={borderStyle}
+                     onChange={onChangeStyle} style={{minWidth: '130px', textAlign: 'right'}} />, onChangeStyle],
     '角丸': [
       <BorderRadius topValue={topValue.radius} rightValue={rightValue.radius} bottomValue={bottomValue.radius}
                     leftValue={leftValue.radius} />, onChangeRadius],

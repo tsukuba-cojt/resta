@@ -96,3 +96,15 @@ const createSelector = (element: HTMLElement): string => {
 export const rgbToHexColor = (rgb: number[]) => {
   return `#${rgb.map((v) => ('00' + v.toString(16)).slice(-2)).join('')}`;
 };
+
+export const getDecimalFromCSSValue = (value: string | undefined): number | undefined => {
+  if (value == null) {
+    return undefined;
+  }
+
+  const match = value.match(/(\d+\.?\d*)/);
+  if (match == null) {
+    return 0;
+  }
+  return parseFloat(match[0]);
+}

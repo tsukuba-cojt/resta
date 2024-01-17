@@ -1,11 +1,13 @@
 import styled from 'styled-components';
 import ResizableComponent from './ResizableComponent';
-import React, { useMemo } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import BorderRadiusStyler from './BorderRadiusStyler';
 import useInteractiveStylingHelper from '../../../../hooks/useInteractiveStylingHelper';
 import { Tabs, TabsProps } from 'antd';
 import StylerTabContent from './StylerTabContent';
 import BorderStylerTabContent from './BorderStylerTabContent';
+import { ElementSelectionContext } from '../../../../contexts/ElementSelectionContext';
+import { getDecimalFromCSSValue } from '../../../../utils/CSSUtils';
 
 const BASE_SIZE = 200;
 const ELEMENT_SIZE = 50;
@@ -70,6 +72,48 @@ export default function InteractiveStyler() {
                                         setBottomValue={h.setBorderBottomRight} setLeftValue={h.setBorderBottomLeft} />
     }
   ];
+
+  const elementSelection = useContext(ElementSelectionContext);
+  useEffect(() => {
+    if (!elementSelection.selectedElement) {
+      return;
+    }
+
+    const style = getComputedStyle(elementSelection.selectedElement);
+    h.setPaddingTop(getDecimalFromCSSValue(style.paddingTop));
+    h.setPaddingRight(getDecimalFromCSSValue(style.paddingRight));
+    h.setPaddingBottom(getDecimalFromCSSValue(style.paddingBottom));
+    h.setPaddingLeft(getDecimalFromCSSValue(style.paddingLeft));
+    h.setMarginTop(getDecimalFromCSSValue(style.marginTop));
+    h.setMarginRight(getDecimalFromCSSValue(style.marginRight));
+    h.setMarginBottom(getDecimalFromCSSValue(style.marginBottom));
+    h.setMarginLeft(getDecimalFromCSSValue(style.marginLeft));
+    h.setBorderTopLeft({
+      style: style.borderStyle as BorderStyle,
+      width: getDecimalFromCSSValue(style.borderTopWidth),
+      color: style.borderTopColor,
+      radius: getDecimalFromCSSValue(style.borderTopLeftRadius)
+    });
+    h.setBorderTopRight({
+      style: style.borderStyle as BorderStyle,
+      width: getDecimalFromCSSValue(style.borderTopWidth),
+      color: style.borderTopColor,
+      radius: getDecimalFromCSSValue(style.borderTopRightRadius)
+    });
+    h.setBorderBottomRight({
+      style: style.borderStyle as BorderStyle,
+      width: getDecimalFromCSSValue(style.borderBottomWidth),
+      color: style.borderBottomColor,
+      radius: getDecimalFromCSSValue(style.borderBottomRightRadius)
+    });
+    h.setBorderBottomLeft({
+      style: style.borderStyle as BorderStyle,
+      width: getDecimalFromCSSValue(style.borderBottomWidth),
+      color: style.borderBottomColor,
+      radius: getDecimalFromCSSValue(style.borderBottomLeftRadius)
+    });
+
+  }, [elementSelection.selectedElement]);
 
   return (
     <>

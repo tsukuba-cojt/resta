@@ -45,7 +45,7 @@ const DIRECTION_BOTTOM = 3;
 
 const emptyBorder: Border = {
   width: undefined,
-  type: undefined,
+  style: undefined,
   color: undefined,
   radius: undefined,
 };

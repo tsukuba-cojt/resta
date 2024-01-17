@@ -3,8 +3,10 @@ type SelectedElement = {
   element: HTMLElement;
 }
 
+type BorderStyle = 'solid' | 'dashed' | 'dotted' | undefined;
+
 type Border = {
-  type: 'solid' | 'dashed' | 'dotted' | undefined;
+  style: BorderStyle;
   width: number | undefined;
   color: string | undefined;
   radius: number | undefined;

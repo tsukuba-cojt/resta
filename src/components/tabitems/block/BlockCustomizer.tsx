@@ -3,10 +3,6 @@ import React, { useContext } from 'react';
 import SubTitle from '../common/SubTitle';
 import Section from '../common/Section';
 import BackgroundColorCustomizer from './BackgroundColorCustomizer';
-import BorderColorCustomizer from './BorderColorCustomizer';
-import BorderRadiusCustomizer from './BorderRadiusCustomizer';
-import PaddingCustomizer from './PaddingCustomizer';
-import SizeCustomizer from './SizeCustomizer';
 import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
 import BoxShadowCustomizer from './BoxShadowCustomizer';
 import { PropsContext } from '../../../contexts/PropsContext';
@@ -50,11 +46,11 @@ const BlockCustomizer = () => {
 
   const customizers: { [key: string]: React.JSX.Element } = {
     背景色: <BackgroundColorCustomizer onChange={onChange} />,
-    幅と高さ: <SizeCustomizer onChange={onChange} />,
-    余白: <PaddingCustomizer onChange={onChange} />,
-    角丸: <BorderRadiusCustomizer onChange={onChange} />,
+    // 幅と高さ: <SizeCustomizer onChange={onChange} />,
+    // 余白: <PaddingCustomizer onChange={onChange} />,
+    // 角丸: <BorderRadiusCustomizer onChange={onChange} />,
     影: <BoxShadowCustomizer onChange={onChange} />,
-    枠線: <BorderColorCustomizer onChange={onChange} />,
+    // 枠線: <BorderColorCustomizer onChange={onChange} />,
   };
 
   return (

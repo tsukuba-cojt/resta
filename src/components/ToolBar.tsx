@@ -35,6 +35,12 @@ const ToolBar = () => {
   const context = useContext(PropsContext);
 
   const onCloseButtonClick = () => {
+    elementSelection.setSelectedElement(null);
+    elementSelection.setHoveredElement(null);
+    elementSelection.setOverlayElements([]);
+
+    Array.from(document.querySelectorAll(".resta-selected-element")).forEach((element) => element.remove());
+
     closeContainer();
   };
 

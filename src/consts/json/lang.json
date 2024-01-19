@@ -68,7 +68,7 @@
     "all_tags": "すべての要素",
 
     "imported_styles": "インポート済み",
-    "no_imported_styles": "インポート済みスタイルはありません",
+    "no_imported_styles": "このページに適用できるインポート済みスタイルはありません",
     "open_resta_store": "スタイルストアを開く",
     "import_success": "インポートが完了しました",
     "import_error": "インポート中にエラーが発生しました",

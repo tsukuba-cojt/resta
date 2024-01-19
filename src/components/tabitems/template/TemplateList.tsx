@@ -4,6 +4,10 @@ import { Template } from '../../../types/Template';
 import TemplateCard from './TemplateCard';
 import { ElementSelectionContext } from '../../../contexts/ElementSelectionContext';
 import { PropsContext } from '../../../contexts/PropsContext';
+import NoItem from '../common/NoItem';
+import { IconPuzzleOff } from '@tabler/icons-react';
+import t from '../../../features/translator';
+import { Button } from 'antd';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -94,7 +98,13 @@ const TemplateList = ({ templates }: TemplateListProps) => {
           </CardsWrapper>
         </Wrapper>
       )}
-      {length === 0 && <p>この要素に適用できるテンプレートはありません</p>}
+      {length === 0 &&
+        <NoItem icon={<IconPuzzleOff size={96} color={'#999999'} />} text={'この要素に適用できるテンプレートはありません'}>
+          <Button type="link" onClick={() => window.open('https://resta-frontend.pages.dev/style/', '_blank')} block>
+            <span style={{color: '#00b7ee'}}>{t('open_resta_store')}</span>
+          </Button>
+        </NoItem>
+      }
     </>
   );
 };

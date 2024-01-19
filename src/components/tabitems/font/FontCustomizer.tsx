@@ -21,9 +21,10 @@ import IconButton from '../../controls/IconButton';
 import InputNumberWithUnit from '../../controls/InputNumberWithUnit';
 import ColorPicker from '../../controls/ColorPicker';
 import {
+  IconClick,
   IconLetterSpacing,
   IconSpace,
-  IconTypography,
+  IconTypography
 } from '@tabler/icons-react';
 import Section from '../common/Section';
 import SubTitle from '../common/SubTitle';
@@ -38,6 +39,7 @@ import { defaultFontFamilies } from '../../../consts/cssValues';
 import { getCssSelector, kebabToCamel } from '../../../utils/CSSUtils';
 import { setFormatsAndPushToAry } from '../../../features/formatter';
 import { PropsContext } from '../../../contexts/PropsContext';
+import NoItem from '../common/NoItem';
 
 const Wrapper = styled.div``;
 
@@ -433,7 +435,11 @@ const FontCustomizer = () => {
           </Section>
         </>
       )}
-      {!elementSelection.selectedElement && <p>要素を選択してください</p>}
+      {!elementSelection.selectedElement &&
+        <NoItem icon={<IconClick size={96} color={'#999999'} />} offset={140} text={"要素を選択してください"}>
+          <p>ヒント：編集したい要素の上でマウスをクリックすることで要素を選択できます。</p>
+        </NoItem>
+      }
     </Wrapper>
   );
 };

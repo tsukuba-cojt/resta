@@ -47,7 +47,7 @@ export default function InteractiveStyler() {
   const onChangeColor = useCallback((value: string | Color | undefined) => {
     h.setBackgroundColor(value);
     styleApplier.applyStyle('background-color', typeof value === 'object' ? value.toRgbString() : value);
-  }, []);
+  }, [styleApplier.applyStyle]);
 
   /**
    * 追加のコンテンツ

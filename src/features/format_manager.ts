@@ -56,18 +56,18 @@ export const loadFormat = async (prop: IPropsContext) => {
 };
 
 export const getFormatAryFromLocal = async (): Promise<any> => {
-  await chrome.storage.local.get(['formats']).then((result) => {
-    if (!result.formats) {
-      resta_console.log('load:no format', prop.currentUrl);
-      return [];
-    } else {
-      const ary = (
-        JSON.parse(result.formats) as Array<FormatBlockByURL>
-      ).filter((e) => e.formats.length !== 0);
-      resta_console.log('load', prop.currentUrl, ary);
-      return ary;
-    }
-  });
+  const result = await chrome.storage.local.get(['formats']);
+
+  if (!result.formats) {
+    resta_console.log('load:no format', prop.currentUrl);
+    return [];
+  } else {
+    const ary = (JSON.parse(result.formats) as Array<FormatBlockByURL>).filter(
+      (e) => e.formats.length !== 0,
+    );
+    resta_console.log('load', prop.currentUrl, ary);
+    return ary;
+  }
 };
 
 /**

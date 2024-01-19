@@ -6,5 +6,5 @@ export const getChangedUrls = async (): Promise<string[]> => {
 };
 
 export const getFormatByURL = async (url: string) => {
-  return compressStyle(url);
+  return await compressStyle(url);
 };

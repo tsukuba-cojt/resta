@@ -1,24 +1,25 @@
 import * as prop from './prop';
 import { FormatBlockByURL, FormatChange } from '../types/Format';
 import { getFormatAryFromLocal } from './format_manager';
-export const compressStyle = (url: string): CompressedStyle | false => {
+export const compressStyle = async (url: string): Promise<any> => {
   const compressedFormats: CompressedFormat[] = [];
+  console.log('compressStyle', url);
   // 優先度の高い順にルールを追加する
   // すでに登録されている場合はスキップする
-  getFormatAryFromLocal().then((result) => {
-    if (!result) {
-      return;
+  const result = await getFormatAryFromLocal();
+  if (!result) {
+    return;
+  }
+  for (const format of result
+    .filter((e: FormatBlockByURL) => {
+      return prop.matchUrl(url, e.url);
+    })
+    .reverse()) {
+    for (const f of format.formats) {
+      console.log('compressStyle_f: ', f);
+      insertStyleRule(f.cssSelector, f.changes, compressedFormats);
     }
-    for (const format of result
-      .filter((e: FormatBlockByURL) => {
-        return prop.matchUrl(url, e.url);
-      })
-      .reverse()) {
-      for (const f of format.formats) {
-        insertStyleRule(f.cssSelector, f.changes, compressedFormats);
-      }
-    }
-  });
+  }
   if (compressedFormats.length === 0) {
     return false;
   }

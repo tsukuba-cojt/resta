@@ -1,6 +1,7 @@
 import { IPropsContext } from '../contexts/PropsContext';
 import { StyleLayer, StyleLayerValue } from '../types/StyleLayer';
 import * as resta_console from './resta_console';
+import { matchCSSSelector } from '../utils/CSSUtils';
 export const getStyleLayer = (
   cssSelector: string,
   prop: IPropsContext,
@@ -11,7 +12,7 @@ export const getStyleLayer = (
   const styleLayerValue: StyleLayerValue[] = [];
   for (const format of prop.formatsArray.reverse()) {
     const formatChange = format.formats.find((format) => {
-      return format.cssSelector === cssSelector;
+      return matchCSSSelector(format.cssSelector, cssSelector);
     });
     if (!formatChange) continue;
     resta_console.log('formatChange:', formatChange);

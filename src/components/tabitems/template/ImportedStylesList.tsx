@@ -111,15 +111,28 @@ const ImportedStylesList = () => {
 
   useEffect(() => {
     void updateTree();
+  }, [props.importedFormats]);
+
+  useEffect(() => {
+    void updateTree();
   }, []);
 
   return (
     <Wrapper>
       {styles.length !== 0 && <Cards styles={styles} updateFunc={updateTree} />}
       {styles.length === 0 && (
-        <NoItem icon={<IconShoppingBagX size={96} color={'#999999'} />} text={t('no_imported_styles')}>
-          <Button type="link" onClick={() => window.open('https://resta-frontend.pages.dev/style/', '_blank')} block>
-            <span style={{color: '#00b7ee'}}>{t('open_resta_store')}</span>
+        <NoItem
+          icon={<IconShoppingBagX size={96} color={'#999999'} />}
+          text={t('no_imported_styles')}
+        >
+          <Button
+            type="link"
+            onClick={() =>
+              window.open('https://resta-frontend.pages.dev/style/', '_blank')
+            }
+            block
+          >
+            <span style={{ color: '#00b7ee' }}>{t('open_resta_store')}</span>
           </Button>
         </NoItem>
       )}

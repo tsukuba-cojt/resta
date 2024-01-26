@@ -49,6 +49,7 @@ const insertStyleRule = (
       !formats
         .find((e) => e.cssSelector === cssSelector)
         ?.changes.find((e) => e.cssKey === change.cssKey)
+      && change.cssValues.length > 0
     ) {
       formats
         .find((e) => e.cssSelector === cssSelector)

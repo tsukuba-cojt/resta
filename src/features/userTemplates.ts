@@ -5,7 +5,7 @@ import { log } from './resta_console';
 import t from './translator';
 
 export const loadUserTemplatesFromStorage = async (prop: IPropsContext) => {
-  chrome.storage.local.get(['userTemplates'], (result) => {
+  await chrome.storage.local.get(['userTemplates'], (result) => {
     if (!result.userTemplates) {
       prop.setUserTemplates([]);
     } else {
@@ -27,7 +27,7 @@ export const saveUserTemplates = async (
   prop: IPropsContext,
 ) => {
   const template = createTemplateStyle(cssText, name, tags);
-  const templates: Template[] = [...prop.userTemplates];
+  const templates: Template[] = prop.userTemplates;
   const index = templates.findIndex((e) => e.name === name);
   // 既に同じ名前のテンプレートが存在する場合は、上書きする。
   if (index === -1) {
@@ -35,7 +35,7 @@ export const saveUserTemplates = async (
   } else {
     templates[index] = template;
   }
-  await saveUserTemplatesLocal(templates, prop);
+  await saveUserTemplatesLocal(prop);
 };
 
 /**
@@ -47,16 +47,17 @@ export const deleteUserTemplates = async (
   name: string,
   prop: IPropsContext,
 ) => {
-  const templates: Template[] = [...prop.userTemplates];
+  const templates: Template[] = prop.userTemplates;
   const index = templates.findIndex((e) => e.name === name);
   if (index !== -1) {
     templates.splice(index, 1);
   }
-  await saveUserTemplatesLocal(templates, prop);
+  await saveUserTemplatesLocal(prop);
 };
 
 export const deleteAllUserTemplates = async (prop: IPropsContext) => {
-  await saveUserTemplatesLocal([], prop);
+  prop.setUserTemplates([]);
+  await saveUserTemplatesLocal(prop);
   // ページをリロード
   window.location.reload();
 };
@@ -65,12 +66,8 @@ export const deleteAllUserTemplates = async (prop: IPropsContext) => {
  * 現在のuserTemplatesの状態をlocal storageに保存する。
  * @param templates
  */
-const saveUserTemplatesLocal = async (
-  newTemplates: Template[],
-  prop: IPropsContext,
-) => {
-  prop.setUserTemplates(newTemplates);
-  chrome.storage.local.set({ userTemplates: newTemplates });
+const saveUserTemplatesLocal = async (prop: IPropsContext) => {
+  chrome.storage.local.set({ userTemplates: prop.userTemplates });
 };
 
 /**
@@ -104,7 +101,7 @@ const createTemplateStyle = (
 
       for (const c of css) {
         const [key, value] = c.split(':');
-        cssMap[key.trim()] = value.trim();
+        cssMap[key] = value;
       }
 
       const TemplateStyle: TemplateStyle = {
@@ -123,7 +120,7 @@ const createTemplateStyle = (
 
     for (const c of css) {
       const [key, value] = c.split(':');
-      cssMap[key.trim()] = value.trim();
+      cssMap[key] = value;
     }
 
     const TemplateStyle: TemplateStyle = {
@@ -140,33 +137,6 @@ const createTemplateStyle = (
     isPage: false,
   };
   return template;
-};
-
-/**
- * TemplateからcssTextを作成する。
- * @param styles
- * @returns
- */
-export const templateStyleToCssText = (styles: TemplateStyle[]): string => {
-  // pseudoClassを持たないブロックのみが存在する場合、波括弧で囲わない
-  const noBlock = styles.length === 1 && !styles[0].pseudoClass;
-  const blocks: string[] = [];
-
-  for (const style of styles) {
-    const properties = Object.entries(style.css)
-      .map(([key, value]) => `${key}: ${value};`)
-      .join('\n');
-    if (noBlock) {
-      blocks.push(properties);
-    } else {
-      const selector = style.pseudoClass ? `:${style.pseudoClass}` : '';
-      blocks.push(`${selector} {
-  ${properties}
-}`);
-    }
-  }
-
-  return blocks.join('\n\n');
 };
 
 /**

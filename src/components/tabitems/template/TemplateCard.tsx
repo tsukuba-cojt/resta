@@ -1,5 +1,5 @@
 import { Template } from '../../../types/Template';
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
   getAbsoluteCSSSelector,
   getCssSelector,
@@ -22,6 +22,7 @@ const TemplateCard = (
   const ref = useRef<any>(null);
   const elementSelection = useContext(ElementSelectionContext);
   const props = useContext(PropsContext);
+  const [indices, setIndices] = useState<number[]>([]);
 
   const onUseClick = () => {
     if (elementSelection.selectedElement) {
@@ -43,24 +44,36 @@ const TemplateCard = (
     }
   };
 
-  const insertCSS = () => {
-    template.styles.forEach((style) => {
-      getStyleSheet()?.insertRule(
-        `${getAbsoluteCSSSelector(ref.current!)}[id='${template.name}']${
-          style.pseudoClass ? `:${style.pseudoClass}` : ''
-        } {\n` +
-          `${Object.entries(style.css)
-            .map(([key, value]) => `${key}: ${value}`)
-            .join(';\n')};\n` +
-          'width: 100%;' +
+  const resetCss = () => {
+    const styleSheet = getStyleSheet();
+    // 既存のスタイルを削除
+    for (const index of indices) {
+      styleSheet.deleteRule(index);
+    }
+
+    const newIndices = [];
+    for (const style of template.styles) {
+      const selector = `${getAbsoluteCSSSelector(ref.current!)}[id='${
+        template.name
+      }']${style.pseudoClass ? `:${style.pseudoClass}` : ''}`;
+      const css = { ...style.css };
+      css.width = '100%';
+
+      const newIndex = styleSheet.insertRule(
+        `${selector} {\n` +
+          `${Object.entries(css)
+            .map(([key, value]) => `${key}: ${value};`)
+            .join('\n')}\n` +
           '}',
       );
-    });
+      newIndices.push(newIndex);
+    }
+    setIndices(newIndices);
   };
 
-  useEffect(() => insertCSS(), []);
+  useEffect(() => resetCss(), [template]);
 
-  let card;
+  let card: JSX.Element;
 
   if (userTemplate && template.name) {
     card = (

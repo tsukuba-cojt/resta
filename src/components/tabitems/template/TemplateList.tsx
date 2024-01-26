@@ -28,6 +28,7 @@ const CardsWrapper = styled.div`
   background-color: rgba(255, 255, 255, 0.5);
   border: lightgray solid 1px;
   border-radius: 24px;
+  box-sizing: border-box;
 `;
 
 interface CardsProps {

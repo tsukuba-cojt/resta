@@ -8,12 +8,12 @@ let styleSheet: CSSStyleSheet | null = null;
  * シングルトンのような構造になっている
  */
 export const getStyleSheet = () => {
-  if (styleSheet == null) {
+  if (styleSheet === null) {
     const styleSheetElement = document.createElement('style');
     document.head.appendChild(styleSheetElement);
-    styleSheet = styleSheetElement.sheet;
+    styleSheet = styleSheetElement.sheet as CSSStyleSheet;
   }
-  return styleSheet as CSSStyleSheet;
+  return styleSheet;
 };
 
 /**

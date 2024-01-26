@@ -148,13 +148,13 @@ export const CreateTemplateByCss = () => {
               <Typography.Text>{item.name}</Typography.Text>
               <div>
                 <Button
-                  type="ghost"
+                  type="text"
                   size="small"
                   icon={<EditOutlined />}
                   onClick={() => edit(item)}
                 />
                 <Button
-                  type="ghost"
+                  type="text"
                   size="small"
                   icon={<DeleteOutlined />}
                   onClick={() => deleteTemplate(item)}

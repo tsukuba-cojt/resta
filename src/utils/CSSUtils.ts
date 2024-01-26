@@ -108,3 +108,7 @@ export const getDecimalFromCSSValue = (value: string | undefined): number | unde
   }
   return parseFloat(match[0]);
 }
+
+export const matchCSSSelector = (selector1: string, selector2: string): boolean => {
+  return selector1.replace(/:not\(#resta-root \*\)$/, '') === selector2.replace(/:not\(#resta-root \*\)$/, '');
+}
